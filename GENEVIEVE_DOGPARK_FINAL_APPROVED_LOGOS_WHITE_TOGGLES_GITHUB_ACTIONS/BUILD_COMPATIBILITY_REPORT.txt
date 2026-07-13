@@ -1,0 +1,24 @@
+GENEVIEVE App™ — FINAL APPROVED LOGO AND TOGGLE BUILD
+
+Included:
+- User-supplied GA logo in the main header, favicon, Apple touch icon and installable app icons
+- User-supplied roots / infinity tree logo in the Parks experience and official marks area
+- Full green bottom navigation bar matching the approved mock-up
+- White Home, Parks, Trips, Alerts, Profile and More icons and white labels
+- Darker green selected toggle for clear visibility
+- Tracey avatar and profile photographs preserved
+- Mr Gruff avatar and profile photographs preserved
+- Privacy, Terms, Safety and Community pages retained
+- GitHub Pages Actions workflow retained and updated
+- Relative paths for repository subfolder hosting
+- .nojekyll marker and GitHub Pages 404 recovery page
+- Updated service-worker cache for the new logo and navigation assets
+- No npm, Vite or framework build required
+
+Validation completed:
+- Required files and images present
+- HTML local links present
+- JavaScript syntax valid
+- Manifest JSON valid
+- GitHub Actions YAML valid
+- Manifest and service-worker asset references present
