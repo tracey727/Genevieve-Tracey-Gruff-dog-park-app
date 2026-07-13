@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Returning to GENEVIEVE App™</title>
+  <style>
+    :root { color-scheme: light; font-family: Arial, Helvetica, sans-serif; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #eef8f0; color: #103f31; }
+    main { width: min(90%, 520px); padding: 28px; border: 1px solid #acd4b7; border-radius: 22px; background: white; box-shadow: 0 14px 35px rgba(16,63,49,.12); text-align: center; }
+    a { display: inline-block; margin-top: 12px; padding: 12px 18px; border-radius: 999px; background: #215d36; color: white; text-decoration: none; font-weight: 700; }
+  </style>
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var parts = window.location.pathname.split('/').filter(Boolean);
+      var base = '/';
+      if (host.endsWith('.github.io') && parts.length > 0) {
+        base = '/' + parts[0] + '/';
+      }
+      var destination = base + 'index.html';
+      window.setTimeout(function () { window.location.replace(destination); }, 100);
+      window.__genevieveHome = destination;
+    }());
+  </script>
+</head>
+<body>
+  <main>
+    <h1>GENEVIEVE App™</h1>
+    <p>This address was not found. Returning to the app.</p>
+    <a id="homeLink" href="./index.html">Open the app</a>
+  </main>
+  <script>
+    document.getElementById('homeLink').href = window.__genevieveHome || './index.html';
+  </script>
+</body>
+</html>

@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#103f31">
+  <meta name="description" content="GENEVIEVE App™ Dog Park — live-ready static deployment for dog parks, dog beaches, safety alerts and dog-friendly trips.">
+  <title>GENEVIEVE App™ — Dog Park</title>
+  <link rel="icon" href="./assets/ga-logo-512.png" type="image/png">
+  <link rel="apple-touch-icon" href="./assets/ga-logo-192.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-top">
+      <div class="brand">
+        <img src="./assets/ga-logo-512.png" alt="GENEVIEVE App logo" class="brand-icon ga-brand-icon">
+        <div>
+          <h1>GENEVIEVE App™</h1>
+          <p>Safety. Suitability. Peace of Mind.</p>
+        </div>
+      </div>
+      <button class="icon-btn alert-icon-btn" data-go="alerts" aria-label="Open alerts"><span class="top-icon-wrap"><img src="./assets/nav-alerts.svg" alt="" class="top-icon-img"></span><span class="notify-dot"></span></button>
+    </header>
+
+    <main id="screens">
+      <section id="home" class="screen active" data-title="Home / Dashboard">
+        <div class="phone-label">PAGE 1 — HOME / DASHBOARD</div>
+
+        <article class="identity-card">
+          <img src="./assets/tracey-avatar.jpg" alt="Tracey Kennedy" class="owner-photo">
+          <div>
+            <p class="eyebrow">User profile</p>
+            <h2>Hi, Tracey 👋</h2>
+            <p>Your identity sits above your pet, so it feels connected and personal.</p>
+          </div>
+          <div class="weather-chip">☀️ 22°C<br><span>Sunny</span></div>
+        </article>
+
+        <article class="dog-card">
+          <img src="./assets/mr-gruff-avatar.jpg" alt="Mr Gruff" class="dog-photo">
+          <div>
+            <h3>Mr Gruff</h3>
+            <p>Medium • 20 kg • Desexed male • Born 08/08/2021</p>
+            <div class="chip-row">
+              <span id="homeStatusChip" class="chip amber">Needs Space</span>
+              <span class="chip">On lead — in training</span>
+            </div>
+          </div>
+          <button data-go="profile" class="small-btn">View profile</button>
+        </article>
+
+        <details class="card" id="temperamentPanel">
+          <summary>
+            <span>🐾 Today’s Temperament Check</span>
+            <span id="temperamentScore" class="score-pill amber">Amber</span>
+          </summary>
+          <p class="helper">Tap Mr Gruff’s status first. Genevieve uses this with the park score before you leave.</p>
+          <div id="temperamentChoices" class="choice-grid"></div>
+        </details>
+
+        <article class="card">
+          <h3>Before You Leave</h3>
+          <label class="searchbar">
+            <span>🔍</span>
+            <input id="quickSearch" value="Witherside Park" placeholder="Search dog park, dog beach or destination">
+          </label>
+          <div id="todayDecision" class="decision amber">
+            <b>Amber — check before leaving</b>
+            <span>Mr Gruff needs space today. Choose a low-crowd, open place with water and calm entry.</span>
+          </div>
+          <div class="button-row">
+            <button data-go="search">Search parks & beaches</button>
+            <button data-go="trip" class="secondary">Plan any trip</button>
+          </div>
+        </article>
+
+        <div id="bestMateFlash" class="flash-line">
+          <b>✨ Luna is here</b>
+          <span>Small flash only. Visible only when both owners allow it.</span>
+        </div>
+
+        <section class="quick-actions">
+          <button data-action="checkIn" class="quick green">✅<b>Check In</b><span>Arrived</span></button>
+          <button data-action="checkOut" class="quick">🚪<b>Check Out</b><span>Left</span></button>
+          <button data-action="bestMate" class="quick gold">✨<b>Best Mate</b><span>Alert</span></button>
+          <button data-action="incognito" class="quick purple">🕶️<b>Incognito</b><span>Need Space</span></button>
+        </section>
+
+        <article class="card">
+          <h3>Safety Share</h3>
+          <p>Optional for solo, night or quiet visits. Chosen contacts can receive check-in and check-out updates.</p>
+          <label class="switch-row"><span>Share with chosen contacts</span><input id="safetyShare" type="checkbox"></label>
+          <button data-go="settings" class="secondary">Choose contacts & privacy</button>
+        </article>
+
+        <article class="sos">
+          <div><b>Emergency — 000</b><span>Press, hold & slide to prevent accidental pocket use.</span></div>
+          <button data-action="openSos">Hold + Slide</button>
+        </article>
+      </section>
+
+      <section id="search" class="screen" data-title="Search Parks & Alert">
+        <div class="phone-label">PAGE 2 — SEARCH PARKS & ALERT</div>
+        <div class="page-head"><button data-go="home" class="back">←</button><h2>Search parks, beaches or trip stops</h2></div>
+        <article class="brand-feature-card">
+          <img src="./assets/genevieve-roots.png" alt="GENEVIEVE roots and infinity logo" class="roots-mark">
+          <div>
+            <p class="eyebrow">GENEVIEVE Parks</p>
+            <h3>Find the right park for today.</h3>
+            <p>Search by crowd level, available space, amenities and Mr Gruff’s current temperament.</p>
+          </div>
+        </article>
+        <label class="searchbar full"><span>🔍</span><input id="placeSearch" placeholder="Search park, beach, suburb or stop"></label>
+        <div class="filter-row">
+          <button data-filter="all" class="active">Nearby</button>
+          <button data-filter="Dog Park">Parks</button>
+          <button data-filter="Dog Beach">Dog Beaches</button>
+          <button data-filter="Trip Stop">Trip Stops</button>
+        </div>
+        <article class="card">
+          <h3>Recommended for Mr Gruff</h3>
+          <p>Sorted by suitability, crowd, spaces left, size, alerts and Mr Gruff’s current temperament.</p>
+        </article>
+        <div id="placeList" class="place-list"></div>
+      </section>
+
+      <section id="details" class="screen" data-title="Place Details & Safety">
+        <div class="phone-label">PAGE 3 — PLACE DETAILS & SAFETY</div>
+        <div class="page-head"><button data-go="search" class="back">←</button><h2 id="placeTitle">Witherside Park</h2><button data-action="favourite" class="heart">♡</button></div>
+        <img id="placeImage" class="hero-img" src="./assets/park.svg" alt="">
+        <div id="placeDecision" class="decision green"></div>
+        <div class="stats-grid">
+          <div><b id="placeDogsNow">8</b><span>dogs now</span></div>
+          <div><b id="placeSpacesLeft">12</b><span>spaces left</span></div>
+          <div><b id="placeCrowd">Low</b><span>crowd</span></div>
+        </div>
+        <details class="card" open>
+          <summary>Why Genevieve chose this colour</summary>
+          <ul>
+            <li>Combines Mr Gruff’s current temperament and history.</li>
+            <li>Checks crowd, spaces left, park size, shade, water and fencing.</li>
+            <li>Flags dog beaches, tide/sign access and council notices.</li>
+            <li>Provides decision support only. Humans decide and supervise.</li>
+          </ul>
+        </details>
+        <details class="card">
+          <summary>Park or beach rules</summary>
+          <ul id="placeRules"></ul>
+        </details>
+        <details class="card">
+          <summary>Amenities & features A–Z</summary>
+          <div id="amenities" class="chips"></div>
+        </details>
+        <details class="card">
+          <summary>Live safety updates</summary>
+          <div id="placeAlerts"></div>
+        </details>
+        <div class="sticky-actions">
+          <button data-action="checkIn">Check In Arrived</button>
+          <button data-go="trip" class="secondary">Plan Visit</button>
+          <button data-go="search" class="secondary">Choose Another Place</button>
+        </div>
+      </section>
+
+      <section id="visit" class="screen" data-title="Live Visit / Check In">
+        <div class="phone-label">PAGE 4 — LIVE VISIT / CHECK IN</div>
+        <div class="page-head"><button data-go="home" class="back">←</button><h2>You’re Checked In</h2></div>
+        <article class="card visit-card">
+          <img src="./assets/mr-gruff-avatar.jpg" alt="Mr Gruff">
+          <div>
+            <h3 id="visitPlaceName">Witherside Park</h3>
+            <p id="visitStatus">Checked in at 10:32 am • owner present</p>
+            <span id="visitStatusChip" class="chip amber">Needs Space</span>
+          </div>
+        </article>
+        <div class="stats-grid">
+          <div><b id="visitDogsNow">8</b><span>dogs in park</span></div>
+          <div><b id="visitSpacesLeft">12</b><span>spaces left</span></div>
+          <div><b id="visitCrowd">Low</b><span>crowd</span></div>
+        </div>
+        <article class="card">
+          <h3>Mr Gruff’s Status</h3>
+          <div id="visitDecision" class="decision amber"><b>Needs Space</b><span>On Lead — In Training. Let others know how to act.</span></div>
+          <button data-go="needs">Change Status</button>
+        </article>
+        <article class="card">
+          <h3>No Dog Drop-Off</h3>
+          <p>Owner confirms they are still supervising. This helps address people leaving dogs alone at the park.</p>
+          <div class="button-row">
+            <button data-action="stillHere">I’m still supervising</button>
+            <button data-action="reportUnattended" class="secondary">Report dog left unattended</button>
+          </div>
+        </article>
+        <section class="quick-actions two">
+          <button class="quick gold" data-action="bestMate">✨<b>Best Mate</b><span>Luna alert</span></button>
+          <button class="quick purple" data-action="incognito">🕶️<b>Incognito</b><span>Privacy</span></button>
+          <button class="quick" data-go="needs">✏️<b>Update Status</b><span>Changed mood</span></button>
+          <button class="quick" data-action="checkOut">🚪<b>Check Out</b><span>Leaving</span></button>
+        </section>
+        <article class="sos"><div><b>Emergency — 000</b><span>Press, hold & slide.</span></div><button data-action="openSos">Hold + Slide</button></article>
+      </section>
+
+      <section id="trip" class="screen" data-title="Plan Trip">
+        <div class="phone-label">PAGE 5 — PLAN ANY TRIP</div>
+        <div class="page-head"><button data-go="home" class="back">←</button><h2>Plan Any Trip in Australia</h2></div>
+        <article class="card form-card">
+          <label>From <input id="tripFrom" value="Gold Coast, QLD"></label>
+          <label>To <input id="tripTo" value="Sydney, NSW"></label>
+          <label>Travelling with <select id="tripDog"><option>Mr Gruff — Needs Space</option></select></label>
+          <label>Humans <select><option>Tracey + 1 human</option><option>Tracey only</option></select></label>
+        </article>
+        <details class="card" open>
+          <summary>What do you need on your trip?</summary>
+          <div id="tripNeedChips" class="chips selectable"></div>
+          <button data-action="clearTripNeeds" class="secondary">Clear for new destination</button>
+        </details>
+        <article class="route card">
+          <h3>Balanced Route</h3>
+          <p>Dog parks, dog beaches, caravan parks, pet-friendly hotels, vets, water, shade, toilets, fuel and rest stops.</p>
+          <button data-action="makeRoute">View itinerary & map</button>
+        </article>
+        <article class="route card">
+          <h3>Scenic Coastal Route</h3>
+          <p>More beaches and cafés. Check council signs, tide, heat and access times before stopping.</p>
+          <button data-action="makeRoute">View itinerary & map</button>
+        </article>
+        <article class="card">
+          <h3>Australia map / route notes</h3>
+          <div id="routeMap" class="map-card">Route preview appears here after you choose an itinerary.</div>
+        </article>
+      </section>
+
+      <section id="profile" class="screen" data-title="Dog Profile Overview">
+        <div class="phone-label">PAGE 6 — DOG PROFILE OVERVIEW</div>
+        <div class="page-head"><button data-go="home" class="back">←</button><h2>Mr Gruff</h2><button data-go="profileDetails" class="small-btn">Details</button></div>
+        <article class="profile-hero">
+          <img src="./assets/tracey-avatar.jpg" alt="Tracey" class="owner-overlay">
+          <img src="./assets/mr-gruff-profile.jpg" alt="Mr Gruff" class="dog-cover">
+        </article>
+        <article class="card">
+          <h3>Mr Gruff</h3>
+          <p>Medium • 20 kg • Desexed male • Born 08/08/2021</p>
+          <div class="chip-row">
+            <span class="chip amber">Needs Space</span>
+            <span class="chip amber">On Lead — In Training</span>
+            <span class="chip green">Happy to Play when safe</span>
+          </div>
+          <button data-go="profileDetails">Open full dog history</button>
+        </article>
+        <article class="card">
+          <h3>Private Records</h3>
+          <div class="record"><span>Microchip</span><b>Yes — hidden</b></div>
+          <div class="record"><span>Vaccinated</span><b>Up to date</b></div>
+          <div class="record"><span>Owner</span><b>Tracey Kennedy</b></div>
+          <div class="record"><span>Emergency contacts</span><b>2 contacts</b></div>
+        </article>
+      </section>
+
+      <section id="profileDetails" class="screen" data-title="Dog Profile Details">
+        <div class="phone-label">PAGE 7 — DOG PROFILE DETAILS</div>
+        <div class="page-head"><button data-go="profile" class="back">←</button><h2>Mr Gruff — Full Profile</h2></div>
+        <div class="mini-tabs">
+          <button class="active" data-detail-tab="medical">Medical</button>
+          <button data-detail-tab="behaviour">Behaviour</button>
+          <button data-detail-tab="history">History</button>
+          <button data-detail-tab="privacy">Privacy</button>
+        </div>
+        <article id="dogDetailPanel" class="card"></article>
+      </section>
+
+      <section id="needs" class="screen" data-title="Needs Space / Status">
+        <div class="phone-label">PAGE 8 — NEEDS SPACE / STATUS</div>
+        <div class="page-head"><button data-go="visit" class="back">←</button><h2>Set Mr Gruff’s Status</h2></div>
+        <div id="needsDecision" class="decision amber"><b>Amber — Give Space</b><span>Needs extra space and calm handling today.</span></div>
+        <article class="card">
+          <h3>Temperament options</h3>
+          <div id="statusOptions" class="status-options"></div>
+        </article>
+        <article class="card">
+          <h3>Triggers and today’s note</h3>
+          <div id="triggerChips" class="chips selectable"></div>
+          <textarea id="statusNote" placeholder="Add a note, e.g. nervous at gate, reactive to skateboard, tired today..."></textarea>
+          <button data-action="saveStatus">Save status</button>
+        </article>
+      </section>
+
+      <section id="mates" class="screen" data-title="Best Mate Alert">
+        <div class="phone-label">PAGE 9 — BEST MATE ALERT</div>
+        <div class="page-head"><button data-go="home" class="back">←</button><h2>Best Mate Alert</h2></div>
+        <article class="card best-card">
+          <h3>✨ Luna is here</h3>
+          <p>Find compatible playmates for Mr Gruff. Alerts only show for approved friends and stop when incognito is on.</p>
+        </article>
+        <article class="card">
+          <h3>Mr Gruff is looking for dogs that are:</h3>
+          <div class="chips"><span>Similar size</span><span>Desexed</span><span>Calm energy</span><span>Vaccinated</span><span>Respects needs space</span></div>
+        </article>
+        <div id="mateList"></div>
+      </section>
+
+      <section id="alerts" class="screen" data-title="Safety & Alerts">
+        <div class="phone-label">PAGE 10 — SAFETY & ALERTS</div>
+        <div class="page-head"><button data-go="home" class="back">←</button><h2>Safety & Alerts</h2></div>
+        <article class="card">
+          <h3>Active Alerts</h3>
+          <div id="alertList"></div>
+        </article>
+        <article class="card">
+          <h3>Guided Help</h3>
+          <button data-go="incident">Report incident</button>
+          <button data-go="lostFound" class="secondary">Lost & Found</button>
+          <button data-go="map" class="secondary">Open Australia map</button>
+        </article>
+        <article class="sos"><div><b>Emergency — 000</b><span>Use only in a real emergency.</span></div><button data-action="openSos">Hold + Slide</button></article>
+      </section>
+
+      <section id="map" class="screen" data-title="Australia Map">
+        <div class="phone-label">AUSTRALIA MAP / NEARBY</div>
+        <div class="page-head"><button data-go="alerts" class="back">←</button><h2>Australia Map</h2></div>
+        <article class="card">
+          <h3>Map decision layer</h3>
+          <div class="map-card">
+            <b>Gold Coast → Sydney</b>
+            <span>Dog parks, dog beaches, vets, caravan parks, fuel and rest stops shown as safe-route layers.</span>
+          </div>
+          <p>This static version stores route choices locally. Production live maps need a maps API key.</p>
+        </article>
+        <div id="mapPlaceList" class="place-list"></div>
+      </section>
+
+      <section id="incident" class="screen" data-title="Incident Report">
+        <div class="phone-label">INCIDENT REPORT</div>
+        <div class="page-head"><button data-go="alerts" class="back">←</button><h2>Report Incident</h2></div>
+        <form id="incidentForm" class="card form-card">
+          <label>Level
+            <select name="level">
+              <option value="yellow">Yellow — monitor</option>
+              <option value="amber">Amber — caution / give space</option>
+              <option value="red">Red — leave / urgent</option>
+              <option value="black">Black — official emergency</option>
+            </select>
+          </label>
+          <label>Category
+            <select name="category">
+              <option>Dog behaviour</option><option>Park hazard</option><option>Beach / tide concern</option><option>Lost dog</option><option>Unattended dog</option><option>Owner distracted</option><option>Other</option>
+            </select>
+          </label>
+          <label>Location <input name="location" value="Witherside Park"></label>
+          <label>Notes <textarea name="notes" placeholder="What happened?"></textarea></label>
+          <button type="submit">Save report</button>
+        </form>
+        <article class="card"><h3>Reports saved on this device</h3><div id="reportsList"></div></article>
+      </section>
+
+      <section id="lostFound" class="screen" data-title="Lost & Found">
+        <div class="phone-label">LOST & FOUND</div>
+        <div class="page-head"><button data-go="alerts" class="back">←</button><h2>Lost & Found</h2></div>
+        <article class="card">
+          <h3>Mr Gruff emergency profile</h3>
+          <p>Microchip, allergies, medication, vet and emergency contacts stay restricted unless Tracey chooses to share them.</p>
+          <div class="button-row">
+            <button data-action="shareLostDog">Create lost dog alert</button>
+            <button data-action="foundDog" class="secondary">Report found dog</button>
+          </div>
+        </article>
+        <div id="lostFoundLog"></div>
+      </section>
+
+      <section id="settings" class="screen" data-title="Settings">
+        <div class="phone-label">SETTINGS / PRIVACY / LIVE SETUP</div>
+        <div class="page-head"><button data-go="home" class="back">←</button><h2>Settings & Live Setup</h2></div>
+        <article class="card">
+          <h3>Business setup</h3>
+          <div class="record"><span>Business name</span><b>GENEVIEVE App™</b></div>
+          <div class="record"><span>ABN</span><b>Add exact ABN</b></div>
+          <div class="record"><span>Mode</span><b>Static live-ready deployment</b></div>
+          <p>Public launch payments, accounts and push notifications need external services connected.</p>
+        </article>
+        <article class="card brand-assets-card">
+          <h3>Official app marks</h3>
+          <div class="brand-marks">
+            <figure>
+              <img src="./assets/ga-logo-512.png" alt="GA logo">
+              <figcaption>Primary GENEVIEVE App™ GA logo</figcaption>
+            </figure>
+            <figure>
+              <img src="./assets/genevieve-roots-512.png" alt="Genevieve roots and infinity logo">
+              <figcaption>Supporting roots / infinity mark</figcaption>
+            </figure>
+          </div>
+        </article>
+        <article class="card form-card">
+          <h3>Payment & backend placeholders</h3>
+          <label>Stripe Free Plan Link <input id="stripeFree" placeholder="Paste Stripe Payment Link"></label>
+          <label>Stripe Premium Link <input id="stripePremium" placeholder="Paste Stripe Payment Link"></label>
+          <label>Backend URL <input id="backendUrl" placeholder="Supabase / Firebase / API URL"></label>
+          <button data-action="saveLiveSetup">Save live setup</button>
+        </article>
+        <article class="card">
+          <h3>Privacy & Legal</h3>
+          <div class="link-grid">
+            <a href="./privacy.html">
+              <span class="link-icon" aria-hidden="true">🔒</span>
+              <span class="link-copy"><b>Privacy Policy</b><small>Information and consent</small></span>
+            </a>
+            <a href="./terms.html">
+              <span class="link-icon" aria-hidden="true">📄</span>
+              <span class="link-copy"><b>Terms</b><small>Conditions of use</small></span>
+            </a>
+            <a href="./safety.html">
+              <span class="link-icon" aria-hidden="true">🛡️</span>
+              <span class="link-copy"><b>Safety</b><small>Guidance and emergencies</small></span>
+            </a>
+            <a href="./community.html">
+              <span class="link-icon" aria-hidden="true">🐾</span>
+              <span class="link-copy"><b>Community Guidelines</b><small>Respectful park use</small></span>
+            </a>
+          </div>
+          <div class="button-row">
+            <button data-action="exportData">Export local app data</button>
+            <button data-action="clearData" class="danger-btn">Delete local demo data</button>
+          </div>
+        </article>
+        <article class="card">
+          <h3>Audit Trail</h3>
+          <div id="auditList"></div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button data-go="home" class="active"><span class="nav-icon-wrap"><img src="./assets/nav-home.svg" alt="" class="nav-icon-img"></span><span>Home</span></button>
+      <button data-go="search"><span class="nav-icon-wrap"><img src="./assets/nav-parks.svg" alt="" class="nav-icon-img"></span><span>Parks</span></button>
+      <button data-go="trip"><span class="nav-icon-wrap"><img src="./assets/nav-trip.svg" alt="" class="nav-icon-img"></span><span>Trips</span></button>
+      <button data-go="alerts"><span class="nav-icon-wrap"><img src="./assets/nav-alerts.svg" alt="" class="nav-icon-img"></span><span>Alerts</span></button>
+      <button data-go="profile"><span class="nav-icon-wrap"><img src="./assets/nav-profile.svg" alt="" class="nav-icon-img"></span><span>Profile</span></button>
+      <button data-go="settings"><span class="nav-icon-wrap"><img src="./assets/nav-more.svg" alt="" class="nav-icon-img"></span><span>More</span></button>
+    </nav>
+  </div>
+
+  <dialog id="sosDialog">
+    <h2>Emergency — 000</h2>
+    <p>This needs a deliberate press and hold so it cannot be triggered by accident. In immediate danger, call 000 directly and move to safety.</p>
+    <button id="holdSos">Press and hold 3 seconds</button>
+    <button id="closeSos" class="secondary">Cancel</button>
+  </dialog>
+
+  <script src="./app.js"></script>
+</body>
+</html>

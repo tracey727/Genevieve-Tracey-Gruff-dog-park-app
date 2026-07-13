@@ -1,0 +1,56 @@
+GENEVIEVE APP™ — 404 RECOVERY PACKAGE
+======================================
+
+This repository supports TWO publishing methods.
+Use METHOD 1 first. METHOD 2 is the fallback if GitHub Actions is unavailable.
+
+BEFORE ANYTHING ELSE
+--------------------
+Extract this ZIP. Upload the CONTENTS, not the unopened ZIP.
+At the top level of the GitHub repository you must see:
+
+  index.html
+  app.js
+  styles.css
+  assets/
+  docs/
+  .github/workflows/deploy-pages.yml
+
+METHOD 1 — GITHUB ACTIONS
+-------------------------
+1. Repository > Settings > Pages.
+2. Under Build and deployment, set Source to GitHub Actions.
+3. Repository > Actions.
+4. Open "Deploy GENEVIEVE App to GitHub Pages".
+5. Press "Run workflow" if it did not start automatically.
+6. Wait for the job "Build and deploy site" to show a green tick.
+7. Open the exact URL shown inside the deployment job or Settings > Pages.
+
+IMPORTANT URL FORMAT
+--------------------
+For a normal project repository, the site is usually:
+https://YOUR-GITHUB-USERNAME.github.io/REPOSITORY-NAME/
+
+Do not leave off /REPOSITORY-NAME/ unless the repository itself is named:
+YOUR-GITHUB-USERNAME.github.io
+
+METHOD 2 — DEPLOY FROM /docs
+----------------------------
+Use this only if Method 1 does not publish.
+1. Repository > Settings > Pages.
+2. Source: Deploy from a branch.
+3. Branch: your default branch, usually main.
+4. Folder: /docs.
+5. Press Save.
+6. Wait for GitHub to display the published site address.
+
+IF A 404 STILL APPEARS
+----------------------
+- Confirm the Actions job is green, not red or grey.
+- Confirm index.html is visible at the repository top level.
+- Confirm the URL includes the repository name.
+- Temporarily remove any Custom domain entry in Settings > Pages.
+- A private repository requires a GitHub plan that supports private Pages.
+
+This build preserves Tracey's photos, Mr Gruff's photos, both supplied logos,
+the white bottom navigation icons, and all legal pages.

@@ -1,0 +1,28 @@
+{
+  "id": "./",
+  "name": "GENEVIEVE App™ Dog Park",
+  "short_name": "GENEVIEVE App™",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8fff8",
+  "theme_color": "#103f31",
+  "icons": [
+    {
+      "src": "./assets/ga-logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/ga-logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/ga-logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+GENEVIEVE APP™ — 404 RECOVERY BUILD REPORT
+
+Verified in this package:
+- index.html at repository root
+- current official GitHub Pages workflow structure
+- actions/checkout@v4
+- actions/configure-pages@v5
+- actions/upload-pages-artifact@v4
+- actions/deploy-pages@v4
+- workflow triggers on the repository default branch regardless of its name
+- /docs mirror for branch-deployment fallback
+- relative links suitable for project Pages URLs
+- .nojekyll included
+- GA logo and roots/infinity logo preserved
+- Tracey avatar/profile images preserved
+- Mr Gruff avatar/profile images preserved
+- white bottom navigation icons preserved
+- Privacy, Terms, Safety and Community pages preserved

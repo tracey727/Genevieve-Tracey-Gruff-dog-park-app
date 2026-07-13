@@ -1,0 +1,248 @@
+{
+  "owner": {
+    "name": "Tracey Kennedy",
+    "displayName": "Tracey",
+    "photo": "./assets/tracey-avatar.jpg",
+    "photoLarge": "./assets/tracey-profile.jpg",
+    "email": "",
+    "safetyShare": false,
+    "incognito": false
+  },
+  "dog": {
+    "name": "Mr Gruff",
+    "dob": "08/08/2021",
+    "weight": "20 kg",
+    "size": "Medium",
+    "sex": "Male",
+    "desexed": "Yes",
+    "microchip": "Yes \u2014 hidden",
+    "vaccination": "Up to date",
+    "status": "Needs Space",
+    "statusLevel": "amber",
+    "photo": "./assets/mr-gruff-avatar.jpg",
+    "photoLarge": "./assets/mr-gruff-profile.jpg",
+    "medical": {
+      "allergies": "Add allergy details",
+      "medication": "Add medication details",
+      "conditions": "Sensitive skin / add condition details",
+      "diet": "Sensitive food / add diet notes"
+    },
+    "triggers": [
+      "prams",
+      "skateboards",
+      "wheelchairs",
+      "mobility aids",
+      "bikes",
+      "children crowding",
+      "dogs rushing in",
+      "noisy dogs"
+    ],
+    "likes": [
+      "low crowd",
+      "shade",
+      "water",
+      "calm entry",
+      "space to move"
+    ],
+    "notes": "Needs extra room around unknown dogs. On lead and in training when conditions are busy."
+  },
+  "parks": [
+    {
+      "id": "witherside",
+      "name": "Witherside Park",
+      "type": "Dog Park",
+      "area": "3.2 ha",
+      "distance": "2.1 km",
+      "drive": "5 min",
+      "capacity": 25,
+      "dogsNow": 8,
+      "crowd": "Low",
+      "lighting": "Good",
+      "water": true,
+      "shade": true,
+      "fenced": true,
+      "dogBeach": false,
+      "risk": 32,
+      "score": 86,
+      "image": "./assets/park.svg",
+      "alerts": [
+        "Earlier reactive dog report near north gate",
+        "Gate area can crowd at 5pm"
+      ],
+      "amenities": [
+        "Accessibility",
+        "Agility area",
+        "Fenced",
+        "Parking",
+        "Shade",
+        "Small dog area",
+        "Toilets",
+        "Water bowls"
+      ],
+      "councilNotice": "Check local council signs before entering."
+    },
+    {
+      "id": "riverside",
+      "name": "Riverside Dog Park",
+      "type": "Dog Park",
+      "area": "2.4 ha",
+      "distance": "3.4 km",
+      "drive": "8 min",
+      "capacity": 20,
+      "dogsNow": 14,
+      "crowd": "Medium",
+      "lighting": "Fair",
+      "water": true,
+      "shade": true,
+      "fenced": true,
+      "dogBeach": false,
+      "risk": 58,
+      "score": 64,
+      "image": "./assets/park.svg",
+      "alerts": [
+        "Crowded gate reported 15 min ago"
+      ],
+      "amenities": [
+        "Fenced",
+        "Parking",
+        "Shade",
+        "Toilets",
+        "Water bowls"
+      ],
+      "councilNotice": "Use caution around main gate."
+    },
+    {
+      "id": "greenway",
+      "name": "Greenway Reserve",
+      "type": "Dog Park",
+      "area": "1.8 ha",
+      "distance": "5.6 km",
+      "drive": "11 min",
+      "capacity": 18,
+      "dogsNow": 17,
+      "crowd": "High",
+      "lighting": "Low",
+      "water": false,
+      "shade": false,
+      "fenced": true,
+      "dogBeach": false,
+      "risk": 82,
+      "score": 28,
+      "image": "./assets/park.svg",
+      "alerts": [
+        "Reactive dog reported",
+        "Only 1 space left",
+        "Low shade"
+      ],
+      "amenities": [
+        "Fenced",
+        "Parking"
+      ],
+      "councilNotice": "Choose a calmer alternative for needs-space dogs."
+    },
+    {
+      "id": "wagginbeach",
+      "name": "Waggin\u2019 Beach",
+      "type": "Dog Beach",
+      "area": "1.6 km beach",
+      "distance": "6.2 km",
+      "drive": "12 min",
+      "capacity": 30,
+      "dogsNow": 15,
+      "crowd": "Low",
+      "lighting": "Daylight only",
+      "water": true,
+      "shade": false,
+      "fenced": false,
+      "dogBeach": true,
+      "risk": 38,
+      "score": 82,
+      "image": "./assets/beach.svg",
+      "alerts": [
+        "Check tide and council access times",
+        "Bring water and shade"
+      ],
+      "amenities": [
+        "Beach access",
+        "Dog beach",
+        "Parking",
+        "Water nearby"
+      ],
+      "councilNotice": "Dog beach access times may change. Check signs at beach entry."
+    },
+    {
+      "id": "caravan",
+      "name": "Pet Friendly Caravan Stop",
+      "type": "Trip Stop",
+      "area": "Large rest area",
+      "distance": "18 km",
+      "drive": "22 min",
+      "capacity": 40,
+      "dogsNow": 9,
+      "crowd": "Low",
+      "lighting": "Good",
+      "water": true,
+      "shade": true,
+      "fenced": false,
+      "dogBeach": false,
+      "risk": 42,
+      "score": 76,
+      "image": "./assets/park.svg",
+      "alerts": [
+        "Use lead around vehicles",
+        "Rest stop not fully fenced"
+      ],
+      "amenities": [
+        "Caravan parking",
+        "Fuel nearby",
+        "Pet friendly caf\u00e9",
+        "Toilets",
+        "Vets nearby",
+        "Water"
+      ],
+      "councilNotice": "Keep dogs on lead around traffic and other travellers."
+    }
+  ],
+  "mates": [
+    {
+      "name": "Luna",
+      "breed": "Labrador",
+      "weight": "22 kg",
+      "status": "Low crowd at park",
+      "distance": "1.2 km",
+      "compatibility": 89
+    },
+    {
+      "name": "Buddy",
+      "breed": "Border Collie",
+      "weight": "18 kg",
+      "status": "Calm energy",
+      "distance": "2.2 km",
+      "compatibility": 74
+    }
+  ],
+  "tripNeeds": [
+    "Caravan Parks",
+    "Dog Beaches",
+    "Dog Friendly Cafes",
+    "Dog Friendly Hotels",
+    "Dog Parks",
+    "Emergency Vets",
+    "Fuel Stops",
+    "Low Crowd Stops",
+    "Pet Friendly Restaurants",
+    "Rest Stops",
+    "Road Hazard Check",
+    "Shade",
+    "Toilets",
+    "Vets",
+    "Water"
+  ],
+  "settings": {
+    "abn": "Add Tracey\u2019s ABN",
+    "businessName": "GENEVIEVE App\u2122",
+    "stripeFree": "",
+    "stripePremium": "",
+    "backendUrl": ""
+  }
+}
