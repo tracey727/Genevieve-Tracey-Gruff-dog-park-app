@@ -1,0 +1,5 @@
+product_id,display_name,target_price,currency,period,introductory_trial,entitlement
+genevieve_dogpark_standard_monthly,Standard Monthly,14.99,AUD,1 month,30 days,premium
+genevieve_dogpark_concession_monthly,Concession Monthly,10.49,AUD,1 month,30 days,premium
+genevieve_dogpark_standard_annual,Standard Annual,119.99,AUD,1 year,30 days,premium
+genevieve_dogpark_concession_annual,Concession Annual,83.00,AUD,1 year,30 days,premium

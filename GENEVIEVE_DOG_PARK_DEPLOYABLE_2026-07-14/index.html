@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#06391f">
+  <meta name="description" content="GENEVIEVE App™ Dog Park helps owners plan visits, check park conditions, manage dog profiles and review behavioural compatibility decision support.">
+  <title>GENEVIEVE App™ Dog Park</title>
+  <link rel="icon" href="./assets/app-icon-192.png">
+  <link rel="apple-touch-icon" href="./assets/app-icon-192.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./config.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-row">
+        <img src="./assets/app-icon-192.png" alt="Dog Park app utility icon" class="app-icon">
+        <div>
+          <p class="eyebrow">DOG PARK · AUSTRALIA</p>
+          <h1>GENEVIEVE App<span class="tm">™</span></h1>
+          <p>Compatibility, park planning, check-ins and safety decision support.</p>
+        </div>
+      </div>
+      <div id="modePill" class="status-pill">Loading deployment mode…</div>
+    </header>
+
+    <nav class="tabs" aria-label="Main navigation">
+      <button class="active" data-tab="today">Today</button>
+      <button data-tab="dogs">Dogs</button>
+      <button data-tab="parks">Parks</button>
+      <button data-tab="compatibility">Compatibility</button>
+      <button data-tab="affinity">Best Mates</button>
+      <button data-tab="checkin">Check In</button>
+      <button data-tab="membership">Membership</button>
+      <button data-tab="settings">Settings</button>
+      <button data-tab="launch">Launch Check</button>
+    </nav>
+
+    <main id="main">
+      <section id="today" class="screen active">
+        <section class="hero card">
+          <p class="eyebrow">TODAY’S QUESTION</p>
+          <h2>Is this a suitable park visit for my dog right now?</h2>
+          <div id="todayAnswer" class="answer amber"><b>Check needed.</b><br>Select a dog and park, then run the compatibility check.</div>
+          <div class="button-row">
+            <button data-go="compatibility" class="primary">Check compatibility</button>
+            <button data-go="parks" class="secondary">Find a park</button>
+          </div>
+        </section>
+        <section class="grid two">
+          <article class="card field-panel">
+            <h2>Today’s snapshot</h2>
+            <div id="snapshot"></div>
+          </article>
+          <article class="card field-panel">
+            <h2>Patent implementation evidence</h2>
+            <p>The working system records behavioural vectors, environmental context, predictions, outcomes and affinity events on this device.</p>
+            <button id="exportEvidence">Export dated evidence</button>
+            <p id="evidenceCount" class="muted"></p>
+          </article>
+        </section>
+        <section class="card warning-card">
+          <h2>Important safety boundary</h2>
+          <p>GENEVIEVE App™ provides decision support only. It cannot guarantee behaviour, compatibility, park safety or compliance. Owners remain responsible for direct supervision, effective control and checking current council signs and official information.</p>
+        </section>
+      </section>
+
+      <section id="dogs" class="screen">
+        <section class="hero card"><p class="eyebrow">DOG PROFILES</p><h2>Keep each dog’s current needs clear</h2><p>Profile values use a 0–10 scale and remain editable by the owner.</p></section>
+        <section class="grid two">
+          <form id="dogForm" class="card">
+            <h2>Add or update a dog</h2>
+            <input type="hidden" name="id">
+            <label>Name <input name="name" required maxlength="60"></label>
+            <label>Date of birth <input name="dob" type="date"></label>
+            <label>Breed / description <input name="breed" maxlength="80"></label>
+            <div class="range-grid">
+              <label>Sociability <input name="sociability" type="range" min="0" max="10" value="7"><output>7</output></label>
+              <label>Reactivity <input name="reactivity" type="range" min="0" max="10" value="3"><output>3</output></label>
+              <label>Energy <input name="energy" type="range" min="0" max="10" value="6"><output>6</output></label>
+              <label>Play intensity <input name="playIntensity" type="range" min="0" max="10" value="6"><output>6</output></label>
+              <label>Tolerance <input name="tolerance" type="range" min="0" max="10" value="7"><output>7</output></label>
+              <label>Resource sharing <input name="resourceSharing" type="range" min="0" max="10" value="6"><output>6</output></label>
+              <label>Vulnerability <input name="vulnerability" type="range" min="0" max="10" value="3"><output>3</output></label>
+            </div>
+            <label>Triggers / needs <textarea name="notes" maxlength="600" placeholder="Examples: needs space at gates, dislikes skateboards, calm introductions"></textarea></label>
+            <div class="button-row"><button type="submit" class="primary">Save dog</button><button type="reset" class="secondary">Clear form</button></div>
+          </form>
+          <div class="card"><h2>Saved dogs</h2><div id="dogList"></div></div>
+        </section>
+      </section>
+
+      <section id="parks" class="screen">
+        <section class="hero card"><p class="eyebrow">PARK SEARCH</p><h2>Choose the environment before assessing compatibility</h2><p>Built-in parks are demonstration records and must be verified against current council information before commercial claims are made.</p></section>
+        <section class="card filter-bar">
+          <label>Search <input id="parkSearch" placeholder="Suburb, beach, fenced, quiet"></label>
+          <label>Need
+            <select id="parkNeed"><option value="">Any</option><option value="fenced">Fenced</option><option value="quiet">Quiet</option><option value="water">Water</option><option value="shade">Shade</option><option value="accessible">Accessible</option><option value="beach">Beach</option></select>
+          </label>
+        </section>
+        <div id="parkList" class="grid two"></div>
+      </section>
+
+      <section id="compatibility" class="screen">
+        <section class="hero card">
+          <p class="eyebrow">BEHAVIOURAL COMPATIBILITY</p>
+          <h2>Check two dogs or find a prospective companion</h2>
+          <p>Predictions combine behavioural-vector distance with current environmental pressure. They are not a guarantee.</p>
+        </section>
+        <section class="grid two">
+          <form id="compatibilityForm" class="card field-panel">
+            <h2>Check two dogs</h2>
+            <label>First dog <select name="dogA" required></select></label>
+            <label>Second dog <select name="dogB" required></select></label>
+            <label>Park <select name="park" required></select></label>
+            <label>Current dogs in park <input name="population" type="number" min="0" max="300" value="10"></label>
+            <label>Observed group energy <select name="groupEnergy"><option value="3">Calm</option><option value="5" selected>Mixed</option><option value="8">High energy</option></select></label>
+            <button class="primary" type="submit">Compute compatibility</button>
+          </form>
+          <div class="card"><h2>Result</h2><div id="compatibilityResult" class="answer amber">Choose two different dogs.</div></div>
+        </section>
+        <section class="grid two">
+          <form id="recommendationForm" class="card">
+            <h2>Prospective companion recommendations</h2>
+            <label>Dog <select name="dog" required></select></label>
+            <label>Park <select name="park" required></select></label>
+            <button type="submit">Rank companions</button>
+          </form>
+          <div class="card"><h2>Ranked matches</h2><div id="recommendationList"></div></div>
+        </section>
+        <section class="card">
+          <h2>Record the observed outcome</h2>
+          <form id="outcomeForm" class="inline-form">
+            <label>Prediction <select name="prediction"></select></label>
+            <label>Outcome <select name="outcome"><option value="positive">Positive</option><option value="neutral">Neutral</option><option value="stressful">Stressful</option><option value="conflict">Conflict / unsafe</option></select></label>
+            <label>Private note <input name="note" maxlength="300"></label>
+            <button type="submit">Save outcome</button>
+          </form>
+          <p class="muted">Outcome feedback creates a dated learning observation. It does not permanently label a dog and remains owner-reviewable.</p>
+        </section>
+      </section>
+
+      <section id="affinity" class="screen">
+        <section class="hero card"><p class="eyebrow">SOCIAL AFFINITY GRAPH</p><h2>Best mates and preferred park alerts</h2><p>Create mutual or one-way relationships, select a preferred park and keep location visibility under owner control.</p></section>
+        <section class="grid two">
+          <form id="affinityForm" class="card field-panel">
+            <h2>Create relationship</h2>
+            <label>Your dog <select name="fromDog"></select></label>
+            <label>Linked dog <select name="toDog"></select></label>
+            <label>Mode <select name="mode"><option value="mutual">Mutual — reciprocal consent required</option><option value="one_way">One-way — subject to privacy settings</option></select></label>
+            <label>Preferred park <select name="park"></select></label>
+            <button type="submit">Create best-mate link</button>
+          </form>
+          <div class="card"><h2>Saved relationships</h2><div id="affinityList"></div></div>
+        </section>
+        <section class="card">
+          <h2>Location-specific alert check</h2>
+          <form id="alertCheckForm" class="inline-form"><label>Park <select name="park"></select></label><button type="submit">Check visible best mates</button></form>
+          <div id="affinityAlerts"></div>
+        </section>
+      </section>
+
+      <section id="checkin" class="screen">
+        <section class="hero card"><p class="eyebrow">LIVE PRESENCE</p><h2>Check a dog in or out</h2><p>This deployment stores check-ins locally. When the supplied backend schema and credentials are connected, the same records can become multi-user.</p></section>
+        <section class="grid two">
+          <form id="checkinForm" class="card">
+            <label>Dog <select name="dog"></select></label>
+            <label>Park <select name="park"></select></label>
+            <label class="toggle"><input type="checkbox" name="incognito"> Incognito — do not show this presence to affinity alerts</label>
+            <label class="toggle"><input type="checkbox" name="needsSpace"> Needs space today</label>
+            <button type="submit" class="primary">Check in</button>
+          </form>
+          <div class="card"><h2>Current local check-ins</h2><div id="checkinList"></div></div>
+        </section>
+      </section>
+
+      <section id="membership" class="screen">
+        <section class="hero card">
+          <p class="eyebrow">SUBSCRIPTIONS</p>
+          <h2>One membership group, four approved products</h2>
+          <p id="billingChannelMessage"></p>
+        </section>
+        <section class="card disclosure">
+          <b>Trial and renewal disclosure</b>
+          <p>30 days free for eligible new subscribers. Then the selected price is charged every month or year and the subscription automatically renews until cancelled. Cancel before the trial ends to avoid the first charge. Deleting the app does not cancel the subscription. Manage or cancel through the same store or payment provider used to subscribe.</p>
+          <p>Nothing in these terms excludes rights that cannot lawfully be excluded under the Australian Consumer Law.</p>
+        </section>
+        <div id="planList" class="pricing-grid"></div>
+        <section class="card"><div class="legal-links"><a href="./legal/subscription-terms.html">Subscription Terms</a><a href="./legal/refund-cancellation-policy.html">Refund &amp; Cancellation</a><a href="./legal/terms-of-use.html">Terms of Use</a><a href="./legal/privacy-policy.html">Privacy Policy</a></div><button id="restorePurchases" class="secondary">Restore store purchases</button><div id="billingResult" class="answer amber">No purchase action yet.</div></section>
+      </section>
+
+      <section id="settings" class="screen">
+        <section class="hero card"><p class="eyebrow">PRIVACY CONTROLS</p><h2>Choose the level of participation</h2><p>Location and social features are separate controls. The app does not require precise location for its local demonstration functions.</p></section>
+        <section class="grid two">
+          <form id="privacyForm" class="card field-panel"><h2>Owner controls</h2><div id="privacyControls"></div><button type="submit">Save privacy settings</button></form>
+          <div class="card"><h2>Your data</h2><button id="exportAllData">Export my local data</button><button id="deleteAllData" class="danger">Delete all local app data</button><p class="muted">Deleting local data does not cancel Apple, Google Play or Stripe subscriptions.</p><div class="legal-links"><a href="./legal/account-deletion.html">Account deletion instructions</a><a href="./legal/privacy-policy.html">Privacy Policy</a><a href="./legal/community-guidelines.html">Community Guidelines</a></div></div>
+        </section>
+      </section>
+
+      <section id="launch" class="screen">
+        <section class="hero card"><p class="eyebrow">DEPLOYMENT GATE</p><h2>Check the public launch configuration</h2><p>The app runs without a build command on GitHub Pages and Vercel. This checker does not pretend that missing accounts, product records or legal facts are complete.</p></section>
+        <section class="card"><button id="runLaunchCheck" class="primary">Run launch check</button><div id="launchResults"></div></section>
+        <section class="grid two">
+          <article class="card"><h2>Public legal pages</h2><div class="legal-links stacked"><a href="./legal/">Legal centre</a><a href="./legal/privacy-policy.html">Privacy Policy</a><a href="./legal/terms-of-use.html">Terms of Use</a><a href="./legal/safety-disclaimer.html">Safety Disclaimer</a><a href="./legal/refund-cancellation-policy.html">Refund &amp; Cancellation</a><a href="./legal/account-deletion.html">Account Deletion</a><a href="./legal/community-guidelines.html">Community Guidelines</a></div></article>
+          <article class="card"><h2>Build facts</h2><ul class="checklist"><li>Root index.html</li><li>No npm or build step</li><li>Vercel configuration included</li><li>GitHub Pages workflow included</li><li>PWA manifest and service worker</li><li>404 page included</li><li>Channel-safe payment router</li><li>Store product records and wording included</li></ul></article>
+        </section>
+      </section>
+    </main>
+
+    <footer>
+      <p>© 2026 Tracey Ann Kennedy. GENEVIEVE App™. Trade mark application stated as pending.</p>
+      <p><a href="./legal/">Legal</a> · <a href="./legal/privacy-policy.html">Privacy</a> · <a href="./legal/account-deletion.html">Delete account</a></p>
+    </footer>
+  </div>
+  <script src="./native-billing-bridge.js"></script>
+  <script src="./backend.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

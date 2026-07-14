@@ -1,0 +1,22 @@
+{
+  "name": "GENEVIEVE App\u2122 Dog Park",
+  "short_name": "GENEVIEVE Dog Park",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#dcefe4",
+  "theme_color": "#06391f",
+  "description": "Dog park planning, behavioural compatibility decision support and owner-controlled social alerts.",
+  "icons": [
+    {
+      "src": "./assets/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

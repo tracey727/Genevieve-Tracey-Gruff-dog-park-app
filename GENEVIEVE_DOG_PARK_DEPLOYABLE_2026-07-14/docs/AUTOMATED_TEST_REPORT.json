@@ -1,0 +1,30 @@
+{
+  "testedAt": "2026-07-14",
+  "method": "Node.js syntax checks, JSON validation, local HTTP response checks, jsdom functional interaction test and static-link/file validation.",
+  "passed": [
+    "Root index loads and initial Today screen activates",
+    "Compatibility calculation returns a scored result",
+    "Dog check-in is stored and rendered",
+    "One-way affinity link is created and preferred-park alert resolves",
+    "All four unmapped web payment buttons remain disabled",
+    "Launch checker blocks missing public support and payment configuration",
+    "JavaScript files pass node --check",
+    "manifest.webmanifest and vercel.json are valid JSON",
+    "All local HTML/CSS/JS/image/legal links point to files present in the package"
+  ],
+  "intentionalBlocks": [
+    "Stripe Payment Links are blank until each supplied link is verified and mapped to the correct recurring product.",
+    "Apple and Google store billing require native wrappers and secure server-side transaction verification.",
+    "Supabase credentials and authentication are not configured.",
+    "Public support email and verified website/domain are not configured.",
+    "Legal pages remain drafts requiring final facts and professional review.",
+    "Built-in park records are labelled demonstration records pending council verification."
+  ],
+  "functionalTestOutput": {
+    "compatibility": "Mr Gruff + Molly demonstration returned 92.9% in the controlled local test.",
+    "checkin": true,
+    "affinityAlert": "Molly demonstration is visible at the preferred park.",
+    "disabledUnmappedPaymentButtons": 4,
+    "consoleOrRuntimeErrors": []
+  }
+}
