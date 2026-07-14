@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#06391f">
+  <meta name="description" content="GENEVIEVE App™ Dog Park helps owners plan the whole park journey, manage dog profiles, assess heat and interaction risk, supervise visits, report hazards and access owner or park-operator tools.">
+  <title>GENEVIEVE App™ Dog Park</title>
+  <link rel="icon" href="./assets/app-icon-192.png">
+  <link rel="apple-touch-icon" href="./assets/app-icon-192.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./config.js"></script>
+  <script src="./logic.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand-row">
+      <img src="./assets/app-icon-192.png" alt="Dog Park utility icon" class="app-icon">
+      <div>
+        <p class="eyebrow">DOG PARK · AUSTRALIA</p>
+        <h1>GENEVIEVE App<span class="tm">™</span></h1>
+        <p>The whole journey: plan, travel, enter, supervise, interact and leave safely.</p>
+      </div>
+    </div>
+    <div class="header-tools">
+      <label class="role-label">View as
+        <select id="roleSelect" aria-label="Choose app role">
+          <option value="owner">Dog Owner</option>
+          <option value="visitor">Park Visitor</option>
+          <option value="superintendent">Park Superintendent</option>
+          <option value="responder">Authorised Responder</option>
+          <option value="admin">System Administrator</option>
+        </select>
+      </label>
+      <div id="modePill" class="status-pill">Loading deployment mode…</div>
+    </div>
+  </header>
+
+  <nav class="main-tabs" aria-label="Main navigation">
+    <button class="active" data-go="today" data-main="today">Today</button>
+    <button data-go="before-leaving" data-main="journey">Journey</button>
+    <button data-go="park-search" data-main="parks">Parks</button>
+    <button data-go="dog-list" data-main="dogs">Dogs</button>
+    <button data-go="more" data-main="more">More</button>
+  </nav>
+
+  <main id="main">
+    <section id="today" class="screen active" data-group="today">
+      <section class="hero card">
+        <p class="eyebrow">TODAY’S QUESTION</p>
+        <h2>Is this a suitable park visit for my dog right now?</h2>
+        <div id="todayAnswer" class="answer yellow"><b>Checks needed.</b><br>Choose a dog and park, then run the heat and interaction checks.</div>
+        <div class="button-row">
+          <button data-go="before-leaving" class="primary">Plan the whole visit</button>
+          <button data-go="heat-hazards">Check heat and hazards</button>
+          <button data-go="compatibility">Check interaction risk</button>
+        </div>
+      </section>
+      <section class="risk-scale card" aria-label="GENEVIEVE risk scale">
+        <h2>One consistent GENEVIEVE risk scale</h2>
+        <div class="risk-scale-bar"><span class="green">0–24<br><b>Green</b></span><span class="yellow">25–49<br><b>Yellow</b></span><span class="amber">50–74<br><b>Amber</b></span><span class="red">75–100<br><b>Red</b></span></div>
+        <p class="muted">Every risk percentage runs from lower risk at 0 toward highest risk at 100.</p>
+      </section>
+      <section class="grid two">
+        <article class="card field-panel"><h2>Today’s live snapshot</h2><div id="snapshot"></div></article>
+        <article class="card field-panel"><h2>One-tap status</h2>
+          <label>Dog <select id="quickDogSelect"></select></label>
+          <div class="button-row compact">
+            <button data-quick-status="playful">Playful</button><button data-quick-status="calm">Calm</button><button class="amber" data-quick-status="needs-space">Needs space</button><button class="danger" data-quick-status="reactive">Reactive today</button><button data-quick-status="training">In training</button>
+          </div>
+          <p id="quickStatusMessage" class="muted">Choose a current status when something changes.</p>
+        </article>
+      </section>
+      <section class="grid two">
+        <article class="card"><h2>Owner supervision</h2><div id="todayOwnerDuty"></div><div class="button-row"><button id="todayStillSupervising">I’m still supervising</button><button data-go="owner-duty" class="secondary">Owner Duty tools</button></div></article>
+        <article class="card"><h2>Patent implementation evidence</h2><p>The app records behavioural profiles, environment state, predictions, outcomes, affinity links, heat checks and operational events on this device.</p><button id="exportEvidence">Export dated evidence</button><p id="evidenceCount" class="muted"></p></article>
+      </section>
+      <section class="card warning-card"><h2>Important safety boundary</h2><p>GENEVIEVE App™ provides decision support only. It cannot guarantee animal behaviour, safety, legal compliance, park availability or third-party information. Owners remain responsible for direct supervision, effective control, signs, local rules and professional help.</p></section>
+    </section>
+
+    <section id="before-leaving" class="screen" data-group="journey">
+      <section class="hero card"><p class="eyebrow">JOURNEY · STEP 1</p><h2>Before leaving home</h2><p>Check the dog, weather, park requirements, documents and supplies before the trip begins.</p></section>
+      <section class="grid two">
+        <form id="departureForm" class="card field-panel">
+          <h2>Today’s plan</h2>
+          <label>Dog <select name="dog"></select></label><label>Destination <select name="park"></select></label>
+          <label>Current temperament <select name="temperament"><option value="playful">Happy and playful</option><option value="calm">Calm / gentle play</option><option value="needs-space">Needs space</option><option value="reactive">Reactive today</option><option value="unwell">Tired or not feeling right</option></select></label>
+          <fieldset><legend>Supplies and checks</legend>
+            <label class="toggle"><input type="checkbox" name="lead" checked> Lead packed and fitted</label><label class="toggle"><input type="checkbox" name="bags" checked> Waste bags packed</label><label class="toggle"><input type="checkbox" name="water"> Water packed</label><label class="toggle"><input type="checkbox" name="idTag" checked> ID tag and microchip contact details current</label><label class="toggle"><input type="checkbox" name="vaccination" checked> Vaccination/health requirements checked</label>
+          </fieldset>
+          <button class="primary" type="submit">Check my plan</button>
+        </form>
+        <article class="card"><h2>Ready-to-leave result</h2><div id="departureResult" class="answer yellow"><b>Not checked yet.</b><br>Complete the plan to receive one clear answer.</div><div id="departureNeeds" class="chips"></div><button data-go="route-arrival" class="primary">Continue to route and arrival</button></article>
+      </section>
+      <section class="card"><h2>Owner-only expiry reminders</h2><div id="documentReminders" class="grid three"></div></section>
+    </section>
+
+    <section id="route-arrival" class="screen" data-group="journey">
+      <section class="hero card"><p class="eyebrow">JOURNEY · STEPS 2–6</p><h2>Drive, park, walk to the gate, enter and leave safely</h2></section>
+      <section class="card journey-steps">
+        <div class="step"><span>1</span><div><b>Navigate to the correct parking and entrance</b><p>Show accessible parking, caravan access and the correct dog-area gate.</p></div></div>
+        <div class="step"><span>2</span><div><b>Lead on before the dog leaves the vehicle</b><p>The car park and access path are not automatically off-leash areas.</p></div></div>
+        <div class="step"><span>3</span><div><b>Walk on lead to the signed off-leash boundary</b><p>Keep control around vehicles, children, bikes and other dogs.</p></div></div>
+        <div class="step"><span>4</span><div><b>Assess the gate before release</b><p>Wait back if crowded. Use the double-gate space correctly and confirm recall.</p></div></div>
+        <div class="step"><span>5</span><div><b>Supervise inside the park</b><p>Remain close enough to see, reach and control your dog.</p></div></div>
+        <div class="step"><span>6</span><div><b>Lead on before leaving the boundary</b><p>Check out and return to the vehicle under control.</p></div></div>
+      </section>
+      <section class="grid two">
+        <article class="card"><h2>Selected route</h2><div id="routeCard"></div><div class="button-row"><a id="directionsLink" class="button-link" target="_blank" rel="noopener">Open directions</a><button data-go="checkin">Open gate checklist</button></div></article>
+        <form id="arrivalForm" class="card field-panel"><h2>Arrival checklist</h2><label class="toggle"><input type="checkbox" name="leadFromCar"> Lead fitted before leaving vehicle</label><label class="toggle"><input type="checkbox" name="pathControlled"> Dog controlled on path to gate</label><label class="toggle"><input type="checkbox" name="gateAssessed"> Gate and current park conditions assessed</label><label class="toggle"><input type="checkbox" name="innerGateSecure"> Inner gate secure before release</label><button class="primary" type="submit">Save arrival check</button><div id="arrivalResult" class="answer yellow">Arrival checks not saved.</div></form>
+      </section>
+    </section>
+
+    <section id="checkin" class="screen" data-group="journey">
+      <section class="hero card"><p class="eyebrow">CHECK IN</p><h2>Record arrival, current status, privacy and supervision agreement</h2></section>
+      <section class="grid two">
+        <form id="checkinForm" class="card field-panel">
+          <label>Dog <select name="dog"></select></label><label>Park <select name="park"></select></label><label>Current status <select name="status"><option value="playful">Playful</option><option value="calm">Calm</option><option value="needs-space">Needs space</option><option value="reactive">Reactive today</option><option value="training">In training</option></select></label>
+          <label class="toggle"><input type="checkbox" name="leadAgreement" required> Dog remained on lead from vehicle to signed off-leash entry</label><label class="toggle"><input type="checkbox" name="gateAgreement" required> Gate and current conditions were assessed</label><label class="toggle"><input type="checkbox" name="supervisionAgreement" required> I will remain close enough to supervise and control my dog</label>
+          <label class="toggle"><input type="checkbox" name="needsSpace"> Needs space today</label><label class="toggle"><input type="checkbox" name="onLead"> Remaining on lead inside park</label><label class="toggle"><input type="checkbox" name="training"> In training</label><label class="toggle"><input type="checkbox" name="incognito"> Incognito — hide from best-mate alerts</label>
+          <button class="primary" type="submit">Check in</button>
+        </form>
+        <article class="card"><h2>Current check-ins</h2><div id="checkinList"></div></article>
+      </section>
+    </section>
+
+    <section id="park-search" class="screen" data-group="parks">
+      <section class="hero card"><p class="eyebrow">AUSTRALIA-WIDE PARK SEARCH</p><h2>Find a park or dog beach that suits today’s needs</h2><p>Filters are alphabetical and collapsible to reduce sensory overload.</p></section>
+      <section class="grid two">
+        <form id="parkFilterForm" class="card field-panel"><label>Search location or feature <input name="query" placeholder="Gold Coast, fenced, quiet, beach"></label><details open><summary>Choose needs A–Z</summary><div id="parkNeedControls" class="filter-checks"></div></details><div class="button-row"><button class="primary" type="submit">Find matches</button><button class="secondary" type="reset">Clear for new destination</button></div></form>
+        <article class="card"><h2>Best current matches</h2><div id="parkList"></div></article>
+      </section>
+    </section>
+
+    <section id="park-details" class="screen" data-group="parks">
+      <section class="hero card"><p class="eyebrow">PARK DETAILS</p><h2 id="parkDetailsTitle">Selected park</h2><p>Official details, community reports and dog-specific decision support stay clearly separated.</p></section>
+      <div id="parkDetailsBody"></div>
+    </section>
+
+    <section id="live-park" class="screen" data-group="parks">
+      <section class="hero card"><p class="eyebrow">LIVE ENVIRONMENT STATE</p><h2>What is happening at the selected park now?</h2></section>
+      <div id="liveParkStats" class="grid four"></div>
+      <section class="grid two"><article class="card"><h2>Current behaviour mix</h2><div id="behaviourMix"></div><p class="muted">These are owner-selected current states, not permanent labels.</p></article><article class="card"><h2>Current alerts</h2><div id="liveParkAlerts"></div></article></section>
+    </section>
+
+    <section id="beaches" class="screen" data-group="parks">
+      <section class="hero card"><p class="eyebrow">DOG BEACHES</p><h2>Check boundaries, hours, tide, surf, heat and facilities</h2></section>
+      <section class="grid two"><form id="beachFilterForm" class="card field-panel"><label>Location <input name="location" value="Gold Coast"></label><label>Beach type <select name="type"><option value="">Any</option><option value="off-leash">Off-leash</option><option value="on-leash">On-leash</option><option value="time-restricted">Time restricted</option></select></label><button type="submit">Search beaches</button></form><article class="card"><h2>Beach matches</h2><div id="beachResults"></div></article></section>
+    </section>
+
+    <section id="dog-list" class="screen" data-group="dogs">
+      <section class="hero card"><p class="eyebrow">DOGS</p><h2>Owner-controlled public, behavioural and emergency profiles</h2></section>
+      <section class="grid two"><form id="dogForm" class="card field-panel"><h2>Add or update a dog</h2><input type="hidden" name="id"><label>Name <input name="name" required maxlength="60"></label><label>Date of birth <input name="dob" type="date"></label><label>Breed / description <input name="breed" maxlength="80"></label><label>Life stage <select name="lifeStage"><option value="puppy">Puppy</option><option value="adolescent">Adolescent</option><option value="adult" selected>Adult</option><option value="senior">Senior</option></select></label><label>Public status note <input name="publicNote" maxlength="160" placeholder="Ask owner before approach"></label><label>Triggers / needs <textarea name="notes" maxlength="600"></textarea></label><div class="range-grid"><label>Sociability <input name="sociability" type="range" min="0" max="10" value="7"><output>7</output></label><label>Reactivity <input name="reactivity" type="range" min="0" max="10" value="3"><output>3</output></label><label>Energy <input name="energy" type="range" min="0" max="10" value="6"><output>6</output></label><label>Play intensity <input name="playIntensity" type="range" min="0" max="10" value="6"><output>6</output></label><label>Tolerance <input name="tolerance" type="range" min="0" max="10" value="7"><output>7</output></label><label>Resource sharing <input name="resourceSharing" type="range" min="0" max="10" value="6"><output>6</output></label><label>Vulnerability <input name="vulnerability" type="range" min="0" max="10" value="3"><output>3</output></label></div><details><summary>Restricted emergency information</summary><label>Microchip number <input name="microchip"></label><label>Weight kg <input name="weight" type="number" min="0" step="0.1"></label><label>Allergies / medication <textarea name="medical"></textarea></label><label>Veterinarian <input name="vet"></label><label>Emergency contact <input name="emergencyContact"></label><label>Vaccination status <select name="vaccinationStatus"><option value="not-recorded">Not recorded</option><option value="controlled-only">Controlled socialisation only</option><option value="public-cleared">Cleared for public dog environments</option></select></label><label>Registration expiry <input name="registrationExpiry" type="date"></label><label>Vaccination due <input name="vaccinationDue" type="date"></label><label>Flea/tick due <input name="fleaTickDue" type="date"></label><label>Medication review due <input name="medicationDue" type="date"></label></details><div class="button-row"><button class="primary" type="submit">Save dog</button><button type="reset" class="secondary">Clear form</button></div></form><article class="card"><h2>Saved dog profiles</h2><div id="dogList"></div></article></section>
+    </section>
+
+    <section id="dog-profile" class="screen" data-group="dogs"><section class="hero card"><p class="eyebrow">DOG PROFILE</p><h2 id="dogProfileTitle">Dog profile</h2></section><div id="dogProfileBody"></div></section>
+
+    <section id="puppy" class="screen" data-group="dogs">
+      <section class="hero card"><p class="eyebrow">PUPPY & YOUNG-DOG SOCIALISATION</p><h2>Build positive experiences without assuming an ordinary dog park is suitable</h2></section>
+      <section class="grid two"><form id="puppyForm" class="card field-panel"><label>Dog <select name="dog"></select></label><label>Veterinary / vaccination clearance <select name="clearance"><option value="none">Not cleared for public dog parks</option><option value="controlled">Controlled puppy class or playdate only</option><option value="public">Public dog environments cleared</option></select></label><label>Proposed setting <select name="setting"><option value="puppy-class">Puppy preschool</option><option value="calm-playdate">Calm private playdate</option><option value="quiet-enclosed">Quiet enclosed area</option><option value="busy-dog-park">Busy public dog park</option></select></label><label>Other dog type <select name="mentor"><option value="calm-adult">Calm vaccinated adult mentor</option><option value="similar-puppy">Similar-energy puppy</option><option value="high-energy-adult">High-energy adult</option><option value="unknown-group">Unknown mixed group</option></select></label><button class="primary" type="submit">Assess socialisation plan</button></form><article class="card"><h2>Result</h2><div id="puppyResult" class="answer yellow">Choose a dog and plan.</div><h3>Positive experiences</h3><div class="chips"><span class="chip">friendly people</span><span class="chip">calm healthy dogs</span><span class="chip">surfaces and sounds</span><span class="chip">short car trips</span><span class="chip">handling and grooming</span><span class="chip">rest and safe retreat</span></div></article></section>
+    </section>
+
+    <section id="compatibility" class="screen" data-group="dogs">
+      <section class="hero card"><p class="eyebrow">PAIR & GROUP INTERACTION RISK</p><h2>How risky is this interaction under current conditions?</h2></section>
+      <section class="risk-scale card"><div class="risk-scale-bar"><span class="green">0–24<br><b>Green</b></span><span class="yellow">25–49<br><b>Yellow</b></span><span class="amber">50–74<br><b>Amber</b></span><span class="red">75–100<br><b>Red</b></span></div></section>
+      <section class="grid two"><form id="compatibilityForm" class="card field-panel"><label>First dog <select name="dogA"></select></label><label>Second dog <select name="dogB"></select></label><label>Park <select name="park"></select></label><label>Current dogs in park <input name="population" type="number" min="0" max="300" value="10"></label><label>Observed group energy <select name="groupEnergy"><option value="3">Calm</option><option value="5" selected>Mixed</option><option value="8">High energy</option></select></label><button class="primary" type="submit">Calculate interaction risk</button></form><article class="card"><h2>Result</h2><div id="compatibilityResult" class="answer yellow">Choose two different dogs.</div></article></section>
+      <section class="card"><h2>Record observed outcome</h2><form id="outcomeForm" class="inline-form"><label>Prediction <select name="prediction"></select></label><label>Outcome <select name="outcome"><option value="positive">Positive</option><option value="neutral">Neutral</option><option value="stressful">Stressful</option><option value="conflict">Conflict / unsafe</option></select></label><label>Private note <input name="note" maxlength="300"></label><button type="submit">Save outcome</button></form></section>
+    </section>
+
+    <section id="companions" class="screen" data-group="dogs"><section class="hero card"><p class="eyebrow">PROSPECTIVE COMPANION DISCOVERY</p><h2>Rank possible companions before the dogs have met</h2></section><section class="grid two"><form id="recommendationForm" class="card field-panel"><label>Dog <select name="dog"></select></label><label>Park <select name="park"></select></label><button type="submit">Rank possible companions</button></form><article class="card"><h2>Ranked results</h2><div id="recommendationList"></div></article></section></section>
+
+    <section id="best-mates" class="screen" data-group="dogs"><section class="hero card"><p class="eyebrow">SOCIAL AFFINITY GRAPH</p><h2>Best mates and preferred-park alerts</h2></section><section class="grid two"><form id="affinityForm" class="card field-panel"><label>Your dog <select name="fromDog"></select></label><label>Linked dog <select name="toDog"></select></label><label>Mode <select name="mode"><option value="mutual">Mutual — reciprocal consent required</option><option value="one_way">One-way — subject to privacy settings</option></select></label><label>Preferred park <select name="park"></select></label><button type="submit">Create relationship</button></form><article class="card"><h2>Saved relationships</h2><div id="affinityList"></div></article></section><section class="card"><h2>Location alert check</h2><form id="alertCheckForm" class="inline-form"><label>Park <select name="park"></select></label><button type="submit">Check visible best mates</button></form><div id="affinityAlerts"></div></section></section>
+
+    <section id="owner-duty" class="screen" data-group="more">
+      <section class="hero card"><p class="eyebrow">OWNER SUPERVISION</p><h2>No unattended dogs and no drop-off dog park</h2></section>
+      <section class="grid two"><article class="card field-panel"><h2>Supervision confirmation</h2><div id="ownerDutyList"></div><button id="confirmAllSupervision">Confirm all my active dogs</button></article><form id="unattendedForm" class="card"><h2>Report an unattended dog</h2><label>Park <select name="park"></select></label><label>Dog description <input name="description" required></label><label>Owner location <select name="ownerLocation"><option value="unknown">Unknown</option><option value="carpark">In car park</option><option value="cafe">Went to café/pub</option><option value="left">Left area</option></select></label><label>Concern <textarea name="concern" required></textarea></label><button class="danger" type="submit">Create supervision alert</button></form></section><section class="card"><h2>Open supervision alerts</h2><div id="unattendedReports"></div></section>
+    </section>
+
+    <section id="etiquette" class="screen" data-group="more">
+      <section class="hero card"><p class="eyebrow">PARK ETIQUETTE</p><h2>Turn body-language signs into an immediate action</h2></section>
+      <section class="grid two"><form id="etiquetteForm" class="card field-panel"><fieldset><legend>What do you see?</legend><div id="etiquetteSignals" class="filter-checks"></div></fieldset><button type="submit">Assess and suggest a break</button></form><article class="card"><h2>Prompt</h2><div id="etiquetteResult" class="answer green"><b>No stress signals selected.</b><br>Continue calm supervision and regular sniff/rest breaks.</div><div class="button-row compact"><button data-break-action="Move to shade">Move to shade</button><button data-break-action="Water break">Water break</button><button data-break-action="Leash and reset">Leash and reset</button><button data-break-action="Quiet area">Quiet area</button><button class="danger" data-break-action="Leave park">Leave park</button></div></article></section>
+    </section>
+
+    <section id="heat-hazards" class="screen" data-group="more">
+      <section class="hero card"><p class="eyebrow">HEAT, WEATHER & HAZARDS</p><h2>Is it too hot or unsafe for my dog today?</h2></section>
+      <section class="grid two"><form id="heatCheckForm" class="card field-panel"><label>Dog <select name="dog"></select></label><label>Park <select name="park"></select></label><label>Apparent / feels-like temperature °C <input name="apparentTemperature" type="number" min="-10" max="60" step="0.1" value="28"></label><label>Humidity % <input name="humidity" type="number" min="0" max="100" value="55"></label><label>UV index <input name="uvIndex" type="number" min="0" max="20" step="0.1" value="5"></label><label class="toggle"><input type="checkbox" name="directSun"> Direct sun</label><label class="toggle"><input type="checkbox" name="shadeAvailable" checked> Reliable shade</label><label class="toggle"><input type="checkbox" name="waterAvailable" checked> Cool fresh water</label><label class="toggle"><input type="checkbox" name="hotSurface"> Hot asphalt, concrete or sand</label><label class="toggle"><input type="checkbox" name="vulnerableDog"> Young, older, unwell, flat-faced or heat-vulnerable dog</label><div class="button-row"><button class="primary" type="submit">Calculate heat risk</button><button id="useCurrentWeather" type="button" class="secondary">Use my current weather</button></div></form><article class="card"><h2>Heat result</h2><div id="weatherStatus" class="answer yellow"><b>Manual entry ready.</b><br>Location stays off until enabled in Settings.</div><div id="heatResult" class="answer yellow"><b>No result yet.</b></div><h3>Active local hazard reports</h3><div id="hazardList"></div></article></section>
+      <section class="grid two"><form id="hazardForm" class="card"><h2>Report a park hazard</h2><label>Park <select name="park"></select></label><label>Hazard <select name="type"><option>Snake sighting</option><option>Paralysis ticks</option><option>Blue-green algae</option><option>Broken fence or gate</option><option>Glass or sharp object</option><option>1080 bait warning</option><option>Flood or storm damage</option><option>No water</option><option>Unsafe structure</option></select></label><label>Risk level <select name="risk"><option value="25">Yellow</option><option value="55">Amber</option><option value="80">Red</option></select></label><label>Details <textarea name="details" required></textarea></label><button class="amber" type="submit">Save hazard report</button></form><article class="card"><h2>Recent heat checks</h2><div id="heatHistory"></div></article></section>
+    </section>
+
+    <section id="travel" class="screen" data-group="more"><section class="hero card"><p class="eyebrow">GREY NOMAD & TRIP PLANNER</p><h2>Plan a lower-stress dog-friendly trip anywhere in Australia</h2></section><section class="grid two"><form id="tripForm" class="card field-panel"><label>From <input name="from" value="Gold Coast QLD"></label><label>To <input name="to" value="Sydney NSW"></label><fieldset><legend>Needs</legend><div id="tripNeeds" class="filter-checks"></div></fieldset><button type="submit">Build route plan</button></form><article class="card"><h2>Suggested route</h2><div id="tripResult"></div></article></section></section>
+
+    <section id="emergency" class="screen" data-group="more"><section class="hero card danger-card"><p class="eyebrow">ONE-TAP HELP</p><h2>Emergency readiness</h2></section><section class="grid three"><article class="card"><h2>Restricted medical summary</h2><label>Dog <select id="emergencyDogSelect"></select></label><button id="showEmergencySummary" class="danger">Show summary</button><div id="emergencySummary"></div></article><article class="card"><h2>Nearest veterinarian</h2><label>Location <input id="vetLocation" value="Gold Coast QLD"></label><a id="vetSearchLink" class="button-link" target="_blank" rel="noopener">Find emergency vet</a></article><article class="card"><h2>I’m here alone</h2><label>Check-in time <select id="aloneTimerMinutes"><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">60 minutes</option></select></label><button id="startAloneTimer">Start safety timer</button><button id="cancelAloneTimer" class="secondary">Cancel timer</button><p id="aloneTimerStatus" class="muted"></p></article></section></section>
+
+    <section id="lost-found" class="screen" data-group="more"><section class="hero card"><p class="eyebrow">LOST & FOUND</p><h2>Create a local record and escalation plan</h2></section><section class="grid two"><form id="lostFoundForm" class="card field-panel"><label>Type <select name="type"><option value="lost">Lost dog</option><option value="found">Found dog</option><option value="sighted">Sighted dog</option></select></label><label>Description <input name="description" required></label><label>Location <input name="location" required></label><label>Urgency <select name="urgency"><option value="watch">Watch</option><option value="urgent">Urgent search</option><option value="danger">Immediate danger</option></select></label><label>Contact note <input name="contact"></label><button class="danger" type="submit">Create alert record</button></form><article class="card"><h2>Current records</h2><div id="lostFoundList"></div></article></section></section>
+
+    <section id="incident" class="screen" data-group="more"><section class="hero card"><p class="eyebrow">INCIDENT & NEAR MISS</p><h2>Record what happened without deciding liability</h2></section><section class="grid two"><form id="incidentForm" class="card field-panel"><label>Park <select name="park"></select></label><label>Type <select name="type"><option>Dog fight</option><option>Bite</option><option>Child safety concern</option><option>Bike or skateboard conflict</option><option>Broken gate or fence</option><option>No water</option><option>Lighting fault</option><option>Unsafe structure</option><option>Near miss</option></select></label><label>Severity <select name="severity"><option value="30">Yellow — monitor</option><option value="60">Amber — urgent</option><option value="85">Red — emergency</option></select></label><label>Details <textarea name="details" required></textarea></label><label>Witness/contact notes <textarea name="witness"></textarea></label><button class="amber" type="submit">Save incident record</button></form><article class="card"><h2>Incident history</h2><div id="incidentList"></div></article></section></section>
+
+    <section id="notices" class="screen" data-group="more"><section class="hero card"><p class="eyebrow">COUNCIL & OPERATOR NOTICES</p><h2>Verified closures, maintenance and rule changes</h2></section><div id="noticeList" class="grid two"></div></section>
+
+    <section id="roles" class="screen" data-group="more"><section class="hero card"><p class="eyebrow">ROLE-BASED ACCESS</p><h2>People see only what they need</h2></section><section class="grid three"><article class="card role owner"><h2>Dog Owner</h2><p>Own profiles, check-ins, privacy, relationships, outcomes, documents and payments.</p></article><article class="card role"><h2>Park Visitor</h2><p>Public park details, anonymous live state, public dog notes, rules and alerts.</p></article><article class="card role operator"><h2>Park Superintendent</h2><p>Facilities, maintenance, verified notices, capacity, incident triage and anonymous trends.</p></article><article class="card role responder"><h2>Authorised Responder</h2><p>Restricted emergency information only where appropriate and auditable.</p></article><article class="card role admin"><h2>System Administrator</h2><p>Technical service health and account support without unnecessary medical browsing.</p></article></section></section>
+
+    <section id="superintendent" class="screen" data-group="more" data-role="superintendent,admin"><section class="hero card"><p class="eyebrow">PARK SUPERINTENDENT / COUNCIL OPERATOR</p><h2>Operate the park without exposing private owner data</h2></section><div id="superStats" class="grid four"></div><section class="grid two"><form id="maintenanceForm" class="card field-panel"><h2>Add maintenance task</h2><label>Park <select name="park"></select></label><label>Facility <select name="facility"><option>Gate or latch</option><option>Fence</option><option>Water bowl</option><option>Lighting</option><option>Shade</option><option>Bins</option><option>Path/access</option><option>Structure</option></select></label><label>Priority <select name="priority"><option value="yellow">Yellow</option><option value="amber">Amber</option><option value="red">Red</option></select></label><label>Task <textarea name="task" required></textarea></label><button type="submit">Assign task</button><h3>Maintenance queue</h3><div id="maintenanceList"></div></form><form id="noticeForm" class="card"><h2>Create verified public notice</h2><label>Park <select name="park"></select></label><label>Title <input name="title" required></label><label>Details <textarea name="details" required></textarea></label><label>Expires <input name="expires" type="datetime-local"></label><button class="amber" type="submit">Publish notice locally</button><h3>Safety and trend view</h3><div id="superTrends"></div></form></section></section>
+
+    <section id="notifications" class="screen" data-group="more"><section class="hero card"><p class="eyebrow">ALERT PREFERENCES</p><h2>Only the alerts each owner chooses</h2></section><form id="notificationForm" class="card grid two"><div id="notificationControls"></div><div><label>Quiet hours start <input name="quietStart" type="time"></label><label>Quiet hours end <input name="quietEnd" type="time"></label><label>Location detail <select name="locationDetail"><option value="park">Park name only</option><option value="approximate">Approximate area</option><option value="off">Off</option></select></label><button type="submit">Save notification settings</button></div></form></section>
+
+    <section id="membership" class="screen" data-group="more"><section class="hero card"><p class="eyebrow">MEMBERSHIP</p><h2>One membership group, four approved products</h2><p id="billingChannelMessage"></p></section><section class="card disclosure"><b>Trial and renewal disclosure</b><p>30 days free for eligible new subscribers. Then the selected price is charged every month or year and the subscription automatically renews until cancelled. Cancel before the trial ends to avoid the first charge. Deleting the app does not cancel the subscription. Manage or cancel through the same store or payment provider used to subscribe.</p><p>Nothing excludes rights that cannot lawfully be excluded under the Australian Consumer Law.</p></section><div id="planList" class="pricing-grid"></div><section class="card"><div class="legal-links"><a href="./legal/subscription-terms.html">Subscription Terms</a><a href="./legal/refund-cancellation-policy.html">Refund & Cancellation</a><a href="./legal/terms-of-use.html">Terms of Use</a><a href="./legal/privacy-policy.html">Privacy Policy</a></div><button id="restorePurchases" class="secondary">Restore store purchases</button><div id="billingResult" class="answer yellow">No purchase action yet.</div></section></section>
+
+    <section id="settings" class="screen" data-group="more"><section class="hero card"><p class="eyebrow">PRIVACY & OWNER CONTROL</p><h2>Choose the level of participation</h2></section><section class="grid two"><form id="privacyForm" class="card field-panel"><h2>Privacy controls</h2><div id="privacyControls"></div><button type="submit">Save privacy settings</button></form><article class="card"><h2>Comfort and access</h2><label class="toggle"><input id="reducedMotion" type="checkbox"> Reduce motion</label><label class="toggle"><input id="largeText" type="checkbox"> Larger text</label><label class="toggle"><input id="highContrast" type="checkbox"> Higher contrast</label><h2>Your data</h2><button id="exportAllData">Export my local data</button><button id="deleteAllData" class="danger">Delete all local app data</button><p class="muted">Deleting local data does not cancel Apple, Google Play or Stripe subscriptions.</p></article></section></section>
+
+    <section id="legal" class="screen" data-group="more"><section class="hero card"><p class="eyebrow">LEGAL CENTRE</p><h2>Public policies and safety boundaries</h2></section><section class="grid two"><article class="card"><div class="legal-links stacked"><a href="./legal/">Legal centre</a><a href="./legal/privacy-policy.html">Privacy Policy</a><a href="./legal/terms-of-use.html">Terms of Use</a><a href="./legal/safety-disclaimer.html">Safety Disclaimer</a><a href="./legal/subscription-terms.html">Subscription Terms</a><a href="./legal/refund-cancellation-policy.html">Refund & Cancellation</a><a href="./legal/account-deletion.html">Account & Data Deletion</a><a href="./legal/community-guidelines.html">Community Guidelines</a><a href="./legal/support.html">Support</a><a href="./legal/ip-notice.html">Intellectual Property Notice</a></div></article><article class="card warning-card"><h2>Permanent safety wording</h2><p>GENEVIEVE App™ supports decisions; it does not guarantee behaviour, safety, availability, legal compliance or third-party data accuracy. Owners remain responsible for supervision, effective control, signs, rules and professional help.</p></article></section></section>
+
+    <section id="data" class="screen" data-group="more"><section class="hero card"><p class="eyebrow">DATA & ACCOUNT</p><h2>Access, correct, export or delete</h2></section><section class="grid three"><article class="card"><h2>Export</h2><p>Dog profiles, owner inputs, trips, relationships and evidence history.</p><button id="dataExportButton">Export data</button></article><article class="card"><h2>Correct</h2><p>Update behavioural values and challenge inferred observations.</p><button data-go="dog-list">Review profiles</button></article><article class="card danger-card"><h2>Delete</h2><p>Delete local data now and use the public deletion page for a production account request.</p><button id="dataDeleteButton" class="danger">Delete local data</button><a class="button-link secondary-link" href="./legal/account-deletion.html">Open deletion page</a></article></section></section>
+
+    <section id="launch" class="screen" data-group="more"><section class="hero card"><p class="eyebrow">DEPLOYMENT GATE</p><h2>Check the public launch configuration</h2><p>This checker refuses to mark missing domain, contact, backend or payment facts as complete.</p></section><section class="card"><button id="runLaunchCheck" class="primary">Run launch check</button><div id="launchResults"></div></section><section class="grid two"><article class="card"><h2>Public URLs</h2><div id="publicUrlList"></div></article><article class="card"><h2>Build facts</h2><ul class="checklist"><li>Root index.html</li><li>No npm or build step</li><li>Vercel configuration</li><li>GitHub Pages workflow</li><li>PWA manifest and service worker</li><li>404 page</li><li>Channel-safe payment router</li><li>31 restored functional screens</li><li>Consistent risk scale</li><li>Owner and superintendent roles</li></ul></article></section></section>
+
+    <section id="more" class="screen" data-group="more">
+      <section class="hero card"><p class="eyebrow">MORE</p><h2>All restored Dog Park functions</h2><p>The five main buttons stay simple. Less-used functions live here instead of crowding the screen.</p></section>
+      <div class="page-grid">
+        <button data-go="checkin"><b>Check In / Out</b><small>Lead, status, privacy and supervision</small></button><button data-go="owner-duty"><b>Owner Duty</b><small>Supervision confirmations and unattended dogs</small></button><button data-go="etiquette"><b>Park Etiquette</b><small>Body-language prompts and break actions</small></button><button data-go="heat-hazards"><b>Heat & Hazards</b><small>Weather, surfaces and local reports</small></button><button data-go="beaches"><b>Dog Beaches</b><small>Boundaries, hours, tide and facilities</small></button><button data-go="travel"><b>Trip Planner</b><small>Grey Nomad and dog-friendly routes</small></button><button data-go="puppy"><b>Puppy Socialisation</b><small>Controlled matching and clearance</small></button><button data-go="compatibility"><b>Compatibility</b><small>Pair and group interaction risk</small></button><button data-go="companions"><b>Find Companions</b><small>Prospective recommendations</small></button><button data-go="best-mates"><b>Best Mates</b><small>Affinity links and park alerts</small></button><button data-go="emergency"><b>Emergency</b><small>Medical summary, vet and safety timer</small></button><button data-go="lost-found"><b>Lost & Found</b><small>Local records and escalation plan</small></button><button data-go="incident"><b>Incident Report</b><small>Structured audit evidence</small></button><button data-go="notices"><b>Council Notices</b><small>Verified closures and maintenance</small></button><button data-go="roles"><b>Roles & Access</b><small>Owner, visitor, operator and responder</small></button><button data-go="superintendent" data-role-button="superintendent,admin"><b>Park Superintendent</b><small>Facilities, notices and trends</small></button><button data-go="notifications"><b>Notifications</b><small>Best mate, heat, hazard and document alerts</small></button><button data-go="membership"><b>Membership</b><small>Web, Apple and Google billing routes</small></button><button data-go="settings"><b>Settings & Privacy</b><small>Visibility, location and opt-outs</small></button><button data-go="legal"><b>Legal Centre</b><small>Terms, privacy, safety and refunds</small></button><button data-go="data"><b>Data & Account</b><small>Export, correction and deletion</small></button><button data-go="launch"><b>Launch Check</b><small>GitHub, Vercel and service readiness</small></button>
+      </div>
+    </section>
+  </main>
+
+  <footer><p>© 2026 Tracey Ann Kennedy. GENEVIEVE App™. Trade mark application stated as pending.</p><p><a href="./legal/">Legal</a> · <a href="./legal/privacy-policy.html">Privacy</a> · <a href="./legal/support.html">Support</a> · <a href="./legal/account-deletion.html">Delete account</a></p></footer>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation"><button class="active" data-go="today" data-main="today">Today</button><button data-go="before-leaving" data-main="journey">Journey</button><button data-go="park-search" data-main="parks">Parks</button><button data-go="dog-list" data-main="dogs">Dogs</button><button data-go="more" data-main="more">More</button></nav>
+</div>
+<script src="./native-billing-bridge.js"></script>
+<script src="./backend.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>

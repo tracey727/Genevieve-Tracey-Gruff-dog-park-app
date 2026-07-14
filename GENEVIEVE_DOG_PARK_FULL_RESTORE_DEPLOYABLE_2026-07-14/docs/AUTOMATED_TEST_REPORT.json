@@ -1,0 +1,23 @@
+{
+  "version": "2026.07.14.3",
+  "date": "2026-07-14",
+  "logic": {
+    "ok": true,
+    "lowInteraction": 0,
+    "highInteraction": 100,
+    "coolHeat": 2,
+    "hotHeat": 100,
+    "puppyControlled": 0,
+    "puppyUnsafe": 100
+  },
+  "static_check": "PASS: 31 screens, 23 bound forms, all local links and required files present.",
+  "http_routes": {
+    "/": 200,
+    "/index.html": 200,
+    "/legal/privacy-policy.html": 200,
+    "/legal/support.html": 200,
+    "/legal/account-deletion.html": 200,
+    "/manifest.webmanifest": 200,
+    "/404.html": 200
+  }
+}

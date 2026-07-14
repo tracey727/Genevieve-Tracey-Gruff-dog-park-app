@@ -1,0 +1,14 @@
+{
+  "name": "GENEVIEVE App™ Dog Park",
+  "short_name": "Dog Park",
+  "description": "Plan the full dog-park journey, assess risk, supervise visits and access owner or park-operator tools.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef8f1",
+  "theme_color": "#06391f",
+  "icons": [
+    {"src":"./assets/app-icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"./assets/app-icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}

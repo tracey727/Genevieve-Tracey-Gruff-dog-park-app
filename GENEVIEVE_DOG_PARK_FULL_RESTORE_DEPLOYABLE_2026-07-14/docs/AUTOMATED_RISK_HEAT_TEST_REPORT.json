@@ -1,0 +1,71 @@
+{
+  "tests": [
+    {
+      "name": "Root app loads",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Heat Safety tab present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Scale direction text present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Compatibility uses risk percentage",
+      "ok": true,
+      "detail": "Mr Gruff + Molly (demonstration)\n7.1% risk\n\nLow predicted risk\n\nConditions are at the lower end of the risk scale. Continue normal supervision and reassess if conditions change.\n\nB"
+    },
+    {
+      "name": "Low interaction risk is not red",
+      "ok": true,
+      "detail": "prediction green"
+    },
+    {
+      "name": "High interaction risk is red only at high end",
+      "ok": true,
+      "detail": "100.0, prediction red"
+    },
+    {
+      "name": "Low heat conditions are green 0-24",
+      "ok": true,
+      "detail": "5.0, answer heat-result green"
+    },
+    {
+      "name": "High heat conditions are red 75-100",
+      "ok": true,
+      "detail": "100.0, answer heat-result red"
+    },
+    {
+      "name": "Red heat guidance says do not exercise",
+      "ok": true,
+      "detail": "100% heat risk\n\nVery high predicted risk\n\nDo not exercise or attend the park under these conditions. Move your dog to a cool, shaded and ventilated place with water. Seek veterinary help promptly if heat-stress signs app"
+    },
+    {
+      "name": "Launch check validates risk direction",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Launch check validates heat fallback",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "No browser console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "No page errors",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "console_errors": [],
+  "page_errors": []
+}

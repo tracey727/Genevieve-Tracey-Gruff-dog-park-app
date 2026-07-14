@@ -1,0 +1,14 @@
+GENEVIEVE App™ Dog Park — DEPLOY THIS PACKAGE
+
+1. Extract the ZIP.
+2. Open docs/SITE_SETUP_TODAY.md and choose your public domain and support email.
+3. Put those details into config.js and replace the placeholders in /legal/.
+4. Upload every extracted file and folder to the ROOT of one GitHub repository.
+5. Import that GitHub repository into Vercel.
+6. Vercel settings: Framework Other; Root ./; Build blank; Install blank; Output blank.
+7. Add your chosen domain in Vercel Settings → Domains and follow Vercel’s DNS instructions.
+8. Open More → Launch Check in the deployed app.
+9. Do not enable paid buttons until every Stripe product link is verified and mapped.
+10. Apple and Google app subscriptions still require native store billing setup and testing.
+
+IMPORTANT: The app is a deployable local-first web/PWA. Real accounts, live multi-user park data, push alerts and cross-device paid entitlements require the production backend and store setup described in the docs.
