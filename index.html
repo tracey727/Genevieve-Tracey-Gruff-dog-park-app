@@ -1,452 +1,535 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en-AU">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#103f31">
-  <meta name="description" content="GENEVIEVE App™ Dog Park — live-ready static deployment for dog parks, dog beaches, safety alerts and dog-friendly trips.">
-  <title>GENEVIEVE App™ — Dog Park</title>
-  <link rel="icon" href="./assets/ga-logo-512.png" type="image/png">
-  <link rel="apple-touch-icon" href="./assets/ga-logo-192.png">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<meta content="#06391f" name="theme-color"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="GENEVIEVE Dog Parks" name="apple-mobile-web-app-title"/>
+<meta content="GENEVIEVE App™ Dog Parks — Safety &amp; Compatibility System helps owners plan the whole park journey, manage dog profiles, assess heat and interaction risk, supervise visits, report hazards and optionally use private communication, visual safety and Auslan-support tools." name="description"/>
+<title>GENEVIEVE App™ Dog Parks — Safety &amp; Compatibility System</title>
+<link href="./assets/gold-paw-ga-favicon-64-v16.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="./assets/gold-paw-ga-favicon-64-v16.png" rel="shortcut icon"/>
+<link href="./assets/gold-paw-ga-apple-touch-icon-180-v16.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./assets/gold-paw-ga-apple-touch-icon-180-v16.png" rel="apple-touch-icon-precomposed" sizes="180x180"/>
+<link href="./manifest.webmanifest?v=20260728.26" rel="manifest"/>
+<link href="./styles.css?v=20260728.26" rel="stylesheet"/>
+<script src="./config.js?v=20260728.26"></script>
+<script src="./logic.js?v=20260728.26"></script>
+<script src="./notification-logic.js?v=20260728.26"></script>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="app-top">
-      <div class="brand">
-        <img src="./assets/ga-logo-512.png" alt="GENEVIEVE App logo" class="brand-icon ga-brand-icon">
-        <div>
-          <h1>GENEVIEVE App™</h1>
-          <p>Safety. Suitability. Peace of Mind.</p>
-        </div>
-      </div>
-      <button class="icon-btn alert-icon-btn" data-go="alerts" aria-label="Open alerts"><span class="top-icon-wrap"><img src="./assets/nav-alerts.svg" alt="" class="top-icon-img"></span><span class="notify-dot"></span></button>
-    </header>
-
-    <main id="screens">
-      <section id="home" class="screen active" data-title="Home / Dashboard">
-        <div class="phone-label">PAGE 1 — HOME / DASHBOARD</div>
-
-        <article class="identity-card">
-          <img src="./assets/tracey-avatar.jpg" alt="Tracey Kennedy" class="owner-photo">
-          <div>
-            <p class="eyebrow">User profile</p>
-            <h2>Hi, Tracey 👋</h2>
-            <p>Your identity sits above your pet, so it feels connected and personal.</p>
-          </div>
-          <div class="weather-chip">☀️ 22°C<br><span>Sunny</span></div>
-        </article>
-
-        <article class="dog-card">
-          <img src="./assets/mr-gruff-avatar.jpg" alt="Mr Gruff" class="dog-photo">
-          <div>
-            <h3>Mr Gruff</h3>
-            <p>Medium • 20 kg • Desexed male • Born 08/08/2021</p>
-            <div class="chip-row">
-              <span id="homeStatusChip" class="chip amber">Needs Space</span>
-              <span class="chip">On lead — in training</span>
-            </div>
-          </div>
-          <button data-go="profile" class="small-btn">View profile</button>
-        </article>
-
-        <details class="card" id="temperamentPanel">
-          <summary>
-            <span>🐾 Today’s Temperament Check</span>
-            <span id="temperamentScore" class="score-pill amber">Amber</span>
-          </summary>
-          <p class="helper">Tap Mr Gruff’s status first. Genevieve uses this with the park score before you leave.</p>
-          <div id="temperamentChoices" class="choice-grid"></div>
-        </details>
-
-        <article class="card">
-          <h3>Before You Leave</h3>
-          <label class="searchbar">
-            <span>🔍</span>
-            <input id="quickSearch" value="Witherside Park" placeholder="Search dog park, dog beach or destination">
-          </label>
-          <div id="todayDecision" class="decision amber">
-            <b>Amber — check before leaving</b>
-            <span>Mr Gruff needs space today. Choose a low-crowd, open place with water and calm entry.</span>
-          </div>
-          <div class="button-row">
-            <button data-go="search">Search parks & beaches</button>
-            <button data-go="trip" class="secondary">Plan any trip</button>
-          </div>
-        </article>
-
-        <div id="bestMateFlash" class="flash-line">
-          <b>✨ Luna is here</b>
-          <span>Small flash only. Visible only when both owners allow it.</span>
-        </div>
-
-        <section class="quick-actions">
-          <button data-action="checkIn" class="quick green">✅<b>Check In</b><span>Arrived</span></button>
-          <button data-action="checkOut" class="quick">🚪<b>Check Out</b><span>Left</span></button>
-          <button data-action="bestMate" class="quick gold">✨<b>Best Mate</b><span>Alert</span></button>
-          <button data-action="incognito" class="quick purple">🕶️<b>Incognito</b><span>Need Space</span></button>
-        </section>
-
-        <article class="card">
-          <h3>Safety Share</h3>
-          <p>Optional for solo, night or quiet visits. Chosen contacts can receive check-in and check-out updates.</p>
-          <label class="switch-row"><span>Share with chosen contacts</span><input id="safetyShare" type="checkbox"></label>
-          <button data-go="settings" class="secondary">Choose contacts & privacy</button>
-        </article>
-
-        <article class="sos">
-          <div><b>Emergency — 000</b><span>Press, hold & slide to prevent accidental pocket use.</span></div>
-          <button data-action="openSos">Hold + Slide</button>
-        </article>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="app-shell">
+<header class="topbar">
+<div class="brand-row">
+<img alt="Approved GENEVIEVE App gold A and black G logo with pink glow" class="app-icon approved-ga-logo" src="./assets/ga-logo-full-square-v10.png"/>
+<div>
+<p class="eyebrow">DOG PARK SAFETY · AUSTRALIA</p>
+<h1>GENEVIEVE App<span class="tm">™</span> Dog Parks</h1>
+<p><strong class="brand-system-name">Safety &amp; Compatibility System</strong></p>
+<p>The whole journey: plan, travel, enter, supervise, interact and leave safely.</p>
+</div>
+</div>
+<div class="header-dashboard">
+<div class="header-weather-stack">
+<section aria-label="Current selected park weather" aria-live="polite" class="header-weather" id="headerWeatherPanel">
+<div class="header-weather-heading">
+<span>CURRENT PARK WEATHER</span>
+<span class="weather-freshness" id="headerWeatherFreshness">Updating…</span>
+</div>
+<div class="header-weather-current">
+<span aria-hidden="true" class="weather-icon" id="headerWeatherIcon">◌</span>
+<strong class="weather-temperature" id="headerWeatherTemperature">--°</strong>
+<div>
+<b id="headerWeatherCondition">Loading weather…</b>
+<small id="headerWeatherFeelsLike">For the selected park</small>
+</div>
+</div>
+<div class="header-weather-details">
+<span><small>UV</small><b id="headerWeatherUv">—</b></span>
+<span><small>Wind</small><b id="headerWeatherWind">—</b></span>
+<span><small>Rain</small><b id="headerWeatherRain">—</b></span>
+<span><small>Humidity</small><b id="headerWeatherHumidity">—</b></span>
+</div>
+<p class="header-weather-source"><span id="headerWeatherPark">Selected park</span> · <a href="https://open-meteo.com/" rel="noopener" target="_blank">Open-Meteo</a></p>
+</section>
+<div class="header-meta-tools">
+<label class="role-label">View as
+            <select aria-label="Choose app role" id="roleSelect">
+<option value="owner">Dog Owner</option>
+<option value="visitor">Park Visitor</option>
+<option value="worker">Park Worker / Contractor</option>
+<option value="superintendent">Park Superintendent</option>
+<option value="responder">Authorised Responder</option>
+<option value="admin">System Administrator</option>
+</select>
+</label>
+<div class="status-pill" id="modePill">Loading deployment mode…</div>
+</div>
+</div>
+<div class="header-brand-actions">
+<div aria-label="GENEVIEVE App tree logo and safety message" class="header-tree-lockup">
+<img alt="Approved GENEVIEVE tree, infinity and roots logo supplied by Tracey Kennedy" class="header-tree-logo" src="./assets/genevieve-tree-logo-approved-tracey.png"/>
+<strong><span>Safety from Roots</span><span>to Every Journey</span></strong>
+</div>
+<div class="global-emergency-wrap">
+<button aria-label="Tap for emergency and non-emergency services. Press and hold for three seconds to open the Triple Zero call slider." class="global-emergency-button" id="globalEmergencyButton" type="button"><span aria-hidden="true" class="emergency-pulse"></span><span class="emergency-button-label">Emergency &amp; services</span><small>Tap for help · Hold 3 sec for 000</small></button>
+</div>
+</div>
+</div>
+</header>
+<nav aria-label="Page step navigation" class="page-step-bar">
+<button aria-label="Go back one page inside the app" class="back-step-button" disabled id="backStepButton" type="button">← Back one step</button>
+<div class="page-step-location">
+<span>You are viewing</span>
+<strong aria-live="polite" id="currentPageTitle">Today</strong>
+</div>
+</nav>
+<nav aria-label="Main navigation" class="main-tabs">
+<button class="active" data-go="today" data-main="today">Today</button>
+<button data-go="before-leaving" data-main="journey">Journey</button>
+<button data-go="park-search" data-main="parks">Parks</button>
+<button data-go="dog-list" data-main="dogs">Dogs</button>
+<button data-go="more" data-main="more">More</button>
+</nav>
+<main id="main">
+<section class="screen active" data-group="today" id="today">
+<section class="hero card">
+<p class="eyebrow">TODAY’S QUESTION</p>
+<h2>Is this a suitable park visit for my dog right now?</h2>
+<div class="answer yellow" id="todayAnswer"><b>Checks needed.</b><br/>Choose a dog and park, then run the heat and interaction checks.</div>
+<div class="button-row">
+<button class="primary" data-go="before-leaving">Plan the whole visit</button>
+<button data-go="heat-hazards">Check heat and hazards</button>
+<button data-go="compatibility">Check interaction risk</button>
+</div>
+</section>
+<section aria-label="GENEVIEVE risk scale" class="risk-scale card">
+<h2>One consistent GENEVIEVE risk scale</h2>
+<div class="risk-scale-bar"><span class="green">0–24<br/><b>Green</b></span><span class="yellow">25–49<br/><b>Yellow</b></span><span class="amber">50–74<br/><b>Amber</b></span><span class="red">75–100<br/><b>Red</b></span></div>
+<p class="muted">Every risk percentage runs from lower risk at 0 toward highest risk at 100.</p>
+</section>
+<section class="grid two">
+<article class="card field-panel"><h2>Today’s live snapshot</h2><div id="snapshot"></div></article>
+<article class="card field-panel"><h2>One-tap status</h2>
+<label>Dog <select id="quickDogSelect"></select></label>
+<div class="button-row compact">
+<button data-quick-status="playful">Playful</button><button data-quick-status="calm">Calm</button><button class="amber" data-quick-status="needs-space">Needs space</button><button class="danger" data-quick-status="reactive">Reactive today</button><button data-quick-status="training">In training</button>
+</div>
+<p class="muted" id="quickStatusMessage">Choose a current status when something changes.</p>
+</article>
+</section>
+<section class="grid two">
+<article class="card"><h2>Owner supervision</h2><div id="todayOwnerDuty"></div><div class="button-row"><button id="todayStillSupervising">I’m still supervising</button><button class="secondary" data-go="owner-duty">Owner Duty tools</button></div></article>
+<article class="card"><h2>Patent implementation evidence</h2><p>The app records behavioural profiles, environment state, predictions, outcomes, affinity links, heat checks and operational events on this device.</p><button id="exportEvidence">Export dated evidence</button><p class="muted" id="evidenceCount"></p></article>
+</section>
+<section class="card warning-card"><h2>Important safety boundary</h2><p>GENEVIEVE App™ provides decision support only. It cannot guarantee animal behaviour, safety, legal compliance, park availability or third-party information. Owners remain responsible for direct supervision, effective control, signs, local rules and professional help.</p></section>
+</section>
+<section class="screen" data-group="journey" id="before-leaving">
+<section class="hero card"><p class="eyebrow">JOURNEY · STEP 1</p><h2>Before leaving home</h2><p>Check the dog, weather, park requirements, documents and supplies before the trip begins.</p></section>
+<section class="grid two">
+<form class="card field-panel" id="departureForm">
+<h2>Today’s plan</h2>
+<label>Dog <select name="dog"></select></label><label>Destination <select name="park"></select></label>
+<label>Current temperament <select name="temperament"><option value="playful">Happy and playful</option><option value="calm">Calm / gentle play</option><option value="needs-space">Needs space</option><option value="reactive">Reactive today</option><option value="unwell">Tired or not feeling right</option></select></label>
+<fieldset><legend>Supplies and checks</legend>
+<label class="toggle"><input checked name="lead" type="checkbox"/> Lead packed and fitted</label><label class="toggle"><input checked name="bags" type="checkbox"/> Waste bags packed</label><label class="toggle"><input name="water" type="checkbox"/> Water packed</label><label class="toggle"><input checked name="idTag" type="checkbox"/> ID tag and microchip contact details current</label><label class="toggle"><input checked name="vaccination" type="checkbox"/> Vaccination/health requirements checked</label>
+</fieldset>
+<button class="primary" type="submit">Check my plan</button>
+</form>
+<article class="card"><h2>Ready-to-leave result</h2><div class="answer yellow" id="departureResult"><b>Not checked yet.</b><br/>Complete the plan to receive one clear answer.</div><div class="chips" id="departureNeeds"></div><button class="primary" data-go="route-arrival">Continue to route and arrival</button></article>
+</section>
+<section class="card"><h2>Owner-only expiry reminders</h2><div class="grid three" id="documentReminders"></div></section>
+</section>
+<section class="screen" data-group="journey" id="route-arrival">
+<section class="hero card"><p class="eyebrow">JOURNEY · STEPS 2–6</p><h2>Drive, park, walk to the gate, enter and leave safely</h2></section>
+<section class="card journey-steps">
+<div class="step"><span>1</span><div><b>Navigate to the correct parking and entrance</b><p>Show accessible parking, caravan access and the correct dog-area gate.</p></div></div>
+<div class="step"><span>2</span><div><b>Lead on before the dog leaves the vehicle</b><p>The car park and access path are not automatically off-leash areas.</p></div></div>
+<div class="step"><span>3</span><div><b>Walk on lead to the signed off-leash boundary</b><p>Keep control around vehicles, children, bikes and other dogs.</p></div></div>
+<div class="step"><span>4</span><div><b>Assess the gate before release</b><p>Wait back if crowded. Use the double-gate space correctly and confirm recall.</p></div></div>
+<div class="step"><span>5</span><div><b>Supervise inside the park</b><p>Remain close enough to see, reach and control your dog.</p></div></div>
+<div class="step"><span>6</span><div><b>Lead on before leaving the boundary</b><p>If you chose voluntary check-in, you may check out. Return to the vehicle under control whether or not you use the app.</p></div></div>
+</section>
+<section class="grid two">
+<article class="card"><h2>Selected route</h2><div id="routeCard"></div><div class="button-row"><a class="button-link" id="directionsLink" rel="noopener" target="_blank">Open directions</a><button data-go="checkin">Open gate checklist</button></div></article>
+<form class="card field-panel" id="arrivalForm"><h2>Arrival checklist</h2><label class="toggle"><input name="leadFromCar" type="checkbox"/> Lead fitted before leaving vehicle</label><label class="toggle"><input name="pathControlled" type="checkbox"/> Dog controlled on path to gate</label><label class="toggle"><input name="gateAssessed" type="checkbox"/> Gate and current park conditions assessed</label><label class="toggle"><input name="innerGateSecure" type="checkbox"/> Inner gate secure before release</label><button class="primary" type="submit">Save arrival check</button><div class="answer yellow" id="arrivalResult">Arrival checks not saved.</div></form>
+</section>
+</section>
+<section class="screen" data-group="journey" id="checkin">
+<section class="hero card voluntary-pilot-hero">
+<p class="eyebrow">VOLUNTARY COMMUNITY CHECK-IN PILOT</p>
+<h2>Choose whether to share that your dog is at the park</h2>
+<p><b>Checking in and checking out are optional.</b> They are not a condition of entering the park, do not affect park access, and do not replace current signs, council rules, registration, supervision or effective control.</p>
+</section>
+<section class="voluntary-choice-banner" role="note">
+<strong>Your choice:</strong> participate to help community-reported crowd and behaviour information, or continue without checking in. There is no app penalty for skipping.
       </section>
-
-      <section id="search" class="screen" data-title="Search Parks & Alert">
-        <div class="phone-label">PAGE 2 — SEARCH PARKS & ALERT</div>
-        <div class="page-head"><button data-go="home" class="back">←</button><h2>Search parks, beaches or trip stops</h2></div>
-        <article class="brand-feature-card">
-          <img src="./assets/genevieve-roots.png" alt="GENEVIEVE roots and infinity logo" class="roots-mark">
-          <div>
-            <p class="eyebrow">GENEVIEVE Parks</p>
-            <h3>Find the right park for today.</h3>
-            <p>Search by crowd level, available space, amenities and Mr Gruff’s current temperament.</p>
-          </div>
-        </article>
-        <label class="searchbar full"><span>🔍</span><input id="placeSearch" placeholder="Search park, beach, suburb or stop"></label>
-        <div class="filter-row">
-          <button data-filter="all" class="active">Nearby</button>
-          <button data-filter="Dog Park">Parks</button>
-          <button data-filter="Dog Beach">Dog Beaches</button>
-          <button data-filter="Trip Stop">Trip Stops</button>
-        </div>
-        <article class="card">
-          <h3>Recommended for Mr Gruff</h3>
-          <p>Sorted by suitability, crowd, spaces left, size, alerts and Mr Gruff’s current temperament.</p>
-        </article>
-        <div id="placeList" class="place-list"></div>
+<section class="grid two">
+<form class="card field-panel" id="checkinForm">
+<h2>Voluntary check-in</h2>
+<label>Dog <select name="dog"></select></label>
+<label>Park <select name="park"></select></label>
+<label>Current status <select name="status"><option value="playful">Playful</option><option value="calm">Calm</option><option value="needs-space">Needs space</option><option value="reactive">Reactive today</option><option value="training">In training</option></select></label>
+<label>Expected visit length
+            <select name="expectedMinutes">
+<option value="30">About 30 minutes</option>
+<option value="60">About 1 hour</option>
+<option selected="" value="90">About 1½ hours</option>
+<option value="120">About 2 hours</option>
+<option value="180">About 3 hours</option>
+</select>
+</label>
+<p class="muted">The record automatically expires after the selected time if you forget to check out.</p>
+<fieldset class="rule-acknowledgements">
+<legend>Optional safety acknowledgements</legend>
+<label class="toggle"><input name="leadAgreement" type="checkbox"/> Dog remained on lead from the vehicle to the signed off-leash entry</label>
+<label class="toggle"><input name="gateAgreement" type="checkbox"/> Gate and current conditions were assessed</label>
+<label class="toggle"><input name="supervisionAgreement" type="checkbox"/> I will remain close enough to supervise and control my dog</label>
+</fieldset>
+<label class="toggle"><input name="needsSpace" type="checkbox"/> Needs space today</label>
+<label class="toggle"><input name="onLead" type="checkbox"/> Remaining on lead inside park</label>
+<label class="toggle"><input name="training" type="checkbox"/> In training</label>
+<label class="toggle"><input name="incognito" type="checkbox"/> Incognito — hide from best-mate alerts</label>
+<div class="button-row">
+<button class="primary" type="submit">Voluntarily check in</button>
+<button class="secondary" data-go="live-park" type="button">Continue without checking in</button>
+</div>
+<p class="muted">Skipping check-in does not mean the dog may ignore leash, supervision, boundary or effective-control rules.</p>
+</form>
+<article class="card">
+<h2>Voluntary community check-ins</h2>
+<div class="answer yellow"><b>Community-reported information may be incomplete.</b><br/>Do not treat the displayed count as an official headcount or guaranteed park capacity.</div>
+<div id="checkinList"></div>
+</article>
+</section>
+</section>
+<section class="screen" data-group="parks" id="park-search">
+<section class="hero card"><p class="eyebrow">AUSTRALIA-WIDE PARK SEARCH</p><h2>Find the closest suitable dog park first</h2><p>Enter a suburb, town, park or address. Search controls stay above the results and map. GENEVIEVE ranks the closest known matches first, then lets you compare nearby options.</p><div class="answer yellow"><b>Guidance only.</b><br/>Distances, facilities and availability must be confirmed against current council information and signs before travel or entry.</div></section>
+<form class="card field-panel park-search-first" id="parkFilterForm">
+<div class="grid two">
+<label>State or territory <select name="state"><option value="">All Australia</option><option value="ACT">Australian Capital Territory</option><option value="NSW">New South Wales</option><option value="NT">Northern Territory</option><option value="QLD">Queensland</option><option value="SA">South Australia</option><option value="TAS">Tasmania</option><option value="VIC">Victoria</option><option value="WA">Western Australia</option></select></label>
+<label>Suburb, town, park, address or feature <input autocomplete="postal-code" name="query" placeholder="Example: Labrador QLD, Musgrave Park, fenced, lighting" required/></label>
+</div>
+<details><summary>Choose needs A–Z</summary><div class="filter-checks" id="parkNeedControls"></div></details>
+<div class="button-row park-search-actions"><button class="primary" type="submit">Find closest parks</button><button id="useParkLocation" type="button">Use my location</button><button class="secondary" disabled id="undoParkSearch" type="button">Back / undo</button><button class="secondary" id="clearParkSearch" type="button">Clear search</button></div>
+<p class="answer yellow" id="parkSearchStatus" role="status"><b>Enter where you want to search.</b><br/>The map stays closed until a destination or location is supplied.</p>
+</form>
+<p class="muted park-data-provenance">Verified national starter dataset · 8 of 8 states and territories represented. Local search leads are clearly marked and must be checked against current council sources.</p>
+<section aria-labelledby="parkMatchesTitle" class="card"><p class="eyebrow">NEAREST FIRST</p><h2 id="parkMatchesTitle">Park matches</h2><div id="parkList"><div class="empty">Enter a destination above to see the nearest known parks.</div></div></section>
+<section aria-labelledby="parkMapTitle" class="card park-map-panel" hidden id="parkMapPanel">
+<div class="park-map-toolbar"><div><p class="eyebrow">MAP AFTER SEARCH</p><h2 id="parkMapTitle">Selected park map</h2><p id="parkMapLocation">Choose a park result.</p></div><div class="park-map-actions"><a class="button-link" id="selectedParkDirections" rel="noopener" target="_blank">Google directions</a><a class="button-link secondary-link" id="selectedParkFullMap" rel="noopener" target="_blank">Open full map</a><a class="button-link secondary-link" id="australiaParkSearch" rel="noopener" target="_blank">Search all Australia</a></div></div>
+<div class="park-map-frame-wrap"><iframe class="park-map-frame" id="parkMapFrame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Interactive map of the selected dog park"></iframe></div>
+<p aria-live="polite" class="park-map-status" id="parkMapStatus">Map opens after a search.</p>
+<p class="muted">The map is a location guide. Confirm the signed entrance, off-leash boundary, current council rules, opening conditions and facilities when you arrive.</p>
+</section>
+</section>
+<section class="screen" data-group="parks" id="park-details">
+<section class="hero card"><p class="eyebrow">PARK DETAILS</p><h2 id="parkDetailsTitle">Selected park</h2><p>Official details, community reports and dog-specific decision support stay clearly separated.</p></section>
+<div id="parkDetailsBody"></div>
+</section>
+<section class="screen" data-group="parks" id="live-park">
+<section class="hero card"><p class="eyebrow">COMMUNITY-REPORTED LIVE STATE</p><h2>What have participating owners reported at the selected park?</h2><p>Voluntary check-ins may not include every dog or owner present. Always assess the park directly.</p></section>
+<div class="grid four" id="liveParkStats"></div>
+<section class="grid two"><article class="card"><h2>Current behaviour mix</h2><div id="behaviourMix"></div><p class="muted">These are owner-selected current states, not permanent labels.</p></article><article class="card"><h2>Current alerts</h2><div id="liveParkAlerts"></div></article></section>
+</section>
+<section class="screen" data-group="parks" id="beaches">
+<section class="hero card"><p class="eyebrow">DOG BEACHES</p><h2>Check boundaries, hours, tide, surf, heat and facilities</h2></section>
+<section class="grid two"><form class="card field-panel" id="beachFilterForm"><label>Location <input name="location" value="Gold Coast"/></label><label>Beach type <select name="type"><option value="">Any</option><option value="off-leash">Off-leash</option><option value="on-leash">On-leash</option><option value="time-restricted">Time restricted</option></select></label><button type="submit">Search beaches</button></form><article class="card"><h2>Beach matches</h2><div id="beachResults"></div></article></section>
+</section>
+<section class="screen" data-group="dogs" id="dog-list">
+<section class="hero card"><p class="eyebrow">DOGS</p><h2>Owner-controlled public, behavioural and emergency profiles</h2></section><section class="card dog-score-explainer"><p class="eyebrow">AT-A-GLANCE COLOUR GUIDE</p><h2>Each dog receives a visible guidance colour</h2><p>The profile score combines sociability, lower reactivity and manageable energy into a 0–10 readiness guide. It is not a diagnosis, behaviour prediction or safety guarantee. Recheck the dog and environment every visit.</p><div class="score-legend"><span class="score-green">8–10 · greener conditions</span><span class="score-yellow">6–7.9 · caution</span><span class="score-amber">4–5.9 · higher controls</span><span class="score-red">0–3.9 · do not introduce now</span></div></section>
+<section class="grid two"><form class="card field-panel" id="dogForm"><h2>Add or update a dog</h2><input name="id" type="hidden"/><label>Name <input maxlength="60" name="name" required/></label><label>Date of birth <input name="dob" type="date"/></label><label>Breed / description <input maxlength="80" name="breed"/></label><label>Life stage <select name="lifeStage"><option value="puppy">Puppy</option><option value="adolescent">Adolescent</option><option selected="" value="adult">Adult</option><option value="senior">Senior</option></select></label><label>Public status note <input maxlength="160" name="publicNote" placeholder="Ask owner before approach"/></label><label>Triggers / needs <textarea maxlength="600" name="notes"></textarea></label><div class="grid two"><label>Owner-declared reproductive status <select name="reproductiveStatus"><option value="not-shared">Prefer not to show</option><option value="desexed">Desexed</option><option value="intact">Intact</option><option value="on-heat">On heat — do not introduce at an off-leash park</option></select></label><label>Support or access need <select name="supportNeeds"><option value="none">None recorded</option><option value="vision">Vision-impaired / blind</option><option value="hearing">Deaf / hearing-impaired</option><option value="mobility">Mobility support</option><option value="senior-frail">Senior / frail</option><option value="other">Other owner-declared need</option></select></label></div><label>Support note <input maxlength="200" name="supportNote" placeholder="Example: approach from the front; uses hand signals"/></label><p class="muted">These are owner-declared guide fields. They do not diagnose the dog or guarantee an interaction outcome.</p><div class="range-grid"><label>Sociability <input max="10" min="0" name="sociability" type="range" value="7"/><output>7</output></label><label>Reactivity <input max="10" min="0" name="reactivity" type="range" value="3"/><output>3</output></label><label>Energy <input max="10" min="0" name="energy" type="range" value="6"/><output>6</output></label><label>Play intensity <input max="10" min="0" name="playIntensity" type="range" value="6"/><output>6</output></label><label>Tolerance <input max="10" min="0" name="tolerance" type="range" value="7"/><output>7</output></label><label>Resource sharing <input max="10" min="0" name="resourceSharing" type="range" value="6"/><output>6</output></label><label>Vulnerability <input max="10" min="0" name="vulnerability" type="range" value="3"/><output>3</output></label></div><details><summary>Restricted emergency information</summary><label>Microchip number <input name="microchip"/></label><label>Weight kg <input min="0" name="weight" step="0.1" type="number"/></label><label>Allergies / medication <textarea name="medical"></textarea></label><label>Veterinarian <input name="vet"/></label><label>Emergency contact <input name="emergencyContact"/></label><label>Vaccination status <select name="vaccinationStatus"><option value="not-recorded">Not recorded</option><option value="controlled-only">Controlled socialisation only</option><option value="public-cleared">Cleared for public dog environments</option></select></label><label>Registration expiry <input name="registrationExpiry" type="date"/></label><label>Vaccination due <input name="vaccinationDue" type="date"/></label><label>Flea/tick due <input name="fleaTickDue" type="date"/></label><label>Medication review due <input name="medicationDue" type="date"/></label><label>Pet insurance expiry (owner-only reminder) <input name="insuranceExpiry" type="date"/></label></details><div class="button-row"><button class="primary" type="submit">Save dog</button><button class="secondary" type="reset">Clear form</button></div></form><article class="card"><h2>Saved dog profiles</h2><div id="dogList"></div></article></section>
+</section>
+<section class="screen" data-group="dogs" id="dog-profile"><section class="hero card"><p class="eyebrow">DOG PROFILE</p><h2 id="dogProfileTitle">Dog profile</h2></section><div id="dogProfileBody"></div></section>
+<section class="screen" data-group="dogs" id="puppy">
+<section class="hero card"><p class="eyebrow">PUPPY &amp; YOUNG-DOG SOCIALISATION</p><h2>Build positive experiences without assuming an ordinary dog park is suitable</h2></section>
+<section class="grid two"><form class="card field-panel" id="puppyForm"><label>Dog <select name="dog"></select></label><label>Veterinary / vaccination clearance <select name="clearance"><option value="none">Not cleared for public dog parks</option><option value="controlled">Controlled puppy class or playdate only</option><option value="public">Public dog environments cleared</option></select></label><label>Proposed setting <select name="setting"><option value="puppy-class">Puppy preschool</option><option value="calm-playdate">Calm private playdate</option><option value="quiet-enclosed">Quiet enclosed area</option><option value="busy-dog-park">Busy public dog park</option></select></label><label>Other dog type <select name="mentor"><option value="calm-adult">Calm vaccinated adult mentor</option><option value="similar-puppy">Similar-energy puppy</option><option value="high-energy-adult">High-energy adult</option><option value="unknown-group">Unknown mixed group</option></select></label><button class="primary" type="submit">Assess socialisation plan</button></form><article class="card"><h2>Result</h2><div class="answer yellow" id="puppyResult">Choose a dog and plan.</div><h3>Positive experiences</h3><div class="chips"><span class="chip">friendly people</span><span class="chip">calm healthy dogs</span><span class="chip">surfaces and sounds</span><span class="chip">short car trips</span><span class="chip">handling and grooming</span><span class="chip">rest and safe retreat</span></div></article></section>
+</section>
+<section class="screen" data-group="dogs" id="compatibility">
+<section class="card introduction-checklist"><details><summary>Staged introduction checklist</summary><ol><li>Observe both dogs separately before approaching.</li><li>Start with distance and loose leads outside the gate where lawful and safe.</li><li>Watch for stiffness, avoidance, fixed staring, escalating arousal or inability to disengage.</li><li>Use a brief parallel walk or calm sniff break before closer contact.</li><li>Stop immediately if either dog, owner or handler is uncomfortable.</li><li>Reassess after any environmental change, crowd surge, heat increase or resource conflict.</li></ol><p class="muted">A green result never means guaranteed compatibility.</p></details></section><section class="hero card"><p class="eyebrow">PAIR &amp; GROUP INTERACTION RISK</p><h2>How risky is this interaction under current conditions?</h2></section>
+<section class="risk-scale card"><div class="risk-scale-bar"><span class="green">0–24<br/><b>Green</b></span><span class="yellow">25–49<br/><b>Yellow</b></span><span class="amber">50–74<br/><b>Amber</b></span><span class="red">75–100<br/><b>Red</b></span></div></section>
+<section class="grid two"><form class="card field-panel" id="compatibilityForm"><label>First dog <select name="dogA"></select></label><label>Second dog <select name="dogB"></select></label><label>Park <select name="park"></select></label><label>Current dogs in park <input max="300" min="0" name="population" type="number" value="10"/></label><label>Observed group energy <select name="groupEnergy"><option value="3">Calm</option><option selected="" value="5">Mixed</option><option value="8">High energy</option></select></label><button class="primary" type="submit">Calculate interaction risk</button></form><article class="card"><div><h2>Colour comparison result</h2><div class="answer yellow" id="compatibilityResult">Choose two different dogs.</div><p class="muted">The pair colour is a guide based on saved profiles and current inputs. It cannot guarantee behaviour or replace direct observation and owner control.</p></div></article></section>
+<section class="card"><h2>Record observed outcome</h2><form class="inline-form" id="outcomeForm"><label>Prediction <select name="prediction"></select></label><label>Outcome <select name="outcome"><option value="positive">Positive</option><option value="neutral">Neutral</option><option value="stressful">Stressful</option><option value="conflict">Conflict / unsafe</option></select></label><label>Private note <input maxlength="300" name="note"/></label><button type="submit">Save outcome</button></form></section>
+</section>
+<section class="screen" data-group="dogs" id="companions"><section class="hero card"><p class="eyebrow">PROSPECTIVE COMPANION DISCOVERY</p><h2>Rank possible companions before the dogs have met</h2></section><section class="grid two"><form class="card field-panel" id="recommendationForm"><label>Dog <select name="dog"></select></label><label>Park <select name="park"></select></label><button type="submit">Rank possible companions</button></form><article class="card"><h2>Ranked results</h2><div id="recommendationList"></div></article></section></section>
+<section class="screen" data-group="dogs" id="best-mates"><section class="hero card"><p class="eyebrow">SOCIAL AFFINITY GRAPH</p><h2>Best mates and preferred-park alerts</h2></section><section class="grid two"><form class="card field-panel" id="affinityForm"><label>Your dog <select name="fromDog"></select></label><label>Linked dog <select name="toDog"></select></label><label>Mode <select name="mode"><option value="mutual">Mutual — reciprocal consent required</option><option value="one_way">One-way — subject to privacy settings</option></select></label><label>Preferred park <select name="park"></select></label><button type="submit">Create relationship</button></form><article class="card"><h2>Saved relationships</h2><div id="affinityList"></div></article></section><section class="card"><h2>Location alert check</h2><form class="inline-form" id="alertCheckForm"><label>Park <select name="park"></select></label><button type="submit">Check visible best mates</button></form><div id="affinityAlerts"></div></section></section>
+<section class="screen" data-group="more" id="owner-duty"><section class="voluntary-choice-banner"><strong>Voluntary feature:</strong> supervision reminders apply only when an owner elects to check in. Reporting an apparently unattended dog remains available whether or not that dog was checked in.</section>
+<section class="hero card"><p class="eyebrow">OWNER SUPERVISION</p><h2>No unattended dogs and no drop-off dog park</h2></section>
+<section class="grid two"><article class="card field-panel"><h2>Supervision confirmation</h2><div id="ownerDutyList"></div><button id="confirmAllSupervision">Confirm all my active dogs</button></article><form class="card" id="unattendedForm"><h2>Report an unattended dog</h2><label>Park <select name="park"></select></label><label>Dog description <input name="description" required/></label><label>Owner location <select name="ownerLocation"><option value="unknown">Unknown</option><option value="carpark">In car park</option><option value="cafe">Went to café/pub</option><option value="left">Left area</option></select></label><label>Concern <textarea name="concern" required></textarea></label><button class="danger" type="submit">Create supervision alert</button></form></section><section class="card"><h2>Open supervision alerts</h2><div id="unattendedReports"></div></section>
+</section>
+<section class="screen" data-group="more" id="etiquette">
+<section class="hero card"><p class="eyebrow">PARK ETIQUETTE</p><h2>Turn body-language signs into an immediate action</h2></section>
+<section class="grid two"><form class="card field-panel" id="etiquetteForm"><fieldset><legend>What do you see?</legend><div class="filter-checks" id="etiquetteSignals"></div></fieldset><button type="submit">Assess and suggest a break</button></form><article class="card"><h2>Prompt</h2><div class="answer green" id="etiquetteResult"><b>No stress signals selected.</b><br/>Continue calm supervision and regular sniff/rest breaks.</div><div class="button-row compact"><button data-break-action="Move to shade">Move to shade</button><button data-break-action="Water break">Water break</button><button data-break-action="Leash and reset">Leash and reset</button><button data-break-action="Quiet area">Quiet area</button><button class="danger" data-break-action="Leave park">Leave park</button></div></article></section>
+</section>
+<section class="screen" data-group="more" id="heat-hazards">
+<section class="hero card"><p class="eyebrow">HEAT, WEATHER &amp; HAZARDS</p><h2>Is it too hot or unsafe for my dog today?</h2></section>
+<section class="grid two"><form class="card field-panel" id="heatCheckForm"><label>Dog <select name="dog"></select></label><label>Park <select name="park"></select></label><label>Apparent / feels-like temperature °C <input max="60" min="-10" name="apparentTemperature" step="0.1" type="number" value="28"/></label><label>Humidity % <input max="100" min="0" name="humidity" type="number" value="55"/></label><label>UV index <input max="20" min="0" name="uvIndex" step="0.1" type="number" value="5"/></label><label class="toggle"><input name="directSun" type="checkbox"/> Direct sun</label><label class="toggle"><input checked name="shadeAvailable" type="checkbox"/> Reliable shade</label><label class="toggle"><input checked name="waterAvailable" type="checkbox"/> Cool fresh water</label><label class="toggle"><input name="hotSurface" type="checkbox"/> Hot asphalt, concrete or sand</label><label class="toggle"><input name="vulnerableDog" type="checkbox"/> Young, older, unwell, flat-faced or heat-vulnerable dog</label><div class="button-row"><button class="primary" type="submit">Calculate heat risk</button><button class="secondary" id="useCurrentWeather" type="button">Use my current weather</button></div></form><article class="card"><h2>Heat result</h2><div class="answer yellow" id="weatherStatus"><b>Manual entry ready.</b><br/>Location stays off until enabled in Settings.</div><div class="answer yellow" id="heatResult"><b>No result yet.</b></div><h3>Active local hazard reports</h3><div id="hazardList"></div></article></section>
+<section class="grid two"><form class="card" id="hazardForm"><h2>Report a park hazard</h2><label>Park <select name="park"></select></label><label>Hazard <select name="type"><option>Snake sighting</option><option>Paralysis ticks</option><option>Blue-green algae</option><option>Broken fence or gate</option><option>Glass or sharp object</option><option>1080 bait warning</option><option>Flood or storm damage</option><option>No water</option><option>Unsafe structure</option></select></label><label>Risk level <select name="risk"><option value="25">Yellow</option><option value="55">Amber</option><option value="80">Red</option></select></label><label>Details <textarea name="details" required></textarea></label><button class="amber" type="submit">Save hazard report</button></form><article class="card"><h2>Recent heat checks</h2><div id="heatHistory"></div></article></section>
+</section>
+<section class="screen" data-group="more" id="travel">
+<section class="hero card"><p class="eyebrow">GREY NOMAD &amp; WHOLE-TRIP PLANNER</p><h2>Plan a dog-friendly journey anywhere in Australia</h2><p>Choose the route style, number of stops, places to stay and safety features. The plan provides search links and a checklist; every venue must be confirmed directly before relying on it.</p></section>
+<section class="grid two">
+<form class="card field-panel" id="tripForm">
+<div class="grid two"><label>From <input name="from" placeholder="Gold Coast QLD" required/></label><label>To <input name="to" placeholder="Hobart TAS" required/></label></div>
+<div class="grid two"><label>Route style <select name="routeStyle"><option value="coastal">Coastal route</option><option value="inland">Inland route</option><option value="fastest">Fastest practical route</option><option value="scenic">Scenic route</option></select></label><label>How many planned stops? <input max="20" min="1" name="stopCount" type="number" value="4"/></label></div>
+<div class="grid two"><label>Maximum driving between dog breaks <select name="breakHours"><option value="1.5">1.5 hours</option><option selected="" value="2">2 hours</option><option value="2.5">2.5 hours</option><option value="3">3 hours</option></select></label><label>Dog <select name="dog"></select></label></div>
+<label class="toggle"><input checked name="dogFriendlyOnly" type="checkbox"/> Show dog-friendly places only</label><details open=""><summary>Places and services wanted</summary><div class="filter-checks" id="tripNeeds"></div></details>
+<details><summary>Accommodation preferences</summary><div class="filter-checks" id="tripStayNeeds"><label class="toggle"><input type="checkbox" value="Pet-friendly caravan park"/> Pet-friendly caravan park</label><label class="toggle"><input type="checkbox" value="Pet-friendly hotel or motel"/> Pet-friendly hotel or motel</label><label class="toggle"><input type="checkbox" value="Luxury dog-friendly stay"/> Luxury dog-friendly stay</label><label class="toggle"><input type="checkbox" value="Pet-friendly Airbnb or holiday home"/> Pet-friendly Airbnb or holiday home</label><label class="toggle"><input type="checkbox" value="Farm stay or cabin"/> Farm stay or cabin</label></div></details>
+<details><summary>Safety and facility filters</summary><div class="filter-checks" id="tripSafetyNeeds"><label class="toggle"><input type="checkbox" value="Secure fencing"/> Secure fencing</label><label class="toggle"><input type="checkbox" value="Double gate"/> Double gate</label><label class="toggle"><input type="checkbox" value="Lighting"/> Lighting</label><label class="toggle"><input type="checkbox" value="CCTV or security cameras"/> CCTV or security cameras</label><label class="toggle"><input type="checkbox" value="On-site security or staff"/> On-site security or staff</label><label class="toggle"><input type="checkbox" value="Shade"/> Shade</label><label class="toggle"><input type="checkbox" value="Fresh water"/> Fresh water</label><label class="toggle"><input type="checkbox" value="Toilets"/> Toilets</label><label class="toggle"><input type="checkbox" value="Easy parking"/> Easy parking</label><label class="toggle"><input type="checkbox" value="Quiet area"/> Quiet area</label><label class="toggle"><input type="checkbox" value="24-hour emergency vet nearby"/> 24-hour emergency vet nearby</label></div></details>
+<label>Extra needs or limits <textarea maxlength="800" name="notes" placeholder="Examples: avoid stairs, senior dog, no rough surfaces, wheelchair access"></textarea></label>
+<div class="button-row"><button class="primary" type="submit">Build complete trip plan</button><button class="secondary" id="clearTripPlan" type="button">Clear</button></div>
+</form>
+<article class="card"><h2>Your route and stop plan</h2><div id="tripResult"><div class="empty">Enter a start and destination to build the trip.</div></div></article>
+</section>
+<section class="card"><h2>Saved trip plans</h2><div id="savedTripPlans"><div class="empty">No saved trip plans.</div></div></section>
+<section class="grid three travel-support-grid">
+<article class="card official-emergency-card"><p class="eyebrow">AUSTRALIA-WIDE HELP</p><h2>Emergency and non-emergency contacts</h2><div class="travel-link-stack"><button class="danger" data-open-emergency-services="" type="button">Open emergency services chooser</button><a class="button-link" href="tel:132500">SES 132 500 — storm and flood assistance</a><a class="button-link" href="tel:131444">Police 131 444 — non-urgent assistance</a><a class="button-link" href="tel:131126">Poisons Information Centre 13 11 26</a></div><p class="emergency-note">Use Triple Zero only for urgent police, fire or ambulance help. The app does not contact any service automatically.</p></article>
+<article class="card"><p class="eyebrow">ANIMAL MEDICAL HELP</p><h2>Find emergency veterinarians along the route</h2><label>Town or destination <input id="travelVetLocation" placeholder="Town or suburb"/></label><div class="travel-link-stack"><a class="button-link" id="travelVetMapsLink" rel="noopener" target="_blank">Search 24-hour emergency vets</a><a class="button-link" id="travelVetOpenNowLink" rel="noopener" target="_blank">Search vets open now</a></div><p class="muted">Phone first. Hours, staffing and after-hours arrangements can change.</p></article>
+<article class="card"><p class="eyebrow">PET-FRIENDLY STAYS</p><h2>Search and verify accommodation</h2><label>Destination <input id="stayLocation" placeholder="Town or destination"/></label><div class="travel-link-stack"><a class="button-link" id="airbnbPetLink" rel="noopener" target="_blank">Search pet-friendly Airbnb stays</a><a class="button-link" id="petHotelMapsLink" rel="noopener" target="_blank">Search pet-friendly hotels</a><a class="button-link" id="petCaravanMapsLink" rel="noopener" target="_blank">Search pet-friendly caravan parks</a></div><p class="muted">Confirm pet rules, fees, fencing, cameras, staff presence, size limits and whether a dog may ever be left unattended.</p></article>
+</section>
+<section class="card"><p class="eyebrow">FUTURE GENEVIEVE BOARDING KENNELS MODE</p><h2>Home Boarding Match — planned, not active booking</h2><p>The existing profiles and safety controls may support a future verified boarding marketplace. Identity checks, property checks, insurance, payments, cancellations, reviews, incident response and dispute handling must be completed before public bookings are enabled.</p><div class="answer yellow"><b>Not active.</b><br/>No stranger-to-stranger booking is created from this Dog Park build.</div></section>
+</section>
+<section class="screen" data-group="more" id="emergency">
+<section class="hero card official-emergency-card"><p class="eyebrow">EMERGENCY &amp; SERVICES</p><h2>Choose the right real-world help</h2><div class="emergency-primary-actions"><button class="call-000-button emergency-hold-button" id="emergencyPageHoldButton" type="button">Hold 3 seconds for 000</button><button id="showServiceChooser" type="button">Non-emergency services</button><button class="secondary" data-go="lost-found">Lost dog alert</button><button class="secondary" data-go="incident">Record incident</button></div><p class="emergency-note">Tap the thin header control or choose non-emergency services for council, ranger, pound, veterinary, police or SES options. Hold for three seconds and slide only when you intend to open the phone dialler for Triple Zero.</p></section>
+<section aria-labelledby="serviceChooserTitle" class="card service-chooser" id="nonEmergencyServicePanel"><p class="eyebrow">SERVICE CHOOSER</p><h2 id="serviceChooserTitle">What help do you need?</h2><label>Your suburb, council area or current town <input id="serviceLocation" placeholder="Example: Labrador QLD" value="Gold Coast QLD"/></label><div class="service-grid"><a class="service-button" data-service-search="council animal management ranger">Council animal management / ranger</a><a class="service-button" data-service-search="council pound lost found animals">Council pound / shelter</a><a class="service-button" data-service-search="emergency veterinarian open now">Emergency veterinarian</a><a class="service-button" href="tel:131444">Policelink / non-urgent police · 131 444</a><a class="service-button" href="tel:132500">SES storm or flood help · 132 500</a><a class="service-button" href="tel:131126">Poisons Information Centre · 13 11 26</a><a class="service-button" data-service-search="local police station">Local police station</a><a class="service-button" data-service-search="wildlife rescue">Wildlife rescue</a></div><p class="muted">Service availability and phone numbers may vary by state or council. Search results open separately so the user can verify the current official provider.</p></section>
+<section aria-labelledby="emergencyCallConfirmTitle" class="card emergency-call-confirm" hidden id="emergencyCallConfirm"><p class="eyebrow">FINAL CALL CONFIRMATION</p><h2 id="emergencyCallConfirmTitle">Slide fully to call Triple Zero (000)</h2><p>This opens the phone dialler only. GENEVIEVE does not contact emergency services, transmit your location, or confirm that help is coming.</p><label for="emergencyCallSlider">Slide to call 000 <input id="emergencyCallSlider" max="100" min="0" step="1" type="range" value="0"/></label><p class="answer red" id="emergencyCallStatus" role="status">Slide all the way to the right only when you intend to call 000.</p><button class="secondary" id="cancelEmergencyCall" type="button">Cancel call control</button></section>
+<section class="card pre-entry-safety"><details open=""><summary>Immediate safety actions before making a report</summary><ol><li>Create distance and secure dogs without placing yourself at further risk.</li><li>Check people and animals for urgent injury.</li><li>For immediate danger or serious injury, use the 000 hold-and-slide control.</li><li>Preserve photos, times, locations and witness details only when safe and lawful.</li><li>Do not decide fault or liability inside the app.</li></ol></details></section>
+<section class="grid three"><article class="card"><h2>Restricted medical summary</h2><label>Dog <select id="emergencyDogSelect"></select></label><button class="danger" id="showEmergencySummary">Show summary</button><div id="emergencySummary"></div></article><article class="card"><h2>Nearest veterinarian</h2><label>Location <input id="vetLocation" value="Gold Coast QLD"/></label><a class="button-link" id="vetSearchLink" rel="noopener" target="_blank">Find emergency vet</a></article><article class="card"><h2>I’m here alone</h2><label>Check-in time <select id="aloneTimerMinutes"><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">60 minutes</option></select></label><button id="startAloneTimer">Start safety timer</button><button class="secondary" id="cancelAloneTimer">Cancel timer</button><p class="muted" id="aloneTimerStatus"></p></article></section>
+</section>
+<section class="screen" data-group="more" id="lost-found"><section class="hero card"><p class="eyebrow">LOST &amp; FOUND</p><h2>Create a local record and escalation plan</h2></section><section class="grid two"><form class="card field-panel" id="lostFoundForm"><label>Type <select name="type"><option value="lost">Lost dog</option><option value="found">Found dog</option><option value="sighted">Sighted dog</option></select></label><label>Description <input name="description" required/></label><label>Location <input name="location" required/></label><label>Urgency <select name="urgency"><option value="watch">Watch</option><option value="urgent">Urgent search</option><option value="danger">Immediate danger</option></select></label><label>Contact note <input name="contact"/></label><button class="danger" type="submit">Create alert record</button></form><article class="card"><h2>Current records</h2><div id="lostFoundList"></div></article></section></section>
+<section class="screen" data-group="more" id="incident"><section class="hero card"><p class="eyebrow">INCIDENT &amp; NEAR MISS</p><h2>Create a factual, exportable record without deciding liability</h2><p>Record observations, actions and evidence. Separate what was personally observed from what another person reported.</p></section><section class="grid two"><form class="card field-panel" id="incidentForm"><label>Park <select name="park"></select></label><div class="grid two"><label>Date and time <input name="occurredAt" type="datetime-local"/></label><label>Exact area <input name="locationDetail" placeholder="Gate, small-dog area, path, car park"/></label></div><label>Type <select name="type"><option>Dog fight</option><option>Bite or scratch</option><option>Human injury</option><option>Child safety concern</option><option>Bike, scooter or skateboard conflict</option><option>Broken gate or fence</option><option>No water</option><option>Lighting fault</option><option>Unsafe structure</option><option>Lost or loose dog</option><option>Near miss</option><option>Other</option></select></label><label>Severity <select name="severity"><option value="30">Yellow — monitor / minor</option><option value="60">Amber — urgent follow-up</option><option value="85">Red — immediate danger or serious injury</option></select></label><label>What I personally observed <textarea maxlength="1800" name="details" required></textarea></label><label>What another person reported <textarea maxlength="1200" name="reportedInformation"></textarea></label><label>Immediate actions taken <textarea maxlength="1200" name="actions" placeholder="Dogs separated, first aid, owner contacted, ranger called"></textarea></label><div class="grid two"><label>Witness/contact notes <textarea maxlength="1000" name="witness"></textarea></label><label>Evidence reference <textarea maxlength="1000" name="evidenceReference" placeholder="Photo file names, CCTV location, report number — do not upload sensitive evidence publicly"></textarea></label></div><label class="toggle"><input name="consentToShare" type="checkbox"/> I authorise this record to be included in a council/responder export selected by me</label><button class="amber" type="submit">Save factual incident record</button></form><article class="card"><h2>Incident history</h2><div class="button-row"><button id="exportIncidentRegister" type="button">Export incident register</button><button class="secondary" id="printIncidentRegister" type="button">Print current register</button></div><div id="incidentList"></div></article></section><section class="card disclosure"><strong>Evidence and privacy boundary</strong><p>Keep descriptions factual. Do not publish personal information, medical information, allegations or images without a lawful basis. An app record does not replace a report to police, council, a veterinarian, insurer or another authorised service.</p></section></section>
+<section class="screen" data-group="more" id="notices"><section class="hero card"><p class="eyebrow">COUNCIL &amp; OPERATOR NOTICES</p><h2>Verified closures, maintenance and rule changes</h2></section><div class="grid two" id="noticeList"></div></section>
+<section class="screen" data-group="more" id="roles"><section class="hero card"><p class="eyebrow">ROLE-BASED ACCESS</p><h2>People see only what they need</h2></section><section class="grid three"><article class="card role owner"><h2>Dog Owner</h2><p>Own profiles, check-ins, privacy, relationships, outcomes, documents and payments.</p></article><article class="card role"><h2>Park Visitor</h2><p>Public park details, anonymous live state, public dog notes, rules and alerts.</p></article><article class="card role"><h2>Park Worker / Contractor</h2><p>Relevant hazards, incidents and assigned maintenance safety alerts without private owner or medical data.</p></article><article class="card role operator"><h2>Park Superintendent</h2><p>Facilities, maintenance, verified notices, capacity, incident triage and anonymous trends.</p></article><article class="card role responder"><h2>Authorised Responder</h2><p>Restricted emergency information only where appropriate and auditable.</p></article><article class="card role admin"><h2>System Administrator</h2><p>Technical service health and account support without unnecessary medical browsing.</p></article></section></section>
+<section class="screen" data-group="more" data-role="superintendent,admin" id="superintendent"><section class="hero card"><p class="eyebrow">PARK SUPERINTENDENT / COUNCIL OPERATOR</p><h2>Operate the park without exposing private owner data</h2></section><div class="grid four" id="superStats"></div><section class="grid two"><form class="card field-panel" id="maintenanceForm"><h2>Add maintenance task</h2><label>Park <select name="park"></select></label><label>Facility <select name="facility"><option>Gate or latch</option><option>Fence</option><option>Water bowl</option><option>Lighting</option><option>Shade</option><option>Bins</option><option>Path/access</option><option>Structure</option></select></label><label>Priority <select name="priority"><option value="yellow">Yellow</option><option value="amber">Amber</option><option value="red">Red</option></select></label><label>Task <textarea name="task" required></textarea></label><button type="submit">Assign task</button><h3>Maintenance queue</h3><div id="maintenanceList"></div></form><form class="card" id="noticeForm"><h2>Create verified public notice</h2><label>Park <select name="park"></select></label><label>Title <input name="title" required/></label><label>Details <textarea name="details" required></textarea></label><label>Expires <input name="expires" type="datetime-local"/></label><button class="amber" type="submit">Publish notice locally</button><h3>Safety and trend view</h3><div id="superTrends"></div></form></section></section>
+<section class="screen" data-group="more" id="notifications">
+<section class="hero card">
+<p class="eyebrow">CROSS-PLATFORM SAFETY NOTIFICATIONS</p>
+<h2>Alerts for owners, visitors, workers and authorised teams</h2>
+<p>Permission is always optional. GENEVIEVE will not request it until the person using this device presses the enable button.</p>
+</section>
+<section class="grid three">
+<article class="card">
+<h2>Device notification status</h2>
+<div aria-live="polite" class="answer yellow" id="notificationPermissionStatus"><b>Checking this device…</b></div>
+<div class="button-row">
+<button class="primary" id="enableNotifications" type="button">Enable device notifications</button>
+<button class="secondary" id="testNotification" type="button">Send test notification</button>
+<button class="secondary" id="checkNotifications" type="button">Check alerts now</button>
+</div>
+<div aria-live="polite" class="answer yellow" id="notificationActionStatus"><b>No notification action yet.</b></div>
+<p class="muted">Android: use a current Chrome-based browser or installed GENEVIEVE app and allow notifications in both the browser and Android settings. iPhone/iPad: add GENEVIEVE to the Home Screen and open the installed app before enabling. Windows and Mac: allow notifications for the installed app or browser.</p>
+</article>
+<article class="card">
+<h2>This device and platform</h2>
+<div aria-live="polite" id="notificationPlatformStatus"></div>
+<button class="secondary" hidden id="installNotificationApp" type="button">Install GENEVIEVE on this device</button>
+<p class="muted">GENEVIEVE checks permission, secure connection, service worker delivery, installation, vibration and app-badge support. The operating system remains in control of sound, Focus / Do Not Disturb and battery restrictions.</p>
+</article>
+<article class="card">
+<h2>In-app safety inbox</h2>
+<p class="muted">This is the universal fallback. Eligible alerts stay visible here even when this device cannot show a system notification.</p>
+<div id="inAppAlertHistory"></div>
+<button class="secondary" id="clearInAppAlerts" type="button">Clear acknowledged alerts</button>
+</article>
+</section>
+<section class="card">
+<h2>Delivered device notifications</h2>
+<p class="muted">These alerts were handed to this device’s notification system.</p>
+<div id="notificationHistory"></div>
+</section>
+<form class="card grid two" id="notificationForm">
+<div><h2>Alert types</h2><div id="notificationControls"></div></div>
+<div>
+<h2>Privacy and timing</h2>
+<label>Quiet hours start <input name="quietStart" type="time"/></label>
+<label>Quiet hours end <input name="quietEnd" type="time"/></label>
+<label>Location detail <select name="locationDetail"><option value="park">Park name only</option><option value="approximate">Approximate area</option><option value="off">Off</option></select></label>
+<button type="submit">Save notification settings</button>
+<p class="muted">Red critical alerts may bypass quiet hours only when “Emergency and lost-dog alerts” remains enabled. Worker-task and incident alerts are shown only to the appropriate local role selected on this device.</p>
+</div>
+</form>
+<section class="card warning-card">
+<h2>Delivery boundary</h2>
+<p>System notifications and the in-app inbox work from information available on this device. Alerts created on another phone, by a council or by a work team require the secured account backend and server push service before they can reach this device while GENEVIEVE is closed. The app must never be treated as proof that emergency services, a ranger, a veterinarian, a worker or a supervisor was contacted.</p>
+</section>
+</section>
+<section class="screen" data-group="more" id="membership"><section class="hero card"><p class="eyebrow">MEMBERSHIP</p><h2>One membership group, four approved products</h2><p id="billingChannelMessage"></p></section><section class="card disclosure"><b>Trial and renewal disclosure</b><p>30 days free for eligible new subscribers. Then the selected price is charged every month or year and the subscription automatically renews until cancelled. Cancel before the trial ends to avoid the first charge. Deleting the app does not cancel the subscription. Manage or cancel through the same store or payment provider used to subscribe.</p><p>Nothing excludes rights that cannot lawfully be excluded under the Australian Consumer Law.</p></section><div class="pricing-grid" id="planList"></div><section class="card"><div class="legal-links"><a href="./legal/subscription-terms.html">Subscription Terms</a><a href="./legal/refund-cancellation-policy.html">Refund &amp; Cancellation</a><a href="./legal/terms-of-use.html">Terms of Use</a><a href="./legal/privacy-policy.html">Privacy Policy</a></div><button class="secondary" id="restorePurchases">Restore store purchases</button><div class="answer yellow" id="billingResult">No purchase action yet.</div></section></section>
+<section class="screen" data-group="more" id="communication-access">
+<section class="hero card accessibility-hero">
+<p class="eyebrow">OPTIONAL ACCESSIBILITY</p>
+<h2>Communication, Auslan support and visual safety</h2>
+<p>This supports recognised Auslan and Deaf-community access. GENEVIEVE does not create, rename or claim ownership of Auslan signs.</p>
+</section>
+<section class="privacy-first-note" role="note">
+<b>Private by default.</b> These preferences stay on this device and are not shown to other park users unless you deliberately enable public sharing below.
       </section>
-
-      <section id="details" class="screen" data-title="Place Details & Safety">
-        <div class="phone-label">PAGE 3 — PLACE DETAILS & SAFETY</div>
-        <div class="page-head"><button data-go="search" class="back">←</button><h2 id="placeTitle">Witherside Park</h2><button data-action="favourite" class="heart">♡</button></div>
-        <img id="placeImage" class="hero-img" src="./assets/park.svg" alt="">
-        <div id="placeDecision" class="decision green"></div>
-        <div class="stats-grid">
-          <div><b id="placeDogsNow">8</b><span>dogs now</span></div>
-          <div><b id="placeSpacesLeft">12</b><span>spaces left</span></div>
-          <div><b id="placeCrowd">Low</b><span>crowd</span></div>
-        </div>
-        <details class="card" open>
-          <summary>Why Genevieve chose this colour</summary>
-          <ul>
-            <li>Combines Mr Gruff’s current temperament and history.</li>
-            <li>Checks crowd, spaces left, park size, shade, water and fencing.</li>
-            <li>Flags dog beaches, tide/sign access and council notices.</li>
-            <li>Provides decision support only. Humans decide and supervise.</li>
-          </ul>
-        </details>
-        <details class="card">
-          <summary>Park or beach rules</summary>
-          <ul id="placeRules"></ul>
-        </details>
-        <details class="card">
-          <summary>Amenities & features A–Z</summary>
-          <div id="amenities" class="chips"></div>
-        </details>
-        <details class="card">
-          <summary>Live safety updates</summary>
-          <div id="placeAlerts"></div>
-        </details>
-        <div class="sticky-actions">
-          <button data-action="checkIn">Check In Arrived</button>
-          <button data-go="trip" class="secondary">Plan Visit</button>
-          <button data-go="search" class="secondary">Choose Another Place</button>
-        </div>
-      </section>
-
-      <section id="visit" class="screen" data-title="Live Visit / Check In">
-        <div class="phone-label">PAGE 4 — LIVE VISIT / CHECK IN</div>
-        <div class="page-head"><button data-go="home" class="back">←</button><h2>You’re Checked In</h2></div>
-        <article class="card visit-card">
-          <img src="./assets/mr-gruff-avatar.jpg" alt="Mr Gruff">
-          <div>
-            <h3 id="visitPlaceName">Witherside Park</h3>
-            <p id="visitStatus">Checked in at 10:32 am • owner present</p>
-            <span id="visitStatusChip" class="chip amber">Needs Space</span>
-          </div>
-        </article>
-        <div class="stats-grid">
-          <div><b id="visitDogsNow">8</b><span>dogs in park</span></div>
-          <div><b id="visitSpacesLeft">12</b><span>spaces left</span></div>
-          <div><b id="visitCrowd">Low</b><span>crowd</span></div>
-        </div>
-        <article class="card">
-          <h3>Mr Gruff’s Status</h3>
-          <div id="visitDecision" class="decision amber"><b>Needs Space</b><span>On Lead — In Training. Let others know how to act.</span></div>
-          <button data-go="needs">Change Status</button>
-        </article>
-        <article class="card">
-          <h3>No Dog Drop-Off</h3>
-          <p>Owner confirms they are still supervising. This helps address people leaving dogs alone at the park.</p>
-          <div class="button-row">
-            <button data-action="stillHere">I’m still supervising</button>
-            <button data-action="reportUnattended" class="secondary">Report dog left unattended</button>
-          </div>
-        </article>
-        <section class="quick-actions two">
-          <button class="quick gold" data-action="bestMate">✨<b>Best Mate</b><span>Luna alert</span></button>
-          <button class="quick purple" data-action="incognito">🕶️<b>Incognito</b><span>Privacy</span></button>
-          <button class="quick" data-go="needs">✏️<b>Update Status</b><span>Changed mood</span></button>
-          <button class="quick" data-action="checkOut">🚪<b>Check Out</b><span>Leaving</span></button>
-        </section>
-        <article class="sos"><div><b>Emergency — 000</b><span>Press, hold & slide.</span></div><button data-action="openSos">Hold + Slide</button></article>
-      </section>
-
-      <section id="trip" class="screen" data-title="Plan Trip">
-        <div class="phone-label">PAGE 5 — PLAN ANY TRIP</div>
-        <div class="page-head"><button data-go="home" class="back">←</button><h2>Plan Any Trip in Australia</h2></div>
-        <article class="card form-card">
-          <label>From <input id="tripFrom" value="Gold Coast, QLD"></label>
-          <label>To <input id="tripTo" value="Sydney, NSW"></label>
-          <label>Travelling with <select id="tripDog"><option>Mr Gruff — Needs Space</option></select></label>
-          <label>Humans <select><option>Tracey + 1 human</option><option>Tracey only</option></select></label>
-        </article>
-        <details class="card" open>
-          <summary>What do you need on your trip?</summary>
-          <div id="tripNeedChips" class="chips selectable"></div>
-          <button data-action="clearTripNeeds" class="secondary">Clear for new destination</button>
-        </details>
-        <article class="route card">
-          <h3>Balanced Route</h3>
-          <p>Dog parks, dog beaches, caravan parks, pet-friendly hotels, vets, water, shade, toilets, fuel and rest stops.</p>
-          <button data-action="makeRoute">View itinerary & map</button>
-        </article>
-        <article class="route card">
-          <h3>Scenic Coastal Route</h3>
-          <p>More beaches and cafés. Check council signs, tide, heat and access times before stopping.</p>
-          <button data-action="makeRoute">View itinerary & map</button>
-        </article>
-        <article class="card">
-          <h3>Australia map / route notes</h3>
-          <div id="routeMap" class="map-card">Route preview appears here after you choose an itinerary.</div>
-        </article>
-      </section>
-
-      <section id="profile" class="screen" data-title="Dog Profile Overview">
-        <div class="phone-label">PAGE 6 — DOG PROFILE OVERVIEW</div>
-        <div class="page-head"><button data-go="home" class="back">←</button><h2>Mr Gruff</h2><button data-go="profileDetails" class="small-btn">Details</button></div>
-        <article class="profile-hero">
-          <img src="./assets/tracey-avatar.jpg" alt="Tracey" class="owner-overlay">
-          <img src="./assets/mr-gruff-profile.jpg" alt="Mr Gruff" class="dog-cover">
-        </article>
-        <article class="card">
-          <h3>Mr Gruff</h3>
-          <p>Medium • 20 kg • Desexed male • Born 08/08/2021</p>
-          <div class="chip-row">
-            <span class="chip amber">Needs Space</span>
-            <span class="chip amber">On Lead — In Training</span>
-            <span class="chip green">Happy to Play when safe</span>
-          </div>
-          <button data-go="profileDetails">Open full dog history</button>
-        </article>
-        <article class="card">
-          <h3>Private Records</h3>
-          <div class="record"><span>Microchip</span><b>Yes — hidden</b></div>
-          <div class="record"><span>Vaccinated</span><b>Up to date</b></div>
-          <div class="record"><span>Owner</span><b>Tracey Kennedy</b></div>
-          <div class="record"><span>Emergency contacts</span><b>2 contacts</b></div>
-        </article>
-      </section>
-
-      <section id="profileDetails" class="screen" data-title="Dog Profile Details">
-        <div class="phone-label">PAGE 7 — DOG PROFILE DETAILS</div>
-        <div class="page-head"><button data-go="profile" class="back">←</button><h2>Mr Gruff — Full Profile</h2></div>
-        <div class="mini-tabs">
-          <button class="active" data-detail-tab="medical">Medical</button>
-          <button data-detail-tab="behaviour">Behaviour</button>
-          <button data-detail-tab="history">History</button>
-          <button data-detail-tab="privacy">Privacy</button>
-        </div>
-        <article id="dogDetailPanel" class="card"></article>
-      </section>
-
-      <section id="needs" class="screen" data-title="Needs Space / Status">
-        <div class="phone-label">PAGE 8 — NEEDS SPACE / STATUS</div>
-        <div class="page-head"><button data-go="visit" class="back">←</button><h2>Set Mr Gruff’s Status</h2></div>
-        <div id="needsDecision" class="decision amber"><b>Amber — Give Space</b><span>Needs extra space and calm handling today.</span></div>
-        <article class="card">
-          <h3>Temperament options</h3>
-          <div id="statusOptions" class="status-options"></div>
-        </article>
-        <article class="card">
-          <h3>Triggers and today’s note</h3>
-          <div id="triggerChips" class="chips selectable"></div>
-          <textarea id="statusNote" placeholder="Add a note, e.g. nervous at gate, reactive to skateboard, tired today..."></textarea>
-          <button data-action="saveStatus">Save status</button>
-        </article>
-      </section>
-
-      <section id="mates" class="screen" data-title="Best Mate Alert">
-        <div class="phone-label">PAGE 9 — BEST MATE ALERT</div>
-        <div class="page-head"><button data-go="home" class="back">←</button><h2>Best Mate Alert</h2></div>
-        <article class="card best-card">
-          <h3>✨ Luna is here</h3>
-          <p>Find compatible playmates for Mr Gruff. Alerts only show for approved friends and stop when incognito is on.</p>
-        </article>
-        <article class="card">
-          <h3>Mr Gruff is looking for dogs that are:</h3>
-          <div class="chips"><span>Similar size</span><span>Desexed</span><span>Calm energy</span><span>Vaccinated</span><span>Respects needs space</span></div>
-        </article>
-        <div id="mateList"></div>
-      </section>
-
-      <section id="alerts" class="screen" data-title="Safety & Alerts">
-        <div class="phone-label">PAGE 10 — SAFETY & ALERTS</div>
-        <div class="page-head"><button data-go="home" class="back">←</button><h2>Safety & Alerts</h2></div>
-        <article class="card">
-          <h3>Active Alerts</h3>
-          <div id="alertList"></div>
-        </article>
-        <article class="card">
-          <h3>Guided Help</h3>
-          <button data-go="incident">Report incident</button>
-          <button data-go="lostFound" class="secondary">Lost & Found</button>
-          <button data-go="map" class="secondary">Open Australia map</button>
-        </article>
-        <article class="sos"><div><b>Emergency — 000</b><span>Use only in a real emergency.</span></div><button data-action="openSos">Hold + Slide</button></article>
-      </section>
-
-      <section id="map" class="screen" data-title="Australia Map">
-        <div class="phone-label">AUSTRALIA MAP / NEARBY</div>
-        <div class="page-head"><button data-go="alerts" class="back">←</button><h2>Australia Map</h2></div>
-        <article class="card">
-          <h3>Map decision layer</h3>
-          <div class="map-card">
-            <b>Gold Coast → Sydney</b>
-            <span>Dog parks, dog beaches, vets, caravan parks, fuel and rest stops shown as safe-route layers.</span>
-          </div>
-          <p>This static version stores route choices locally. Production live maps need a maps API key.</p>
-        </article>
-        <div id="mapPlaceList" class="place-list"></div>
-      </section>
-
-      <section id="incident" class="screen" data-title="Incident Report">
-        <div class="phone-label">INCIDENT REPORT</div>
-        <div class="page-head"><button data-go="alerts" class="back">←</button><h2>Report Incident</h2></div>
-        <form id="incidentForm" class="card form-card">
-          <label>Level
-            <select name="level">
-              <option value="yellow">Yellow — monitor</option>
-              <option value="amber">Amber — caution / give space</option>
-              <option value="red">Red — leave / urgent</option>
-              <option value="black">Black — official emergency</option>
-            </select>
-          </label>
-          <label>Category
-            <select name="category">
-              <option>Dog behaviour</option><option>Park hazard</option><option>Beach / tide concern</option><option>Lost dog</option><option>Unattended dog</option><option>Owner distracted</option><option>Other</option>
-            </select>
-          </label>
-          <label>Location <input name="location" value="Witherside Park"></label>
-          <label>Notes <textarea name="notes" placeholder="What happened?"></textarea></label>
-          <button type="submit">Save report</button>
-        </form>
-        <article class="card"><h3>Reports saved on this device</h3><div id="reportsList"></div></article>
-      </section>
-
-      <section id="lostFound" class="screen" data-title="Lost & Found">
-        <div class="phone-label">LOST & FOUND</div>
-        <div class="page-head"><button data-go="alerts" class="back">←</button><h2>Lost & Found</h2></div>
-        <article class="card">
-          <h3>Mr Gruff emergency profile</h3>
-          <p>Microchip, allergies, medication, vet and emergency contacts stay restricted unless Tracey chooses to share them.</p>
-          <div class="button-row">
-            <button data-action="shareLostDog">Create lost dog alert</button>
-            <button data-action="foundDog" class="secondary">Report found dog</button>
-          </div>
-        </article>
-        <div id="lostFoundLog"></div>
-      </section>
-
-      <section id="settings" class="screen" data-title="Settings">
-        <div class="phone-label">SETTINGS / PRIVACY / LIVE SETUP</div>
-        <div class="page-head"><button data-go="home" class="back">←</button><h2>Settings & Live Setup</h2></div>
-        <article class="card">
-          <h3>Business setup</h3>
-          <div class="record"><span>Business name</span><b>GENEVIEVE App™</b></div>
-          <div class="record"><span>ABN</span><b>Add exact ABN</b></div>
-          <div class="record"><span>Mode</span><b>Static live-ready deployment</b></div>
-          <p>Public launch payments, accounts and push notifications need external services connected.</p>
-        </article>
-        <article class="card brand-assets-card">
-          <h3>Official app marks</h3>
-          <div class="brand-marks">
-            <figure>
-              <img src="./assets/ga-logo-512.png" alt="GA logo">
-              <figcaption>Primary GENEVIEVE App™ GA logo</figcaption>
-            </figure>
-            <figure>
-              <img src="./assets/genevieve-roots-512.png" alt="Genevieve roots and infinity logo">
-              <figcaption>Supporting roots / infinity mark</figcaption>
-            </figure>
-          </div>
-        </article>
-        <article class="card form-card">
-          <h3>Payment & backend placeholders</h3>
-          <label>Stripe Free Plan Link <input id="stripeFree" placeholder="Paste Stripe Payment Link"></label>
-          <label>Stripe Premium Link <input id="stripePremium" placeholder="Paste Stripe Payment Link"></label>
-          <label>Backend URL <input id="backendUrl" placeholder="Supabase / Firebase / API URL"></label>
-          <button data-action="saveLiveSetup">Save live setup</button>
-        </article>
-        <article class="card">
-          <h3>Privacy & Legal</h3>
-          <div class="link-grid">
-            <a href="./privacy.html">
-              <span class="link-icon" aria-hidden="true">🔒</span>
-              <span class="link-copy"><b>Privacy Policy</b><small>Information and consent</small></span>
-            </a>
-            <a href="./terms.html">
-              <span class="link-icon" aria-hidden="true">📄</span>
-              <span class="link-copy"><b>Terms</b><small>Conditions of use</small></span>
-            </a>
-            <a href="./safety.html">
-              <span class="link-icon" aria-hidden="true">🛡️</span>
-              <span class="link-copy"><b>Safety</b><small>Guidance and emergencies</small></span>
-            </a>
-            <a href="./community.html">
-              <span class="link-icon" aria-hidden="true">🐾</span>
-              <span class="link-copy"><b>Community Guidelines</b><small>Respectful park use</small></span>
-            </a>
-          </div>
-          <div class="button-row">
-            <button data-action="exportData">Export local app data</button>
-            <button data-action="clearData" class="danger-btn">Delete local demo data</button>
-          </div>
-        </article>
-        <article class="card">
-          <h3>Audit Trail</h3>
-          <div id="auditList"></div>
-        </article>
-      </section>
-    </main>
-
-    <nav class="bottom-nav" aria-label="Main navigation">
-      <button data-go="home" class="active"><span class="nav-icon-wrap"><img src="./assets/nav-home.svg" alt="" class="nav-icon-img"></span><span>Home</span></button>
-      <button data-go="search"><span class="nav-icon-wrap"><img src="./assets/nav-parks.svg" alt="" class="nav-icon-img"></span><span>Parks</span></button>
-      <button data-go="trip"><span class="nav-icon-wrap"><img src="./assets/nav-trip.svg" alt="" class="nav-icon-img"></span><span>Trips</span></button>
-      <button data-go="alerts"><span class="nav-icon-wrap"><img src="./assets/nav-alerts.svg" alt="" class="nav-icon-img"></span><span>Alerts</span></button>
-      <button data-go="profile"><span class="nav-icon-wrap"><img src="./assets/nav-profile.svg" alt="" class="nav-icon-img"></span><span>Profile</span></button>
-      <button data-go="settings"><span class="nav-icon-wrap"><img src="./assets/nav-more.svg" alt="" class="nav-icon-img"></span><span>More</span></button>
-    </nav>
-  </div>
-
-  <dialog id="sosDialog">
-    <h2>Emergency — 000</h2>
-    <p>This needs a deliberate press and hold so it cannot be triggered by accident. In immediate danger, call 000 directly and move to safety.</p>
-    <button id="holdSos">Press and hold 3 seconds</button>
-    <button id="closeSos" class="secondary">Cancel</button>
-  </dialog>
-
-  <script src="./app.js"></script>
+<section class="grid two">
+<form class="card field-panel" id="communicationPreferencesForm">
+<h2>My communication preferences</h2>
+<label class="toggle"><input name="auslanSupportEnabled" type="checkbox"/> Turn on communication and Auslan support</label>
+<label class="toggle"><input name="usesAuslan" type="checkbox"/> I use Auslan</label>
+<label class="toggle"><input name="deafOrHardOfHearing" type="checkbox"/> I am Deaf or hard of hearing</label>
+<label class="toggle"><input name="learningAuslan" type="checkbox"/> I am learning Auslan</label>
+<label class="toggle"><input name="communicateSigning" type="checkbox"/> I’m happy to communicate by signing</label>
+<label class="toggle"><input name="communicateTyping" type="checkbox"/> I’m happy to communicate by typing</label>
+<label class="toggle"><input name="communicateCards" type="checkbox"/> I’m happy to use visual communication cards</label>
+<label class="toggle"><input name="visualAttention" type="checkbox"/> Please get my attention visually—do not approach from behind</label>
+<label class="toggle"><input name="dogVisualCommands" type="checkbox"/> My dog responds to visual hand commands</label>
+<fieldset class="privacy-choice">
+<legend>Public sharing</legend>
+<label class="toggle"><input name="shareCommunicationPreferences" type="checkbox"/> I choose to show my selected communication preferences to other users</label>
+<p class="muted">Off by default. Emergency responders only see information you deliberately show on your screen.</p>
+</fieldset>
+<button class="primary" type="submit">Save accessibility preferences</button>
+<div aria-live="polite" class="answer green" id="communicationPreferenceStatus">No communication information is publicly shared.</div>
+</form>
+<article class="card">
+<h2>Large-text communication cards</h2>
+<p>Tap a phrase to display it clearly. These are plain-English communication cards, not invented Auslan signs.</p>
+<div class="communication-card-grid">
+<button data-communication-card="Hello." type="button">Hello</button>
+<button data-communication-card="What is your dog’s name?" type="button">Dog’s name?</button>
+<button data-communication-card="Is your dog friendly?" type="button">Friendly?</button>
+<button data-communication-card="Can our dogs play?" type="button">Can they play?</button>
+<button data-communication-card="My dog is nervous." type="button">Nervous</button>
+<button data-communication-card="My dog is reactive. Please give us space." type="button">Please give us space</button>
+<button data-communication-card="Please stop and wait." type="button">Stop and wait</button>
+<button data-communication-card="I cannot hear you. Please face me and type your message." type="button">Please face me and type</button>
+<button data-communication-card="Where is the dog’s owner?" type="button">Where is the owner?</button>
+<button data-communication-card="The dog is injured. Please call a veterinarian." type="button">Dog injured</button>
+<button data-communication-card="This is an emergency. Please call Triple Zero (000)." type="button">Call 000</button>
+<button data-communication-card="Thank you." type="button">Thank you</button>
+</div>
+<form class="custom-card-form" id="customCommunicationForm">
+<label>Write a message <textarea maxlength="240" name="message" placeholder="Type a short message to show in large text"></textarea></label>
+<button type="submit">Show my message</button>
+</form>
+</article>
+</section>
+<section aria-atomic="true" aria-live="assertive" class="communication-display card" hidden id="communicationDisplay">
+<p id="communicationDisplayText"></p>
+<button class="secondary" id="closeCommunicationDisplay" type="button">Close card</button>
+</section>
+<section class="grid two">
+<article class="card emergency-access-card">
+<p class="eyebrow">VISUAL EMERGENCY MODE</p>
+<h2>Icons, large text and vibration</h2>
+<p>The alert never relies on colour alone. It combines written instructions, a warning symbol and a vibration pattern where the device permits it.</p>
+<div class="button-row">
+<button class="danger" id="startAccessibilityEmergency" type="button">Start visual emergency mode</button>
+<button id="showDeafEmergencyCard" type="button">Show “I am Deaf—please type”</button>
+</div>
+<p class="muted">Optional screen flashing is disabled when reduced-motion settings are active. Call 000 for life-threatening emergencies.</p>
+</article>
+<article class="card">
+<p class="eyebrow">RECOGNISED AUSLAN RESOURCES</p>
+<h2>Learn with Deaf-led sources</h2>
+<p>Dog-park safety lessons and videos remain marked for Deaf-community consultation. Regional variation, facial expression and body-position guidance must be reviewed by paid Deaf Auslan educators before GENEVIEVE publishes a verified lesson library.</p>
+<div class="legal-links stacked">
+<a href="https://auslan.org.au/dictionary/" rel="noopener" target="_blank">Auslan Signbank dictionary</a>
+<a href="https://deafconnect.org.au/services/education/beginner-courses-in-auslan" rel="noopener" target="_blank">Deaf Connect beginner Auslan courses</a>
+<a href="https://deafconnect.org.au/services/auslan-translations" rel="noopener" target="_blank">Deaf Connect translation services</a>
+</div>
+<div class="answer yellow"><b>Under Deaf-community consultation.</b><br/>No GENEVIEVE sign video is labelled approved until reviewed and authorised by Deaf Auslan educators.</div>
+</article>
+</section>
+<section class="grid two">
+<article class="card">
+<h2>Visual dog commands</h2>
+<p>Sit, stay, stop, come and leave-it cues can be added as dog-training hand signals after trainer review. They must remain clearly separate from Auslan unless an authorised Deaf educator confirms an actual Auslan sign is being taught.</p>
+</article>
+<article class="card">
+<h2>Park signs and QR access</h2>
+<p>The council sign pack will link directly to this free accessibility screen and include emergency icons, a park location code, respectful attention guidance and a non-app communication board.</p>
+<div aria-label="QR signage pending accessibility and council review" class="qr-review-placeholder">QR signage<br/><small>review required</small></div>
+<p class="muted">No public QR sign is issued until its destination, accessibility, privacy wording and Deaf Advisory Panel approval are verified.</p>
+</article>
+</section>
+</section>
+<section class="screen" data-group="more" id="settings"><section class="hero card"><p class="eyebrow">PRIVACY &amp; OWNER CONTROL</p><h2>Choose the level of participation</h2></section><section class="grid two"><form class="card field-panel" id="privacyForm"><h2>Privacy controls</h2><div id="privacyControls"></div><button type="submit">Save privacy settings</button></form><article class="card"><h2>Comfort and access</h2><label class="toggle"><input id="reducedMotion" type="checkbox"/> Reduce motion</label><label class="toggle"><input id="largeText" type="checkbox"/> Larger text</label><label class="toggle"><input id="highContrast" type="checkbox"/> Higher contrast</label><button class="secondary" data-go="communication-access" type="button">Communication &amp; Auslan support</button><h2>Your data</h2><button id="exportAllData">Export my local data</button><button class="danger" id="deleteAllData">Delete all local app data</button><p class="muted">Deleting local data does not cancel Apple, Google Play or Stripe subscriptions.</p></article></section></section>
+<section class="screen" data-group="more" id="legal">
+<section class="hero card">
+<p class="eyebrow">LEGAL CENTRE</p>
+<h2>Public policies, active acceptance and safety boundaries</h2>
+<p class="answer yellow" id="legalAcceptanceSummary">Checking the legal acceptance stored on this device…</p>
+</section>
+<section aria-describedby="legalAcceptanceDescription" aria-labelledby="legalAcceptanceTitle" class="card legal-acceptance-panel" id="legalAcceptancePanel">
+<p class="eyebrow">LEGAL VERSION 2026-07-24</p>
+<h2 id="legalAcceptanceTitle">Legal acceptance</h2>
+<p id="legalAcceptanceDescription">Review and actively accept the Terms of Use, Privacy Policy and permanent Safety Disclaimer inside the app.</p>
+<div class="legal-acceptance-warning">
+<strong>No app can guarantee 100% safety.</strong>
+<p>Compatibility results and alerts are decision-support information only. Owners and handlers remain responsible for observation, supervision, effective control and every real-world decision.</p>
+</div>
+<div class="legal-acceptance-links">
+<a href="./legal/terms-of-use.html">Read Terms of Use</a>
+<a href="./legal/privacy-policy.html">Read Privacy Policy</a>
+<a href="./legal/safety-disclaimer.html">Read Safety Disclaimer</a>
+<a href="./legal/account-deletion.html">Read deletion process</a>
+</div>
+<label class="legal-check"><input id="legalTermsAcceptance" type="checkbox"/> <span>I have read and agree to the Terms of Use and Privacy Policy.</span></label>
+<label class="legal-check"><input id="legalSafetyAcceptance" type="checkbox"/> <span>I have read the Safety Disclaimer and understand that GENEVIEVE App™ cannot guarantee 100% safety or replace my responsibility, observation or judgement.</span></label>
+<button id="acceptLegal" type="button" disabled>Accept and continue</button>
+<p class="small muted" id="legalAcceptanceMessage" role="status">Both boxes must be selected. Acceptance is recorded on this device with the legal version and time.</p>
+<p class="small"><strong>Urgent safety:</strong> this app is not an emergency service. Contact the appropriate real-world service directly and do not delay urgent help.</p>
+</section>
+<section class="grid two">
+<article class="card">
+<h2>Public legal documents</h2>
+<div class="legal-links stacked">
+<a href="./legal/">Legal Centre</a>
+<a href="./legal/privacy-policy.html">Privacy Policy</a>
+<a href="./legal/terms-of-use.html">Terms of Use</a>
+<a href="./legal/safety-disclaimer.html">Safety Disclaimer</a>
+<a href="./legal/subscription-terms.html">Subscription Terms</a>
+<a href="./legal/refund-cancellation-policy.html">Refund &amp; Cancellation</a>
+<a href="./legal/concession-pricing-policy.html">Concession Pricing</a>
+<a href="./legal/account-deletion.html">Account &amp; Data Deletion</a>
+<a href="./legal/community-guidelines.html">Community Guidelines</a>
+<a href="./legal/support.html">Contact &amp; Support</a>
+<a href="./legal/ip-notice.html">Intellectual Property Notice</a>
+</div>
+</article>
+<article class="card warning-card">
+<h2>Permanent safety wording</h2>
+<p><strong>GENEVIEVE App™ cannot guarantee 100% safety.</strong> It supports decisions; it does not guarantee behaviour, compatibility, availability, legal compliance, emergency response or third-party data accuracy.</p>
+<p>Owners and handlers remain responsible for observation, supervision, effective control, signs, rules, professional advice and the decision to enter, remain in or leave a park.</p>
+<div class="button-row">
+<button id="reviewLegalAcceptance" type="button">Review acceptance details</button>
+<button class="secondary" id="withdrawLegalAcceptance" type="button">Withdraw local acceptance</button>
+</div>
+</article>
+</section>
+<section class="card disclosure">
+<strong>Professional legal review gate</strong>
+<p>This legal centre is built into the app and matches the current local-first functions. An Australian lawyer must still check it against the final company structure, backend, hosting, analytics, payment and support arrangements before paid public launch.</p>
+</section>
+</section>
+<section class="screen" data-group="more" id="data"><section class="hero card"><p class="eyebrow">DATA &amp; ACCOUNT</p><h2>Access, correct, export or delete</h2></section><section class="grid three"><article class="card"><h2>Export</h2><p>Dog profiles, owner inputs, trips, relationships and evidence history.</p><button id="dataExportButton">Export data</button></article><article class="card"><h2>Correct</h2><p>Update behavioural values and challenge inferred observations.</p><button data-go="dog-list">Review profiles</button></article><article class="card danger-card"><h2>Delete</h2><p>Delete local data now and use the public deletion page for a production account request.</p><button class="danger" id="dataDeleteButton">Delete local data</button><a class="button-link secondary-link" href="./legal/account-deletion.html">Open deletion page</a></article></section></section>
+<section class="screen" data-group="more" id="launch"><section class="hero card"><p class="eyebrow">DEPLOYMENT GATE</p><h2>Check the public launch configuration</h2><p>This checker refuses to mark missing domain, contact, backend or payment facts as complete.</p></section><section class="card"><button class="primary" id="runLaunchCheck">Run launch check</button><div id="launchResults"></div></section><section class="grid two"><article class="card"><h2>Public URLs</h2><div id="publicUrlList"></div></article><article class="card"><h2>Build facts</h2><ul class="checklist"><li>Root index.html</li><li>No npm or build step</li><li>Vercel configuration</li><li>GitHub Pages workflow</li><li>PWA manifest and service worker</li><li>404 page</li><li>Channel-safe payment router</li><li>31 restored functional screens</li><li>Consistent risk scale</li><li>Owner, visitor, worker, superintendent, responder and administrator roles</li></ul></article></section></section>
+<section class="screen" data-group="more" id="more">
+<section class="hero card"><p class="eyebrow">MORE</p><h2>Choose a group, then open only what you need</h2><p>Sections are collapsible so the page is easier to scan and less visually crowded.</p></section>
+<section class="card role-switch-card"><div><p class="eyebrow">APP VIEW</p><h2>Choose the section you need</h2><p class="muted" id="roleHelp">Dog Owner view is active.</p></div><label>View as <select aria-label="Choose app role on mobile" id="mobileRoleSelect"><option value="owner">Dog Owner</option><option value="visitor">Park Visitor</option><option value="worker">Park Worker / Contractor</option><option value="superintendent">Park Superintendent</option><option value="responder">Authorised Responder</option><option value="admin">System Administrator</option></select></label><p class="small muted">This device view changes which tools are shown. Any public operator or responder access still requires verified accounts and server-side permissions.</p></section>
+<section class="card update-card"><div><p class="eyebrow">APP VERSION</p><h2>Current repaired build</h2><p>Installed build: <b>2026.07.28.26</b>. Refresh keeps saved dog records while updating app files.</p></div><button class="secondary" id="forceAppUpdate" type="button">Refresh latest app version</button><p class="muted" id="updateMessage"></p></section>
+<div class="more-folders">
+<details open=""><summary>Dogs, matching and social tools</summary><div class="page-grid"><button data-go="best-mates"><b>Best Mates</b><small>Affinity links and park alerts</small></button><button data-go="compatibility"><b>Compatibility</b><small>Colour-coded dog and pair guidance</small></button><button data-go="companions"><b>Find Companions</b><small>Prospective recommendations</small></button><button data-go="puppy"><b>Puppy Socialisation</b><small>Controlled matching and clearance</small></button></div></details>
+<details><summary>Travel, parks and live visit tools</summary><div class="page-grid"><button data-go="travel"><b>Grey Nomad Trip Planner</b><small>Routes, stops, stays and safety filters</small></button><button data-go="beaches"><b>Dog Beaches</b><small>Boundaries, hours, tide and facilities</small></button><button data-go="checkin"><b>Voluntary Check In / Out</b><small>Optional community presence</small></button><button data-go="owner-duty"><b>Owner Duty</b><small>Supervision confirmations</small></button><button data-go="etiquette"><b>Park Etiquette</b><small>Body-language prompts and break actions</small></button></div></details>
+<details><summary>Safety, emergency and incident tools</summary><div class="page-grid"><button data-go="emergency"><b>Emergency &amp; Services</b><small>000 hold/slide and non-emergency choices</small></button><button data-go="heat-hazards"><b>Heat &amp; Hazards</b><small>Weather, surfaces and local reports</small></button><button data-go="incident"><b>Incident Report</b><small>Structured factual evidence</small></button><button data-go="lost-found"><b>Lost &amp; Found</b><small>Local records and escalation plan</small></button><button data-go="notices"><b>Council Notices</b><small>Verified closures and maintenance</small></button></div></details>
+<details><summary>Accessibility, privacy and account</summary><div class="page-grid"><button class="deaf-access-tile" data-go="communication-access"><span class="access-tile-label">ACCESSIBILITY</span><b>Deaf &amp; Auslan Access</b><small>Visual cards and emergency communication</small></button><button data-go="notifications"><b>Notifications</b><small>Safety and document alerts</small></button><button data-go="settings"><b>Settings &amp; Privacy</b><small>Visibility, location and opt-outs</small></button><button data-go="data"><b>Data &amp; Account</b><small>Export, correction and deletion</small></button><button data-go="membership"><b>Membership</b><small>Billing routes and restore</small></button></div></details>
+<details><summary>Legal, roles and operations</summary><div class="page-grid"><button data-go="legal"><b>Legal Centre</b><small>Terms, privacy, safety and refunds</small></button><button data-go="roles"><b>Roles &amp; Access</b><small>Owner, visitor, worker and responder</small></button><button data-go="superintendent" data-role-button="superintendent,admin"><b>Park Superintendent</b><small>Facilities, notices and trends</small><span class="role-lock-note">Choose Park Superintendent view to open</span></button><button data-go="launch"><b>Launch Check</b><small>Deployment and service readiness</small></button></div></details>
+</div>
+</section>
+</main>
+<footer><p>© 2026 Tracey Ann Kennedy. GENEVIEVE App™. Trade mark application stated as pending.</p><p class="build-marker">Dog Parks build 2026.07.28.26 · Legal version 2026-07-24</p><p><a href="./legal/">Legal</a> · <a href="./legal/privacy-policy.html">Privacy</a> · <a href="./legal/support.html">Support</a> · <a href="./legal/account-deletion.html">Delete account</a></p></footer>
+<nav aria-label="Mobile navigation" class="bottom-nav"><button class="active" data-go="today" data-main="today">Today</button><button data-go="before-leaving" data-main="journey">Journey</button><button data-go="park-search" data-main="parks">Parks</button><button data-go="dog-list" data-main="dogs">Dogs</button><button data-go="more" data-main="more">More</button></nav>
+</div>
+<script src="./native-billing-bridge.js?v=20260728.26"></script>
+<script src="./backend.js?v=20260728.26"></script>
+<script src="./app.js?v=20260728.26"></script><script src="./repair.js?v=20260728.26"></script>
 </body>
 </html>
