@@ -5,7 +5,7 @@
   const Logic = window.GenevieveLogic;
   const NotifyLogic = window.GenevieveNotificationLogic;
   const KEY = 'genevieve_dogpark_full_restore_state_v3';
-  const VERSION = CFG.version || '2026.07.29.31';
+  const VERSION = CFG.version || '2026.07.29.32';
   const LEGAL_VERSION = CFG.legalVersion || '2026-07-24';
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
@@ -778,7 +778,7 @@
   async function notificationRegistration(){
     if(!('serviceWorker' in navigator))return null;
     let registration=await navigator.serviceWorker.getRegistration?.();
-    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260729.31',{updateViaCache:'none'});
+    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260729.32',{updateViaCache:'none'});
     return registration;
   }
   async function showDeviceNotification({
@@ -1131,7 +1131,7 @@
     $('#departureForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.currentTarget),input={dogId:f.get('dog'),parkId:f.get('park'),temperament:f.get('temperament'),lead:f.has('lead'),bags:f.has('bags'),water:f.has('water'),idTag:f.has('idTag'),vaccination:f.has('vaccination')},result=Logic.departureRisk(input);state.selectedParkId=input.parkId;const plan={id:uid('plan'),...input,riskScore:result.riskScore,time:now()};state.departurePlans.unshift(plan);evidence('departure_plan',plan);$('#departureResult').className=`answer ${result.level}`;$('#departureResult').innerHTML=`<b>${result.riskScore}% departure risk — ${safe(result.label)}</b><br>${result.missing.length?`Fix before leaving: ${safe(result.missing.join(', '))}.`:safe(result.action)}`;renderAll();});
     $('#arrivalForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.currentTarget),flags=['leadFromCar','pathControlled','gateAssessed','innerGateSecure'],missing=flags.filter(k=>!f.has(k)),score=Logic.clamp(missing.length*24),band=Logic.riskBand(score),record={id:uid('arrival'),parkId:state.selectedParkId,checks:Object.fromEntries(flags.map(k=>[k,f.has(k)])),riskScore:score,time:now()};state.arrivalChecks.unshift(record);evidence('arrival_check',record);$('#arrivalResult').className=`answer ${band.level}`;$('#arrivalResult').innerHTML=`<b>${score}% arrival-process risk — ${safe(band.label)}</b><br>${missing.length?'Complete all lead and gate checks before release.':'Arrival checklist complete. Continue direct supervision.'}`;renderToday();});
 
-    $('#parkNeedControls').innerHTML=parkNeeds.map(n=>`<label class="toggle"><input type="checkbox" value="${safe(n)}"> ${safe(n)}</label>`).join('');
+    $('#parkNeedControls').innerHTML=parkNeeds.map(n=>`<label class="toggle"><input name="tripNeeds" type="checkbox" value="${safe(n)}"> ${safe(n)}</label>`).join('');
     $('#parkFilterForm').addEventListener('submit',e=>{e.preventDefault();renderParks();renderParkMap();});
     $('#parkFilterForm').addEventListener('reset',()=>setTimeout(()=>{renderParks();renderParkMap();},0));
     $('#beachFilterForm').addEventListener('submit',e=>{e.preventDefault();renderBeaches();});
@@ -1159,7 +1159,7 @@
     $('#useCurrentWeather').addEventListener('click',async()=>{const status=$('#weatherStatus');if(!state.privacy.preciseLocation){status.className='answer yellow';status.innerHTML='<b>Location is off.</b><br>Enable “Allow location only when I request current weather” in Settings, or continue with manual entry.';return;}if(!navigator.geolocation){status.className='answer red';status.textContent='This browser does not support geolocation.';return;}status.className='answer yellow';status.textContent='Requesting location and current weather…';navigator.geolocation.getCurrentPosition(async pos=>{try{const {latitude,longitude}=pos.coords;const url=`https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(latitude)}&longitude=${encodeURIComponent(longitude)}&current=apparent_temperature,relative_humidity_2m,uv_index&timezone=auto`;const response=await fetch(url,{cache:'no-store'});if(!response.ok)throw new Error(`Weather service returned ${response.status}`);const data=await response.json(),current=data.current||{},form=$('#heatCheckForm');if(current.apparent_temperature!=null)form.elements.apparentTemperature.value=current.apparent_temperature;if(current.relative_humidity_2m!=null)form.elements.humidity.value=current.relative_humidity_2m;if(current.uv_index!=null)form.elements.uvIndex.value=current.uv_index;status.className='answer green';status.innerHTML=`<b>Current weather loaded.</b><br>Feels like ${safe(current.apparent_temperature)}°C · humidity ${safe(current.relative_humidity_2m)}% · UV ${safe(current.uv_index)}. Check the exact park and surface directly.`;evidence('weather_loaded',{provider:'Open-Meteo',coordinatesStored:false,time:now()});}catch(err){status.className='answer red';status.innerHTML=`<b>Weather could not be loaded.</b><br>${safe(err.message)}. Use manual entry.`;}},err=>{status.className='answer red';status.innerHTML=`<b>Location was not available.</b><br>${safe(err.message)}. Use manual entry.`;},{enableHighAccuracy:false,timeout:12000,maximumAge:300000});});
     $('#hazardForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.currentTarget),h={id:uid('haz'),parkId:f.get('park'),type:f.get('type'),riskScore:Number(f.get('risk')),details:f.get('details'),time:now(),source:'community local report'};state.hazards.unshift(h);state.selectedParkId=h.parkId;evidence('hazard_report',h);e.currentTarget.reset();refreshSelects();renderAll();const park=parkById(h.parkId),locationText=notificationLocation(park);void showDeviceNotification({key:`hazard:${h.id}`,category:'hazards',title:`${h.riskScore>=75?'Critical ':''}park hazard — ${h.type}`,body:`${h.details}${locationText?` · ${locationText}`:''}`,url:'#heat-hazards',critical:h.riskScore>=75,cooldownMinutes:1440});});
 
-    $('#tripNeeds').innerHTML=tripNeedOptions.map(n=>`<label class="toggle"><input type="checkbox" value="${safe(n)}"> ${safe(n)}</label>`).join('');
+    $('#tripNeeds').innerHTML=tripNeedOptions.map(n=>`<label class="toggle"><input name="tripNeeds" type="checkbox" value="${safe(n)}"> ${safe(n)}</label>`).join('');
     $('#tripForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.currentTarget),plan={id:uid('trip'),from:f.get('from'),to:f.get('to'),needs:$$('#tripNeeds input:checked').map(i=>i.value),time:now()};state.trips.unshift(plan);evidence('trip_plan',plan);renderTripResult(plan);});
     const updateTravelLinks=()=>{
       const vetLocation=$('#travelVetLocation')?.value||'Australia';
@@ -1267,42 +1267,18 @@
     renderAll:()=>renderAll()
   });
 
-
-function initBrandImageFallbacks(){
-  const fallbacks={
-    brandGaLogo:['./assets/ga-header-brand-master.jpeg','./assets/ga-master-locked-2026-07-29.jpeg','./assets/GA-MASTER-LOCKED-2026-07-29.jpeg'],
-    headerRootsJourneyArt:['./assets/roots-header-brand.jpeg','./assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg','./assets/GENEVIEVE_SAFETY_FROM_ROOTS_OFFICIAL_LETTER_MARK_MASTER_ORIGINAL.jpeg']
-  };
-  Object.entries(fallbacks).forEach(([id,list])=>{
-    const img=$("#"+id);
-    if(!img) return;
-    let pos=0;
-    const trySource=()=>{
-      if(pos>=list.length) return;
-      const next=list[pos++];
-      if(img.getAttribute('src')!==next) img.setAttribute('src',next);
-    };
-    img.addEventListener('error',trySource);
-    trySource();
-  });
-}
-
   function boot(){
-    if('scrollRestoration' in history) history.scrollRestoration='manual';
     bindGlobalClicks();bindForms();
-    initBrandImageFallbacks();
     $('#roleSelect').value=state.currentRole;
     renderAll();
     const params=new URLSearchParams(location.search),requested=params.get('open'),hash=location.hash.slice(1);
-    const initialScreen=requested&&requested!=='legal'&&document.getElementById(requested)?requested:(hash&&hash!=='legal'&&document.getElementById(hash)?hash:'today');
+    const initialScreen=requested&&document.getElementById(requested)?requested:(hash&&document.getElementById(hash)?hash:'today');
     setScreen(initialScreen,false);
-    requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));
-    setTimeout(()=>window.scrollTo({top:0,left:0,behavior:'auto'}),80);
     $('#modePill').textContent=`LIVE STATUS · ${window.GenevieveBackend?.enabled?'connected services configured':'active on this device'} · v${VERSION}`;
     // Legal acceptance remains available and visible, but it no longer hijacks the app landing screen.
     if('serviceWorker' in navigator) (async()=>{
       try{
-        const resetKey='genevieve_v31_header_launch_reset_done';
+        const resetKey='genevieve_v32_fine_tooth_comb_reset_done';
         if(!localStorage.getItem(resetKey)){
           if('serviceWorker' in navigator){
             const registrations=await navigator.serviceWorker.getRegistrations();
@@ -1314,17 +1290,18 @@ function initBrandImageFallbacks(){
           }
           localStorage.setItem(resetKey,'yes');
           const freshUrl=new URL(location.href);
-          freshUrl.searchParams.set('genevieveVersion','30');
-          freshUrl.hash='today';
+          freshUrl.searchParams.set('genevieveVersion','32');
+          const requestedScreen=freshUrl.searchParams.get('open')||freshUrl.hash.slice(1);
+          freshUrl.hash=document.getElementById(requestedScreen)?requestedScreen:'today';
           location.replace(freshUrl.toString());
           return;
         }
         if('serviceWorker' in navigator){
-          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260729.31',{updateViaCache:'none'});
+          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260729.32',{updateViaCache:'none'});
           await registration.update();
         }
       }catch(error){
-        console.warn('GENEVIEVE build 2026.07.29.31 cache reset could not complete automatically.',error);
+        console.warn('GENEVIEVE build 2026.07.29.32 cache reset could not complete automatically.',error);
       }
     })();
     setInterval(()=>refreshHeaderWeather(true),WEATHER_REFRESH_MS);
@@ -1346,6 +1323,5 @@ function initBrandImageFallbacks(){
     evidence('pwa_installed',{platform:notificationPlatform()});
     renderNotificationPlatform();
   });
-  window.addEventListener('pageshow',()=>{window.scrollTo({top:0,left:0,behavior:'auto'});});
   document.addEventListener('DOMContentLoaded',boot);
 })();

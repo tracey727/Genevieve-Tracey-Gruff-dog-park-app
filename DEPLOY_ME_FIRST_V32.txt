@@ -1,0 +1,29 @@
+GENEVIEVE App™ DOG PARKS — FINE-TOOTH-COMB FIXED V32
+Build 2026.07.29.32
+
+WHAT THIS BUILD FIXES
+- Keeps #travel (or another valid requested screen) during the first cache refresh.
+- Makes direct Legal links open the Legal Centre instead of silently returning to Today.
+- Uses one clear V32 version across the app, PWA, service worker and tests.
+- Adds Vercel no-cache rules for the files that control app updates.
+- Keeps existing saved dog records and the safeguarded 000 hold-then-slide control.
+
+DEPLOY TO THE EXISTING ACTIVE DOG PARK PROJECT
+1. Extract this ZIP.
+2. Confirm index.html and vercel.json are immediately visible inside the extracted folder.
+3. In the existing active repository, replace the old app files with every extracted file and folder.
+4. Do not upload the unopened ZIP and do not put the files inside an extra folder.
+5. Commit and push the V32 files.
+6. Let the existing Vercel project deploy that repository.
+7. Open:
+   https://genevieve-tracey-gruff-dog-park-app-sigma.vercel.app/?genevieveVersion=32#travel
+8. Confirm More shows build 2026.07.29.32 and the page remains on Journey / Travel after the automatic refresh.
+
+VERCEL
+- Framework Preset: Other
+- Root Directory: repository root / blank
+- Build Command: blank
+- Install Command: blank
+- Output Directory: blank
+
+DO NOT CONNECT PAYMENTS until the exact billing products and provider links are verified.

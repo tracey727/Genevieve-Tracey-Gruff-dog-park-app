@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '2026.07.29.31';
+  const VERSION = '2026.07.29.32';
   const Logic = window.GenevieveLogic;
   const Bridge = () => window.GenevieveAppBridge;
   const $ = selector => document.querySelector(selector);
@@ -506,7 +506,6 @@
     $('#exportIncidentRegister')?.addEventListener('click',exportIncidents);
     $('#printIncidentRegister')?.addEventListener('click',()=>window.print());
 
-    $('#showServiceChooser')?.addEventListener('click',openServiceChooser);
     $$('[data-open-emergency-services]').forEach(button=>button.addEventListener('click',openServiceChooser));
     $('#serviceLocation')?.addEventListener('input',updateServiceLinks);
     setupEmergencyButton();
