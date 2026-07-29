@@ -1,0 +1,17 @@
+GENEVIEVE V33 TECHNICAL CHANGE RECORD
+
+ROOT CAUSES FOUND IN THE LIVE V32 SOURCE
+- index.html and service-worker.js referenced six approved logo files that were absent from /assets.
+- Both main Journey buttons used data-go="travel", so they opened the Grey Nomad Trip Planner.
+- app.js selected location.hash as the cold-start screen. A shared/PWA URL ending #travel therefore bypassed Today and the header.
+- The cache-reset routine also preserved the old hash.
+
+V33 CHANGES
+- Adds all six exact asset filenames from the user-supplied approved artwork.
+- Adds #journey as a dedicated SPA screen and retargets both main Journey controls.
+- Keeps #travel as a separate planner reached from Journey.
+- Changes cold-start selection to explicit ?open= only; otherwise #today.
+- Scrolls to top after boot.
+- Changes the reset key/version/cache to V33.
+- Adds a runtime guard for stale-cache resilience.
+- Runs required-file, target and optional Node syntax checks.
