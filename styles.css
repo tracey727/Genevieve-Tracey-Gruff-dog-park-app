@@ -875,7 +875,7 @@ body.accessibility-emergency-mode:not(.reduced-motion) .communication-display{an
 }
 
 
-/* v2026.07.29.30 — live park-needs percentage and colour rating */
+/* v2026.07.29.31 — live park-needs percentage and colour rating */
 .live-status-pill{background:#e9faef!important;border:2px solid var(--green)!important;color:var(--deep)!important;font-weight:950!important;max-width:none!important}
 .park-safety-match{display:grid;grid-template-columns:minmax(92px,118px) 1fr;gap:14px;align-items:center;margin:14px 0;padding:14px;border:3px solid;border-radius:16px;background:#fff}
 .park-safety-match.green{border-color:var(--green);background:#e9faef}.park-safety-match.yellow{border-color:#cba900;background:#fffce4}.park-safety-match.amber{border-color:var(--amber);background:#fff2df}.park-safety-match.red{border-color:var(--red);background:#fff0f0}
@@ -885,3 +885,17 @@ body.accessibility-emergency-mode:not(.reduced-motion) .communication-display{an
 .park-match-meter{height:16px;margin:8px 0 10px;border-radius:999px;overflow:hidden;background:rgba(4,45,27,.13);border:1px solid rgba(4,45,27,.2)}.park-match-meter span{display:block;height:100%;background:currentColor;border-radius:999px}.park-safety-match.green .park-match-meter{color:var(--green)}.park-safety-match.yellow .park-match-meter{color:#cba900}.park-safety-match.amber .park-match-meter{color:var(--amber)}.park-safety-match.red .park-match-meter{color:var(--red)}
 .park-need-breakdown{display:flex;flex-wrap:wrap;gap:6px}.need-chip{display:inline-block;padding:5px 8px;border-radius:999px;font-size:.73rem;font-weight:850;border:1px solid}.need-chip.matched{background:#e9faef;border-color:var(--green);color:#064e2d}.need-chip.missing{background:#fff0f0;border-color:var(--red);color:#7a1111}
 @media(max-width:520px){.park-safety-match{grid-template-columns:1fr}.park-safety-score{min-height:78px}.park-safety-score span{font-size:2.6rem}}
+
+
+/* v2026.07.29.31 — header-first launch, archive logos loaded, legal only in final section */
+.legal-inline-notice{display:none!important}
+.header-tree-lockup{display:flex!important;align-items:center!important;justify-content:flex-start!important;background:#fff!important}
+.header-roots-journey-art{display:block!important;width:100%!important;height:auto!important;object-fit:contain!important;background:#fff!important}
+#brandGaLogo.approved-ga-logo{display:block!important;background:#fff!important}
+.header-brand-actions .global-emergency-wrap{background:#000!important;border-bottom:3px solid #f00000!important;padding:6px!important}
+.global-emergency-button.emergency-hold-button{min-height:66px!important}
+.header-services-link{margin-top:0!important}
+@media(max-width:760px){
+  .header-brand-actions .global-emergency-wrap{padding:5px!important}
+  .global-emergency-button.emergency-hold-button{min-height:54px!important}
+}

@@ -5,7 +5,7 @@
   const Logic = window.GenevieveLogic;
   const NotifyLogic = window.GenevieveNotificationLogic;
   const KEY = 'genevieve_dogpark_full_restore_state_v3';
-  const VERSION = CFG.version || '2026.07.29.30';
+  const VERSION = CFG.version || '2026.07.29.31';
   const LEGAL_VERSION = CFG.legalVersion || '2026-07-24';
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
@@ -778,7 +778,7 @@
   async function notificationRegistration(){
     if(!('serviceWorker' in navigator))return null;
     let registration=await navigator.serviceWorker.getRegistration?.();
-    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260729.30',{updateViaCache:'none'});
+    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260729.31',{updateViaCache:'none'});
     return registration;
   }
   async function showDeviceNotification({
@@ -1267,18 +1267,42 @@
     renderAll:()=>renderAll()
   });
 
+
+function initBrandImageFallbacks(){
+  const fallbacks={
+    brandGaLogo:['./assets/ga-header-brand-master.jpeg','./assets/ga-master-locked-2026-07-29.jpeg','./assets/GA-MASTER-LOCKED-2026-07-29.jpeg'],
+    headerRootsJourneyArt:['./assets/roots-header-brand.jpeg','./assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg','./assets/GENEVIEVE_SAFETY_FROM_ROOTS_OFFICIAL_LETTER_MARK_MASTER_ORIGINAL.jpeg']
+  };
+  Object.entries(fallbacks).forEach(([id,list])=>{
+    const img=$("#"+id);
+    if(!img) return;
+    let pos=0;
+    const trySource=()=>{
+      if(pos>=list.length) return;
+      const next=list[pos++];
+      if(img.getAttribute('src')!==next) img.setAttribute('src',next);
+    };
+    img.addEventListener('error',trySource);
+    trySource();
+  });
+}
+
   function boot(){
+    if('scrollRestoration' in history) history.scrollRestoration='manual';
     bindGlobalClicks();bindForms();
+    initBrandImageFallbacks();
     $('#roleSelect').value=state.currentRole;
     renderAll();
     const params=new URLSearchParams(location.search),requested=params.get('open'),hash=location.hash.slice(1);
     const initialScreen=requested&&requested!=='legal'&&document.getElementById(requested)?requested:(hash&&hash!=='legal'&&document.getElementById(hash)?hash:'today');
     setScreen(initialScreen,false);
+    requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));
+    setTimeout(()=>window.scrollTo({top:0,left:0,behavior:'auto'}),80);
     $('#modePill').textContent=`LIVE STATUS · ${window.GenevieveBackend?.enabled?'connected services configured':'active on this device'} · v${VERSION}`;
     // Legal acceptance remains available and visible, but it no longer hijacks the app landing screen.
     if('serviceWorker' in navigator) (async()=>{
       try{
-        const resetKey='genevieve_v30_live_safety_match_reset_done';
+        const resetKey='genevieve_v31_header_launch_reset_done';
         if(!localStorage.getItem(resetKey)){
           if('serviceWorker' in navigator){
             const registrations=await navigator.serviceWorker.getRegistrations();
@@ -1296,11 +1320,11 @@
           return;
         }
         if('serviceWorker' in navigator){
-          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260729.30',{updateViaCache:'none'});
+          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260729.31',{updateViaCache:'none'});
           await registration.update();
         }
       }catch(error){
-        console.warn('GENEVIEVE build 2026.07.29.30 cache reset could not complete automatically.',error);
+        console.warn('GENEVIEVE build 2026.07.29.31 cache reset could not complete automatically.',error);
       }
     })();
     setInterval(()=>refreshHeaderWeather(true),WEATHER_REFRESH_MS);
@@ -1322,5 +1346,6 @@
     evidence('pwa_installed',{platform:notificationPlatform()});
     renderNotificationPlatform();
   });
+  window.addEventListener('pageshow',()=>{window.scrollTo({top:0,left:0,behavior:'auto'});});
   document.addEventListener('DOMContentLoaded',boot);
 })();
