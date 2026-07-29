@@ -5,7 +5,7 @@
   const Logic = window.GenevieveLogic;
   const NotifyLogic = window.GenevieveNotificationLogic;
   const KEY = 'genevieve_dogpark_full_restore_state_v3';
-  const VERSION = CFG.version || '2026.07.28.26';
+  const VERSION = CFG.version || '2026.07.29.30';
   const LEGAL_VERSION = CFG.legalVersion || '2026-07-24';
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
@@ -215,7 +215,7 @@
   let installPromptEvent = null;
   if (!parks.some(park => park.id === state.selectedParkId)) state.selectedParkId = defaultState.selectedParkId;
   state.accessibility.emergencyVisualMode = false;
-  function saveState() { state.version = VERSION; localStorage.setItem(KEY, JSON.stringify(state)); renderEvidenceCount(); }
+  function saveState() { state.version = VERSION; try{localStorage.setItem(KEY, JSON.stringify(state));}catch{} renderEvidenceCount(); }
   function evidence(type, payload={}) { state.evidence.unshift({id:uid('ev'),type,payload,appVersion:VERSION,time:now()}); state.evidence=state.evidence.slice(0,1500); saveState(); }
   function download(name, text, type='application/json') { const blob=new Blob([text],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1500); }
   function dogById(id){ return state.dogs.find(d=>d.id===id); }
@@ -778,7 +778,7 @@
   async function notificationRegistration(){
     if(!('serviceWorker' in navigator))return null;
     let registration=await navigator.serviceWorker.getRegistration?.();
-    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260728.26',{updateViaCache:'none'});
+    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260729.30',{updateViaCache:'none'});
     return registration;
   }
   async function showDeviceNotification({
@@ -796,8 +796,8 @@
     const locationUrl=new URL(url,location.href).href;
     const options={
       body,
-      icon:new URL('./assets/gold-paw-ga-app-icon-192-v16.png',location.href).href,
-      badge:new URL('./assets/gold-paw-ga-favicon-64-v16.png',location.href).href,
+      icon:new URL('./assets/ga-master-app-icon-192-v29.png',location.href).href,
+      badge:new URL('./assets/ga-master-icon-64-v29.png',location.href).href,
       tag:`genevieve-${key}`,
       renotify:Boolean(critical),
       requireInteraction:Boolean(critical),
@@ -1271,12 +1271,14 @@
     bindGlobalClicks();bindForms();
     $('#roleSelect').value=state.currentRole;
     renderAll();
-    const hash=location.hash.slice(1);if(hash&&document.getElementById(hash))setScreen(hash,false);else setScreen('today',false);
-    $('#modePill').textContent=`LIVE APP · ${window.GenevieveBackend?.enabled?'connected services configured':'active on this device'} · v${VERSION}`;
-    if(!legalAccepted())openLegalAcceptance(true);
+    const params=new URLSearchParams(location.search),requested=params.get('open'),hash=location.hash.slice(1);
+    const initialScreen=requested&&requested!=='legal'&&document.getElementById(requested)?requested:(hash&&hash!=='legal'&&document.getElementById(hash)?hash:'today');
+    setScreen(initialScreen,false);
+    $('#modePill').textContent=`LIVE STATUS · ${window.GenevieveBackend?.enabled?'connected services configured':'active on this device'} · v${VERSION}`;
+    // Legal acceptance remains available and visible, but it no longer hijacks the app landing screen.
     if('serviceWorker' in navigator) (async()=>{
       try{
-        const resetKey='genevieve_v26_restore_cache_reset_done';
+        const resetKey='genevieve_v30_live_safety_match_reset_done';
         if(!localStorage.getItem(resetKey)){
           if('serviceWorker' in navigator){
             const registrations=await navigator.serviceWorker.getRegistrations();
@@ -1288,16 +1290,17 @@
           }
           localStorage.setItem(resetKey,'yes');
           const freshUrl=new URL(location.href);
-          freshUrl.searchParams.set('genevieveVersion','25');
+          freshUrl.searchParams.set('genevieveVersion','30');
+          freshUrl.hash='today';
           location.replace(freshUrl.toString());
           return;
         }
         if('serviceWorker' in navigator){
-          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260728.26',{updateViaCache:'none'});
+          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260729.30',{updateViaCache:'none'});
           await registration.update();
         }
       }catch(error){
-        console.warn('GENEVIEVE build 2026.07.28.26 cache reset could not complete automatically.',error);
+        console.warn('GENEVIEVE build 2026.07.29.30 cache reset could not complete automatically.',error);
       }
     })();
     setInterval(()=>refreshHeaderWeather(true),WEATHER_REFRESH_MS);

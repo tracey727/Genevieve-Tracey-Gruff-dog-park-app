@@ -11,22 +11,32 @@
 <meta content="GENEVIEVE Dog Parks" name="apple-mobile-web-app-title"/>
 <meta content="GENEVIEVE App™ Dog Parks — Safety &amp; Compatibility System helps owners plan the whole park journey, manage dog profiles, assess heat and interaction risk, supervise visits, report hazards and optionally use private communication, visual safety and Auslan-support tools." name="description"/>
 <title>GENEVIEVE App™ Dog Parks — Safety &amp; Compatibility System</title>
-<link href="./assets/gold-paw-ga-favicon-64-v16.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="./assets/gold-paw-ga-favicon-64-v16.png" rel="shortcut icon"/>
-<link href="./assets/gold-paw-ga-apple-touch-icon-180-v16.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./assets/gold-paw-ga-apple-touch-icon-180-v16.png" rel="apple-touch-icon-precomposed" sizes="180x180"/>
-<link href="./manifest.webmanifest?v=20260728.26" rel="manifest"/>
-<link href="./styles.css?v=20260728.26" rel="stylesheet"/>
-<script src="./config.js?v=20260728.26"></script>
-<script src="./logic.js?v=20260728.26"></script>
-<script src="./notification-logic.js?v=20260728.26"></script>
+<link href="./assets/ga-master-icon-64-v29.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="./assets/ga-master-icon-64-v29.png" rel="shortcut icon"/>
+<link href="./assets/ga-master-apple-touch-180-v29.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./assets/ga-master-apple-touch-180-v29.png" rel="apple-touch-icon-precomposed" sizes="180x180"/>
+<link href="./manifest.webmanifest?v=20260729.30" rel="manifest"/>
+<link href="./styles.css?v=20260729.30" rel="stylesheet"/>
+<script src="./config.js?v=20260729.30"></script>
+<script src="./logic.js?v=20260729.30"></script>
+<script src="./notification-logic.js?v=20260729.30"></script>
+<script>
+(function(){
+  try{
+    const params=new URLSearchParams(location.search);
+    if(location.hash==='#legal' && !params.has('open')){
+      history.replaceState(null,'',location.pathname+location.search+'#today');
+    }
+  }catch(error){}
+})();
+</script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <div class="app-shell">
 <header class="topbar">
 <div class="brand-row">
-<img alt="Approved GENEVIEVE App gold A and black G logo with pink glow" class="app-icon approved-ga-logo" src="./assets/ga-logo-full-square-v10.png"/>
+<img alt="Approved GENEVIEVE App gold A and black G logo with pink glow" class="app-icon approved-ga-logo" src="./assets/ga-master-locked-2026-07-29.jpeg"/>
 <div>
 <p class="eyebrow">DOG PARK SAFETY · AUSTRALIA</p>
 <h1>GENEVIEVE App<span class="tm">™</span> Dog Parks</h1>
@@ -68,16 +78,17 @@
 <option value="admin">System Administrator</option>
 </select>
 </label>
-<div class="status-pill" id="modePill">Loading deployment mode…</div>
+<div class="status-pill live-status-pill" id="modePill">LIVE STATUS · loading current app state…</div>
 </div>
 </div>
 <div class="header-brand-actions">
-<div aria-label="GENEVIEVE App tree logo and safety message" class="header-tree-lockup">
-<img alt="Approved GENEVIEVE tree, infinity and roots logo supplied by Tracey Kennedy" class="header-tree-logo" src="./assets/genevieve-tree-logo-approved-tracey.png"/>
-<strong><span>Safety from Roots</span><span>to Every Journey</span></strong>
+<div aria-label="GENEVIEVE App Safety from roots to every journey official artwork" class="header-tree-lockup">
+<img alt="GENEVIEVE App Safety from roots to every journey official artwork" class="header-roots-journey-art" src="./assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg"/>
 </div>
 <div class="global-emergency-wrap">
-<button aria-label="Tap for emergency and non-emergency services. Press and hold for three seconds to open the Triple Zero call slider." class="global-emergency-button" id="globalEmergencyButton" type="button"><span aria-hidden="true" class="emergency-pulse"></span><span class="emergency-button-label">Emergency &amp; services</span><small>Tap for help · Hold 3 sec for 000</small></button>
+<button aria-controls="emergencyCallConfirm" aria-describedby="globalEmergencyHelp" aria-label="Press and hold for three seconds, then slide to open the phone dialler for Triple Zero" class="global-emergency-button emergency-hold-button" id="globalEmergencyButton" type="button"><span aria-hidden="true" class="emergency-pulse"></span><span class="emergency-button-copy"><b>Emergency 000</b><small>Hold 3 sec, then slide</small></span></button>
+<button class="header-services-link" data-open-emergency-services="" type="button">Other emergency services</button>
+<span class="sr-only" id="globalEmergencyHelp">A short tap does not call. Keep holding for three seconds, then deliberately slide the confirmation control.</span>
 </div>
 </div>
 </div>
@@ -91,7 +102,7 @@
 </nav>
 <nav aria-label="Main navigation" class="main-tabs">
 <button class="active" data-go="today" data-main="today">Today</button>
-<button data-go="before-leaving" data-main="journey">Journey</button>
+<button data-go="travel" data-main="journey">Journey</button>
 <button data-go="park-search" data-main="parks">Parks</button>
 <button data-go="dog-list" data-main="dogs">Dogs</button>
 <button data-go="more" data-main="more">More</button>
@@ -103,10 +114,14 @@
 <h2>Is this a suitable park visit for my dog right now?</h2>
 <div class="answer yellow" id="todayAnswer"><b>Checks needed.</b><br/>Choose a dog and park, then run the heat and interaction checks.</div>
 <div class="button-row">
-<button class="primary" data-go="before-leaving">Plan the whole visit</button>
+<button class="primary" data-go="before-leaving">Plan today’s park visit</button><button data-go="travel">Plan a Grey Nomad trip</button>
 <button data-go="heat-hazards">Check heat and hazards</button>
 <button data-go="compatibility">Check interaction risk</button>
 </div>
+</section>
+<section class="card legal-inline-notice" hidden id="legalFirstUseNotice" role="status">
+<div><p class="eyebrow">LEGAL ACCEPTANCE</p><h2>Review the current legal version</h2><p>You may continue using the app while you review the Terms, Privacy Policy and Safety Disclaimer. Acceptance is recorded only after both boxes are selected.</p></div>
+<div class="button-row"><button data-go="legal" type="button">Review and accept</button><button class="secondary" id="dismissLegalNotice" type="button">Not now</button></div>
 </section>
 <section aria-label="GENEVIEVE risk scale" class="risk-scale card">
 <h2>One consistent GENEVIEVE risk scale</h2>
@@ -209,7 +224,7 @@
 </section>
 </section>
 <section class="screen" data-group="parks" id="park-search">
-<section class="hero card"><p class="eyebrow">AUSTRALIA-WIDE PARK SEARCH</p><h2>Find the closest suitable dog park first</h2><p>Enter a suburb, town, park or address. Search controls stay above the results and map. GENEVIEVE ranks the closest known matches first, then lets you compare nearby options.</p><div class="answer yellow"><b>Guidance only.</b><br/>Distances, facilities and availability must be confirmed against current council information and signs before travel or entry.</div></section>
+<section class="hero card"><p class="eyebrow">AUSTRALIA-WIDE PARK SEARCH</p><h2>Find the closest suitable dog park first</h2><p>Enter a suburb, town, park or address. Search controls stay above the results and map. GENEVIEVE ranks the closest known parks first, then calculates a live percentage and green, yellow, amber or red alert from the needs you tick.</p><div class="answer yellow"><b>Guidance only.</b><br/>Distances, facilities and availability must be confirmed against current council information and signs before travel or entry.</div></section>
 <form class="card field-panel park-search-first" id="parkFilterForm">
 <div class="grid two">
 <label>State or territory <select name="state"><option value="">All Australia</option><option value="ACT">Australian Capital Territory</option><option value="NSW">New South Wales</option><option value="NT">Northern Territory</option><option value="QLD">Queensland</option><option value="SA">South Australia</option><option value="TAS">Tasmania</option><option value="VIC">Victoria</option><option value="WA">Western Australia</option></select></label>
@@ -272,7 +287,7 @@
 <section class="grid two"><form class="card" id="hazardForm"><h2>Report a park hazard</h2><label>Park <select name="park"></select></label><label>Hazard <select name="type"><option>Snake sighting</option><option>Paralysis ticks</option><option>Blue-green algae</option><option>Broken fence or gate</option><option>Glass or sharp object</option><option>1080 bait warning</option><option>Flood or storm damage</option><option>No water</option><option>Unsafe structure</option></select></label><label>Risk level <select name="risk"><option value="25">Yellow</option><option value="55">Amber</option><option value="80">Red</option></select></label><label>Details <textarea name="details" required></textarea></label><button class="amber" type="submit">Save hazard report</button></form><article class="card"><h2>Recent heat checks</h2><div id="heatHistory"></div></article></section>
 </section>
 <section class="screen" data-group="more" id="travel">
-<section class="hero card"><p class="eyebrow">GREY NOMAD &amp; WHOLE-TRIP PLANNER</p><h2>Plan a dog-friendly journey anywhere in Australia</h2><p>Choose the route style, number of stops, places to stay and safety features. The plan provides search links and a checklist; every venue must be confirmed directly before relying on it.</p></section>
+<section class="hero card"><p class="eyebrow">GREY NOMAD &amp; WHOLE-TRIP PLANNER</p><h2>Plan a dog-friendly journey anywhere in Australia</h2><p>Choose the route style, number of stops, food and accommodation budgets, and safety features. GENEVIEVE then presents route-based parks, meals, stays and essential services as offers to choose from. Prices and availability must be confirmed directly.</p></section>
 <section class="grid two">
 <form class="card field-panel" id="tripForm">
 <div class="grid two"><label>From <input name="from" placeholder="Gold Coast QLD" required/></label><label>To <input name="to" placeholder="Hobart TAS" required/></label></div>
@@ -281,25 +296,51 @@
 <label class="toggle"><input checked name="dogFriendlyOnly" type="checkbox"/> Show dog-friendly places only</label><details open=""><summary>Places and services wanted</summary><div class="filter-checks" id="tripNeeds"></div></details>
 <details><summary>Accommodation preferences</summary><div class="filter-checks" id="tripStayNeeds"><label class="toggle"><input type="checkbox" value="Pet-friendly caravan park"/> Pet-friendly caravan park</label><label class="toggle"><input type="checkbox" value="Pet-friendly hotel or motel"/> Pet-friendly hotel or motel</label><label class="toggle"><input type="checkbox" value="Luxury dog-friendly stay"/> Luxury dog-friendly stay</label><label class="toggle"><input type="checkbox" value="Pet-friendly Airbnb or holiday home"/> Pet-friendly Airbnb or holiday home</label><label class="toggle"><input type="checkbox" value="Farm stay or cabin"/> Farm stay or cabin</label></div></details>
 <details><summary>Safety and facility filters</summary><div class="filter-checks" id="tripSafetyNeeds"><label class="toggle"><input type="checkbox" value="Secure fencing"/> Secure fencing</label><label class="toggle"><input type="checkbox" value="Double gate"/> Double gate</label><label class="toggle"><input type="checkbox" value="Lighting"/> Lighting</label><label class="toggle"><input type="checkbox" value="CCTV or security cameras"/> CCTV or security cameras</label><label class="toggle"><input type="checkbox" value="On-site security or staff"/> On-site security or staff</label><label class="toggle"><input type="checkbox" value="Shade"/> Shade</label><label class="toggle"><input type="checkbox" value="Fresh water"/> Fresh water</label><label class="toggle"><input type="checkbox" value="Toilets"/> Toilets</label><label class="toggle"><input type="checkbox" value="Easy parking"/> Easy parking</label><label class="toggle"><input type="checkbox" value="Quiet area"/> Quiet area</label><label class="toggle"><input type="checkbox" value="24-hour emergency vet nearby"/> 24-hour emergency vet nearby</label></div></details>
+<details open><summary>Budget and offer limits</summary>
+<p class="muted">Choose a quick budget or enter your own limits.</p>
+<div class="budget-presets" role="group" aria-label="Quick trip budget choices">
+<button data-budget-preset="value" type="button"><b>Value</b><small>Café A$20 · pub A$40 · stays to A$160</small></button>
+<button data-budget-preset="everyday" type="button"><b>Everyday</b><small>Café A$20 · pub A$60 · stays to A$250</small></button>
+<button data-budget-preset="premium" type="button"><b>Premium</b><small>Café A$50 · dining A$120 · stays to A$700</small></button>
+</div>
+<div class="grid two">
+<label>Café meal target — maximum per person <span class="money-input"><span>A$</span><input min="0" max="500" name="cafeMealMax" step="1" type="number" value="20"/></span></label>
+<label>Pub or restaurant meal target — maximum per person <span class="money-input"><span>A$</span><input min="0" max="1000" name="pubMealMax" step="1" type="number" value="60"/></span></label>
+<label>Accommodation minimum per night <span class="money-input"><span>A$</span><input min="0" max="5000" name="accommodationMin" step="5" type="number" value="0"/></span></label>
+<label>Accommodation maximum per night <span class="money-input"><span>A$</span><input min="0" max="5000" name="accommodationMax" step="5" type="number" value="180"/></span></label>
+<label>Maximum daily trip spend <span class="money-input"><span>A$</span><input min="0" max="10000" name="dailyBudget" step="10" type="number" value="300"/></span></label>
+<label>Maximum total trip budget — optional <span class="money-input"><span>A$</span><input min="0" max="100000" name="totalBudget" placeholder="Leave blank" step="50" type="number"/></span></label>
+</div>
+<p class="muted">These are user-set spending limits, not quoted prices. GENEVIEVE uses them to shape the offers and search terms presented.</p>
+</details>
 <label>Extra needs or limits <textarea maxlength="800" name="notes" placeholder="Examples: avoid stairs, senior dog, no rough surfaces, wheelchair access"></textarea></label>
 <div class="button-row"><button class="primary" type="submit">Build complete trip plan</button><button class="secondary" id="clearTripPlan" type="button">Clear</button></div>
 </form>
-<article class="card"><h2>Your route and stop plan</h2><div id="tripResult"><div class="empty">Enter a start and destination to build the trip.</div></div></article>
+<article class="card"><h2>Your route, budget and offers</h2><div id="tripResult"><div class="empty">Enter a start and destination to build the trip.</div></div></article>
+</section>
+<section class="card route-offers-panel" aria-labelledby="routeOffersTitle">
+<p class="eyebrow">OFFERS TO CHOOSE FROM</p><h2 id="routeOffersTitle">Parks, meals, stays and services along the chosen route</h2>
+<div id="routeOffers"><div class="empty">Build a trip plan above and GENEVIEVE will present route-based options within the budget targets.</div></div>
 </section>
 <section class="card"><h2>Saved trip plans</h2><div id="savedTripPlans"><div class="empty">No saved trip plans.</div></div></section>
 <section class="grid three travel-support-grid">
-<article class="card official-emergency-card"><p class="eyebrow">AUSTRALIA-WIDE HELP</p><h2>Emergency and non-emergency contacts</h2><div class="travel-link-stack"><button class="danger" data-open-emergency-services="" type="button">Open emergency services chooser</button><a class="button-link" href="tel:132500">SES 132 500 — storm and flood assistance</a><a class="button-link" href="tel:131444">Police 131 444 — non-urgent assistance</a><a class="button-link" href="tel:131126">Poisons Information Centre 13 11 26</a></div><p class="emergency-note">Use Triple Zero only for urgent police, fire or ambulance help. The app does not contact any service automatically.</p></article>
+<article class="card travel-emergency-link-card"><p class="eyebrow">AUSTRALIA-WIDE HELP</p><h2>Emergency and support services</h2><div class="travel-link-stack"><button class="emergency-services-link" data-open-emergency-services="" type="button">Open all emergency services</button></div><p class="muted">Triple Zero uses hold-and-slide confirmation. Police, SES, poisons, council, ranger, pound, veterinary and wildlife options remain available in the services chooser. The app does not contact any service automatically.</p></article>
 <article class="card"><p class="eyebrow">ANIMAL MEDICAL HELP</p><h2>Find emergency veterinarians along the route</h2><label>Town or destination <input id="travelVetLocation" placeholder="Town or suburb"/></label><div class="travel-link-stack"><a class="button-link" id="travelVetMapsLink" rel="noopener" target="_blank">Search 24-hour emergency vets</a><a class="button-link" id="travelVetOpenNowLink" rel="noopener" target="_blank">Search vets open now</a></div><p class="muted">Phone first. Hours, staffing and after-hours arrangements can change.</p></article>
 <article class="card"><p class="eyebrow">PET-FRIENDLY STAYS</p><h2>Search and verify accommodation</h2><label>Destination <input id="stayLocation" placeholder="Town or destination"/></label><div class="travel-link-stack"><a class="button-link" id="airbnbPetLink" rel="noopener" target="_blank">Search pet-friendly Airbnb stays</a><a class="button-link" id="petHotelMapsLink" rel="noopener" target="_blank">Search pet-friendly hotels</a><a class="button-link" id="petCaravanMapsLink" rel="noopener" target="_blank">Search pet-friendly caravan parks</a></div><p class="muted">Confirm pet rules, fees, fencing, cameras, staff presence, size limits and whether a dog may ever be left unattended.</p></article>
 </section>
 <section class="card"><p class="eyebrow">FUTURE GENEVIEVE BOARDING KENNELS MODE</p><h2>Home Boarding Match — planned, not active booking</h2><p>The existing profiles and safety controls may support a future verified boarding marketplace. Identity checks, property checks, insurance, payments, cancellations, reviews, incident response and dispute handling must be completed before public bookings are enabled.</p><div class="answer yellow"><b>Not active.</b><br/>No stranger-to-stranger booking is created from this Dog Park build.</div></section>
 </section>
 <section class="screen" data-group="more" id="emergency">
-<section class="hero card official-emergency-card"><p class="eyebrow">EMERGENCY &amp; SERVICES</p><h2>Choose the right real-world help</h2><div class="emergency-primary-actions"><button class="call-000-button emergency-hold-button" id="emergencyPageHoldButton" type="button">Hold 3 seconds for 000</button><button id="showServiceChooser" type="button">Non-emergency services</button><button class="secondary" data-go="lost-found">Lost dog alert</button><button class="secondary" data-go="incident">Record incident</button></div><p class="emergency-note">Tap the thin header control or choose non-emergency services for council, ranger, pound, veterinary, police or SES options. Hold for three seconds and slide only when you intend to open the phone dialler for Triple Zero.</p></section>
-<section aria-labelledby="serviceChooserTitle" class="card service-chooser" id="nonEmergencyServicePanel"><p class="eyebrow">SERVICE CHOOSER</p><h2 id="serviceChooserTitle">What help do you need?</h2><label>Your suburb, council area or current town <input id="serviceLocation" placeholder="Example: Labrador QLD" value="Gold Coast QLD"/></label><div class="service-grid"><a class="service-button" data-service-search="council animal management ranger">Council animal management / ranger</a><a class="service-button" data-service-search="council pound lost found animals">Council pound / shelter</a><a class="service-button" data-service-search="emergency veterinarian open now">Emergency veterinarian</a><a class="service-button" href="tel:131444">Policelink / non-urgent police · 131 444</a><a class="service-button" href="tel:132500">SES storm or flood help · 132 500</a><a class="service-button" href="tel:131126">Poisons Information Centre · 13 11 26</a><a class="service-button" data-service-search="local police station">Local police station</a><a class="service-button" data-service-search="wildlife rescue">Wildlife rescue</a></div><p class="muted">Service availability and phone numbers may vary by state or council. Search results open separately so the user can verify the current official provider.</p></section>
-<section aria-labelledby="emergencyCallConfirmTitle" class="card emergency-call-confirm" hidden id="emergencyCallConfirm"><p class="eyebrow">FINAL CALL CONFIRMATION</p><h2 id="emergencyCallConfirmTitle">Slide fully to call Triple Zero (000)</h2><p>This opens the phone dialler only. GENEVIEVE does not contact emergency services, transmit your location, or confirm that help is coming.</p><label for="emergencyCallSlider">Slide to call 000 <input id="emergencyCallSlider" max="100" min="0" step="1" type="range" value="0"/></label><p class="answer red" id="emergencyCallStatus" role="status">Slide all the way to the right only when you intend to call 000.</p><button class="secondary" id="cancelEmergencyCall" type="button">Cancel call control</button></section>
-<section class="card pre-entry-safety"><details open=""><summary>Immediate safety actions before making a report</summary><ol><li>Create distance and secure dogs without placing yourself at further risk.</li><li>Check people and animals for urgent injury.</li><li>For immediate danger or serious injury, use the 000 hold-and-slide control.</li><li>Preserve photos, times, locations and witness details only when safe and lawful.</li><li>Do not decide fault or liability inside the app.</li></ol></details></section>
-<section class="grid three"><article class="card"><h2>Restricted medical summary</h2><label>Dog <select id="emergencyDogSelect"></select></label><button class="danger" id="showEmergencySummary">Show summary</button><div id="emergencySummary"></div></article><article class="card"><h2>Nearest veterinarian</h2><label>Location <input id="vetLocation" value="Gold Coast QLD"/></label><a class="button-link" id="vetSearchLink" rel="noopener" target="_blank">Find emergency vet</a></article><article class="card"><h2>I’m here alone</h2><label>Check-in time <select id="aloneTimerMinutes"><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">60 minutes</option></select></label><button id="startAloneTimer">Start safety timer</button><button class="secondary" id="cancelAloneTimer">Cancel timer</button><p class="muted" id="aloneTimerStatus"></p></article></section>
+<section class="hero card emergency-services-hero"><p class="eyebrow">EMERGENCY &amp; SERVICES</p><h2>Hold, then slide for Triple Zero</h2><p>For urgent police, fire or ambulance help, press and hold the Triple Zero control for three seconds, then deliberately slide the final confirmation. Other services remain available below.</p></section>
+<details class="card emergency-services-panel" id="emergencyServiceToggle">
+<summary><span><b>Emergency and support services</b><small>000 hold-and-slide · police · SES · poisons · council · ranger · pound · vet · wildlife</small></span><span aria-hidden="true" class="emergency-summary-chevron">▾</span></summary>
+<div class="emergency-services-content">
+<section aria-labelledby="serviceChooserTitle" class="service-chooser" id="nonEmergencyServicePanel"><p class="eyebrow">SERVICE CHOOSER</p><h2 id="serviceChooserTitle">What help do you need?</h2><label>Your suburb, council area or current town <input id="serviceLocation" placeholder="Example: Labrador QLD" value="Gold Coast QLD"/></label><div class="service-grid"><button class="service-button urgent-service-button emergency-hold-button" id="emergencyPageHoldButton" type="button"><span aria-hidden="true" class="emergency-pulse"></span><span><b>Triple Zero (000)</b><small>Press and hold for 3 seconds, then slide</small></span></button><a class="service-button" data-service-search="council animal management ranger">Council animal management / ranger</a><a class="service-button" data-service-search="council pound lost found animals">Council pound / shelter</a><a class="service-button" data-service-search="emergency veterinarian open now">Emergency veterinarian</a><a class="service-button" href="tel:131444">Policelink / non-urgent police · 131 444</a><a class="service-button" href="tel:132500">SES storm or flood help · 132 500</a><a class="service-button" href="tel:131126">Poisons Information Centre · 13 11 26</a><a class="service-button" data-service-search="local police station">Local police station</a><a class="service-button" data-service-search="wildlife rescue">Wildlife rescue</a><button class="service-button" data-go="lost-found" type="button">Lost dog alert</button><button class="service-button" data-go="incident" type="button">Record an incident</button></div><p class="muted">Service availability and phone numbers may vary by state or council. Search results open separately so the user can verify the current official provider.</p></section>
+<section aria-labelledby="emergencyCallConfirmTitle" class="emergency-call-confirm" hidden id="emergencyCallConfirm"><p class="eyebrow">FINAL CALL CONFIRMATION</p><h2 id="emergencyCallConfirmTitle">Slide fully to call Triple Zero (000)</h2><p>This opens the phone dialler only. GENEVIEVE does not contact emergency services, transmit your location, or confirm that help is coming.</p><label for="emergencyCallSlider">Slide to call 000 <input id="emergencyCallSlider" max="100" min="0" step="1" type="range" value="0"/></label><p class="answer red" id="emergencyCallStatus" role="status">Slide all the way to the right only when you intend to call 000.</p><button class="secondary" id="cancelEmergencyCall" type="button">Cancel call control</button></section>
+</div>
+</details>
+<section class="card pre-entry-safety"><details><summary>Immediate safety actions before making a report</summary><ol><li>Create distance and secure dogs without placing yourself at further risk.</li><li>Check people and animals for urgent injury.</li><li>For immediate danger or serious injury, use the Triple Zero hold-and-slide control.</li><li>Preserve photos, times, locations and witness details only when safe and lawful.</li><li>Do not decide fault or liability inside the app.</li></ol></details></section>
+<section class="grid three"><article class="card"><h2>Restricted medical summary</h2><label>Dog <select id="emergencyDogSelect"></select></label><button id="showEmergencySummary">Show summary</button><div id="emergencySummary"></div></article><article class="card"><h2>Nearest veterinarian</h2><label>Location <input id="vetLocation" value="Gold Coast QLD"/></label><a class="button-link" id="vetSearchLink" rel="noopener" target="_blank">Find emergency vet</a></article><article class="card"><h2>I’m here alone</h2><label>Check-in time <select id="aloneTimerMinutes"><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">60 minutes</option></select></label><button id="startAloneTimer">Start safety timer</button><button class="secondary" id="cancelAloneTimer">Cancel timer</button><p class="muted" id="aloneTimerStatus"></p></article></section>
 </section>
 <section class="screen" data-group="more" id="lost-found"><section class="hero card"><p class="eyebrow">LOST &amp; FOUND</p><h2>Create a local record and escalation plan</h2></section><section class="grid two"><form class="card field-panel" id="lostFoundForm"><label>Type <select name="type"><option value="lost">Lost dog</option><option value="found">Found dog</option><option value="sighted">Sighted dog</option></select></label><label>Description <input name="description" required/></label><label>Location <input name="location" required/></label><label>Urgency <select name="urgency"><option value="watch">Watch</option><option value="urgent">Urgent search</option><option value="danger">Immediate danger</option></select></label><label>Contact note <input name="contact"/></label><button class="danger" type="submit">Create alert record</button></form><article class="card"><h2>Current records</h2><div id="lostFoundList"></div></article></section></section>
 <section class="screen" data-group="more" id="incident"><section class="hero card"><p class="eyebrow">INCIDENT &amp; NEAR MISS</p><h2>Create a factual, exportable record without deciding liability</h2><p>Record observations, actions and evidence. Separate what was personally observed from what another person reported.</p></section><section class="grid two"><form class="card field-panel" id="incidentForm"><label>Park <select name="park"></select></label><div class="grid two"><label>Date and time <input name="occurredAt" type="datetime-local"/></label><label>Exact area <input name="locationDetail" placeholder="Gate, small-dog area, path, car park"/></label></div><label>Type <select name="type"><option>Dog fight</option><option>Bite or scratch</option><option>Human injury</option><option>Child safety concern</option><option>Bike, scooter or skateboard conflict</option><option>Broken gate or fence</option><option>No water</option><option>Lighting fault</option><option>Unsafe structure</option><option>Lost or loose dog</option><option>Near miss</option><option>Other</option></select></label><label>Severity <select name="severity"><option value="30">Yellow — monitor / minor</option><option value="60">Amber — urgent follow-up</option><option value="85">Red — immediate danger or serious injury</option></select></label><label>What I personally observed <textarea maxlength="1800" name="details" required></textarea></label><label>What another person reported <textarea maxlength="1200" name="reportedInformation"></textarea></label><label>Immediate actions taken <textarea maxlength="1200" name="actions" placeholder="Dogs separated, first aid, owner contacted, ranger called"></textarea></label><div class="grid two"><label>Witness/contact notes <textarea maxlength="1000" name="witness"></textarea></label><label>Evidence reference <textarea maxlength="1000" name="evidenceReference" placeholder="Photo file names, CCTV location, report number — do not upload sensitive evidence publicly"></textarea></label></div><label class="toggle"><input name="consentToShare" type="checkbox"/> I authorise this record to be included in a council/responder export selected by me</label><button class="amber" type="submit">Save factual incident record</button></form><article class="card"><h2>Incident history</h2><div class="button-row"><button id="exportIncidentRegister" type="button">Export incident register</button><button class="secondary" id="printIncidentRegister" type="button">Print current register</button></div><div id="incidentList"></div></article></section><section class="card disclosure"><strong>Evidence and privacy boundary</strong><p>Keep descriptions factual. Do not publish personal information, medical information, allegations or images without a lawful basis. An app record does not replace a report to police, council, a veterinarian, insurer or another authorised service.</p></section></section>
@@ -515,21 +556,21 @@
 <section class="screen" data-group="more" id="more">
 <section class="hero card"><p class="eyebrow">MORE</p><h2>Choose a group, then open only what you need</h2><p>Sections are collapsible so the page is easier to scan and less visually crowded.</p></section>
 <section class="card role-switch-card"><div><p class="eyebrow">APP VIEW</p><h2>Choose the section you need</h2><p class="muted" id="roleHelp">Dog Owner view is active.</p></div><label>View as <select aria-label="Choose app role on mobile" id="mobileRoleSelect"><option value="owner">Dog Owner</option><option value="visitor">Park Visitor</option><option value="worker">Park Worker / Contractor</option><option value="superintendent">Park Superintendent</option><option value="responder">Authorised Responder</option><option value="admin">System Administrator</option></select></label><p class="small muted">This device view changes which tools are shown. Any public operator or responder access still requires verified accounts and server-side permissions.</p></section>
-<section class="card update-card"><div><p class="eyebrow">APP VERSION</p><h2>Current repaired build</h2><p>Installed build: <b>2026.07.28.26</b>. Refresh keeps saved dog records while updating app files.</p></div><button class="secondary" id="forceAppUpdate" type="button">Refresh latest app version</button><p class="muted" id="updateMessage"></p></section>
+<section class="card update-card"><div><p class="eyebrow">APP VERSION</p><h2>Current repaired build</h2><p>Installed build: <b>2026.07.29.30</b>. Refresh keeps saved dog records while updating app files.</p></div><button class="secondary" id="forceAppUpdate" type="button">Refresh latest app version</button><p class="muted" id="updateMessage"></p></section>
 <div class="more-folders">
 <details open=""><summary>Dogs, matching and social tools</summary><div class="page-grid"><button data-go="best-mates"><b>Best Mates</b><small>Affinity links and park alerts</small></button><button data-go="compatibility"><b>Compatibility</b><small>Colour-coded dog and pair guidance</small></button><button data-go="companions"><b>Find Companions</b><small>Prospective recommendations</small></button><button data-go="puppy"><b>Puppy Socialisation</b><small>Controlled matching and clearance</small></button></div></details>
 <details><summary>Travel, parks and live visit tools</summary><div class="page-grid"><button data-go="travel"><b>Grey Nomad Trip Planner</b><small>Routes, stops, stays and safety filters</small></button><button data-go="beaches"><b>Dog Beaches</b><small>Boundaries, hours, tide and facilities</small></button><button data-go="checkin"><b>Voluntary Check In / Out</b><small>Optional community presence</small></button><button data-go="owner-duty"><b>Owner Duty</b><small>Supervision confirmations</small></button><button data-go="etiquette"><b>Park Etiquette</b><small>Body-language prompts and break actions</small></button></div></details>
-<details><summary>Safety, emergency and incident tools</summary><div class="page-grid"><button data-go="emergency"><b>Emergency &amp; Services</b><small>000 hold/slide and non-emergency choices</small></button><button data-go="heat-hazards"><b>Heat &amp; Hazards</b><small>Weather, surfaces and local reports</small></button><button data-go="incident"><b>Incident Report</b><small>Structured factual evidence</small></button><button data-go="lost-found"><b>Lost &amp; Found</b><small>Local records and escalation plan</small></button><button data-go="notices"><b>Council Notices</b><small>Verified closures and maintenance</small></button></div></details>
+<details><summary>Safety, emergency and incident tools</summary><div class="page-grid"><button data-go="emergency"><b>Emergency &amp; Services</b><small>One toggle for 000 and every support service</small></button><button data-go="heat-hazards"><b>Heat &amp; Hazards</b><small>Weather, surfaces and local reports</small></button><button data-go="incident"><b>Incident Report</b><small>Structured factual evidence</small></button><button data-go="lost-found"><b>Lost &amp; Found</b><small>Local records and escalation plan</small></button><button data-go="notices"><b>Council Notices</b><small>Verified closures and maintenance</small></button></div></details>
 <details><summary>Accessibility, privacy and account</summary><div class="page-grid"><button class="deaf-access-tile" data-go="communication-access"><span class="access-tile-label">ACCESSIBILITY</span><b>Deaf &amp; Auslan Access</b><small>Visual cards and emergency communication</small></button><button data-go="notifications"><b>Notifications</b><small>Safety and document alerts</small></button><button data-go="settings"><b>Settings &amp; Privacy</b><small>Visibility, location and opt-outs</small></button><button data-go="data"><b>Data &amp; Account</b><small>Export, correction and deletion</small></button><button data-go="membership"><b>Membership</b><small>Billing routes and restore</small></button></div></details>
 <details><summary>Legal, roles and operations</summary><div class="page-grid"><button data-go="legal"><b>Legal Centre</b><small>Terms, privacy, safety and refunds</small></button><button data-go="roles"><b>Roles &amp; Access</b><small>Owner, visitor, worker and responder</small></button><button data-go="superintendent" data-role-button="superintendent,admin"><b>Park Superintendent</b><small>Facilities, notices and trends</small><span class="role-lock-note">Choose Park Superintendent view to open</span></button><button data-go="launch"><b>Launch Check</b><small>Deployment and service readiness</small></button></div></details>
 </div>
 </section>
 </main>
-<footer><p>© 2026 Tracey Ann Kennedy. GENEVIEVE App™. Trade mark application stated as pending.</p><p class="build-marker">Dog Parks build 2026.07.28.26 · Legal version 2026-07-24</p><p><a href="./legal/">Legal</a> · <a href="./legal/privacy-policy.html">Privacy</a> · <a href="./legal/support.html">Support</a> · <a href="./legal/account-deletion.html">Delete account</a></p></footer>
-<nav aria-label="Mobile navigation" class="bottom-nav"><button class="active" data-go="today" data-main="today">Today</button><button data-go="before-leaving" data-main="journey">Journey</button><button data-go="park-search" data-main="parks">Parks</button><button data-go="dog-list" data-main="dogs">Dogs</button><button data-go="more" data-main="more">More</button></nav>
+<footer><p>© 2026 Tracey Ann Kennedy. GENEVIEVE App™. Trade mark application stated as pending.</p><p class="build-marker">Dog Parks build 2026.07.29.30 · Legal version 2026-07-24</p><p><a href="./legal/">Legal</a> · <a href="./legal/privacy-policy.html">Privacy</a> · <a href="./legal/support.html">Support</a> · <a href="./legal/account-deletion.html">Delete account</a></p></footer>
+<nav aria-label="Mobile navigation" class="bottom-nav"><button class="active" data-go="today" data-main="today">Today</button><button data-go="travel" data-main="journey">Journey</button><button data-go="park-search" data-main="parks">Parks</button><button data-go="dog-list" data-main="dogs">Dogs</button><button data-go="more" data-main="more">More</button></nav>
 </div>
-<script src="./native-billing-bridge.js?v=20260728.26"></script>
-<script src="./backend.js?v=20260728.26"></script>
-<script src="./app.js?v=20260728.26"></script><script src="./repair.js?v=20260728.26"></script>
+<script src="./native-billing-bridge.js?v=20260729.30"></script>
+<script src="./backend.js?v=20260729.30"></script>
+<script src="./app.js?v=20260729.30"></script><script src="./repair.js?v=20260729.30"></script>
 </body>
 </html>
