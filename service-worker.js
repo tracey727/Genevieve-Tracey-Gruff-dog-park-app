@@ -1,9 +1,9 @@
-const CACHE='genevieve-dog-parks-safety-compatibility-2026-07-29-v32';
-const VERSION='2026.07.29.32';
+const CACHE='genevieve-dog-parks-safety-compatibility-2026-07-29-v30';
+const VERSION='2026.07.29.31';
 const ASSETS=[
-  './','./index.html','./styles.css?v=20260729.32','./config.js?v=20260729.32','./logic.js?v=20260729.32',
-  './notification-logic.js?v=20260729.32','./app.js?v=20260729.32','./repair.js?v=20260729.32','./backend.js?v=20260729.32','./native-billing-bridge.js?v=20260729.32',
-  './manifest.webmanifest?v=20260729.32','./assets/ga-master-icon-64-v29.png','./assets/ga-master-apple-touch-180-v29.png',
+  './','./index.html','./styles.css?v=20260729.31','./config.js?v=20260729.31','./logic.js?v=20260729.31',
+  './notification-logic.js?v=20260729.31','./app.js?v=20260729.31','./repair.js?v=20260729.31','./backend.js?v=20260729.31','./native-billing-bridge.js?v=20260729.31',
+  './manifest.webmanifest?v=20260729.31','./assets/ga-master-icon-64-v29.png','./assets/ga-master-apple-touch-180-v29.png','./assets/ga-header-brand-master.jpeg','./assets/roots-header-brand.jpeg',
   './assets/ga-master-app-icon-192-v29.png','./assets/ga-master-app-icon-512-v29.png',
   './assets/ga-master-locked-2026-07-29.jpeg','./assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg','./404.html',
   './legal/','./legal/legal.css','./legal/privacy-policy.html','./legal/terms-of-use.html','./legal/safety-disclaimer.html',

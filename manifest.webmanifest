@@ -2,7 +2,7 @@
   "name": "GENEVIEVE App™ Dog Parks — Safety & Compatibility System",
   "short_name": "GENEVIEVE Parks",
   "description": "Plan safer dog-park visits, assess compatibility and risk, supervise visits and optionally use private communication, visual safety and Auslan-support features.",
-  "start_url": "./?install=genevieve-dog-parks-20260729-32#today",
+  "start_url": "./?install=genevieve-dog-parks-20260729-31#today",
   "scope": "./",
   "display": "standalone",
   "background_color": "#eef8f1",
@@ -33,5 +33,5 @@
       "purpose": "maskable"
     }
   ],
-  "id": "./?app=genevieve-dog-park-v32"
+  "id": "./?app=genevieve-dog-park-v30"
 }
