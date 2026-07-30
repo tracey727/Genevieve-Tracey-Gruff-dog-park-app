@@ -1,19 +1,24 @@
-GENEVIEVE DOG PARK V36 — EXACT OFFICIAL LOGOS RESTORED AND LOCKED
+GENEVIEVE App™ DOG PARK — FULL V36 REPAIR
+Prepared 30 July 2026
 
-This build uses the two exact logo images Tracey uploaded on 30 July 2026:
-- GA gold-and-black emblem in the left white header box.
-- Tree, infinity, roots and “Safety from roots to every journey” emblem in the right white header box.
+WHAT THIS REPAIRS
+- Restores Tracey Ann Kennedy's exact archived GA master into the left white logo box.
+- Restores the exact archived Tree & Roots safety mark into the right white logo box.
+- Makes Journey open on its own Journey page instead of Travel or More.
+- Keeps the large top header on Today only.
+- Removes the large top header from Journey, Parks, Dogs and More.
+- Returns every page to the top when opened.
+- Synchronises index, JavaScript, manifest and service worker to V36.
+- clears the stale V32/V35 application cache on the next load.
+- Creates all missing PWA icon files from the exact GA master without redrawing it.
+- Checks local file references, page targets, duplicate IDs and JavaScript syntax where Node.js is available.
+- Creates a safety backup before changing anything.
 
-The logos are protected in three ways:
-1. The exact image files are copied into the live repository.
-2. The app rewrites either logo if its source is changed or removed.
-3. A complete inline image fallback displays even if a deployed asset path fails.
+RUN THIS ONE
+Double-click: RUN_FULL_REPAIR_AND_DEPLOY.bat
 
-No page content or app function is removed. The large green dashboard header remains on Today only. Journey, Parks, Dogs and More remain separate pages without the large header.
+Leave VS Code and GitHub Desktop open. The black window will show every step. Do not close it until it says DONE or STOPPED.
 
-TO APPLY TO THE LIVE APP
-1. Unzip this folder.
-2. Double-click FIX_NOW.bat.
-3. Leave the black window open until it says LIVE FIX VERIFIED or directs you to press Push origin in GitHub Desktop.
+A STOPPED result does not mean files were lost. The untouched originals are copied into a folder named _BACKUP_BEFORE_V36_date_time inside the repository.
 
-The script backs up the repository before it changes anything.
+The script only stages the named Dog Park repair files. It does not delete dog records, API keys, legal documents or unrelated project files.
