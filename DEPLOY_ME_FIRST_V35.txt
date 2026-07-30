@@ -1,0 +1,19 @@
+GENEVIEVE App™ DOG PARKS — V35 JOURNEY FIX
+Build 2026.07.30.35
+
+FIXED
+- The bottom and top Journey buttons now open a dedicated Journey page.
+- Journey no longer opens the Grey Nomad planner inside More.
+- Grey Nomad remains available as a separate choice inside Journey.
+- Old V32/V34 links ending in ?genevieveVersion=32#travel are migrated to Journey once.
+- The service-worker/cache version is bumped so iPhone does not keep the broken navigation.
+
+DEPLOY
+1. Extract this ZIP.
+2. Upload every file and folder to the ROOT of the live GitHub repository.
+3. Commit the changes to the Vercel production branch.
+4. Wait for Vercel to finish.
+5. Open the live app with ?genevieveVersion=35#today.
+6. Tap Journey. It must show “Choose the part of your journey” and the Journey button must be gold.
+
+Do not upload the unopened ZIP into the repository.
