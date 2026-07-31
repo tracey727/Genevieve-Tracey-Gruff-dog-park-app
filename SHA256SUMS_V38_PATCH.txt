@@ -1,0 +1,5 @@
+c3844a8bfe388e7e4c7bdc2305a80c1acfa10b69f4e83819b69c747c4dc21175  ./README_UPLOAD_THESE_3_FILES.txt
+d0d68eb766fe0c0ca6eb0353f4882cbde8f8aeee0b7478b95b95d95d6df16b01  ./V38_VALIDATION_REPORT.txt
+d7962297cc049ff7a91d6df5d82c7b1a2a83dd93e65dc41d982ab4fcb86527ba  ./assets/ga-master-locked-2026-07-29.jpeg
+83498e2978afb4b360443a339afa292dd8eba461961656415521647dda1ad51f  ./assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg
+cbcdd23486fff2e40c1a2471e339d48a7036c0789688a976a3f81d78ef99dae6  ./repair.js

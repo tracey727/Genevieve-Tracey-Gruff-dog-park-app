@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '2026.07.30.35';
+  const VERSION = '2026.07.31.38';
   const Logic = window.GenevieveLogic;
   const Bridge = () => window.GenevieveAppBridge;
   const $ = selector => document.querySelector(selector);
@@ -530,4 +530,34 @@
   }
 
   document.addEventListener('DOMContentLoaded',setup);
+})();
+
+/* GENEVIEVE V38 three-file hotfix: exact logos and header-first Today landing. */
+(() => {
+  'use strict';
+  const GA = './assets/ga-master-locked-2026-07-29.jpeg?v=20260731.38';
+  const TREE = './assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg?v=20260731.38';
+  const $ = selector => document.querySelector(selector);
+  function logos(){
+    const ga=$('.approved-ga-logo'),tree=$('.header-roots-journey-art');
+    if(ga && !ga.src.includes('ga-master-locked-2026-07-29.jpeg')) ga.src=GA;
+    if(tree && !tree.src.includes('genevieve-safety-from-roots-locked-2026-07-29.jpeg')) tree.src=TREE;
+  }
+  function header(){
+    const open=new URLSearchParams(location.search).get('open');
+    const hash=location.hash.slice(1);
+    if(open || (hash && hash!=='today')) return;
+    if(!$('#today')?.classList.contains('active')) window.GenevieveAppBridge?.openScreen?.('today');
+    document.body.classList.add('first-page-active');
+    history.replaceState({...history.state,genevieveScreen:'today'},'',`${location.pathname}${location.search}`);
+    window.scrollTo({top:0,left:0,behavior:'auto'});
+    if(document.scrollingElement) document.scrollingElement.scrollTop=0;
+  }
+  function run(){
+    logos();header();
+    new MutationObserver(logos).observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['src']});
+    requestAnimationFrame(header);setTimeout(header,100);setTimeout(header,400);
+    addEventListener('pageshow',header);addEventListener('load',header,{once:true});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
 })();

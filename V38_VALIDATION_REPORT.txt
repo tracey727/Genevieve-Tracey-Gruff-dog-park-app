@@ -1,0 +1,24 @@
+GENEVIEVE APP™ DOG PARKS — V38 VALIDATION REPORT
+Date: 31 July 2026 (Australia/Brisbane)
+Build: 2026.07.31.38
+
+PASSED
+- All JavaScript files passed Node.js syntax checking.
+- index.html points to the exact locked GA master asset.
+- index.html points to the exact locked Tree and Roots asset.
+- V38 early boot and runtime repair scripts are linked.
+- Initial Today navigation uses a clean URL and explicitly scrolls to page top.
+- Service-worker cache name was advanced to V38.
+- Every local file referenced by index.html exists.
+- Every precached service-worker asset exists.
+- Both ZIP archives passed ZIP integrity testing.
+
+OFFICIAL ASSET SHA-256
+GA master:
+d7962297cc049ff7a91d6df5d82c7b1a2a83dd93e65dc41d982ab4fcb86527ba
+
+Tree and Roots:
+83498e2978afb4b360443a339afa292dd8eba461961656415521647dda1ad51f
+
+NOTE
+A live Vercel deployment can only be verified after these files are committed to the active GitHub repository and Vercel finishes the deployment.
