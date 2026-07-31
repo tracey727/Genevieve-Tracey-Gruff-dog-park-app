@@ -1,3 +1,7 @@
 {
+  "name": "genevieve-tracey-gruff-dog-park-live-v39",
+  "version": "39.0.0",
+  "private": true,
+  "description": "GENEVIEVE App Dog Parks live static deployment",
   "type": "commonjs"
 }

@@ -875,7 +875,7 @@ body.accessibility-emergency-mode:not(.reduced-motion) .communication-display{an
 }
 
 
-/* v2026.07.31.38 — live park-needs percentage and colour rating */
+/* v2026.07.31.39 — live park-needs percentage and colour rating */
 .live-status-pill{background:#e9faef!important;border:2px solid var(--green)!important;color:var(--deep)!important;font-weight:950!important;max-width:none!important}
 .park-safety-match{display:grid;grid-template-columns:minmax(92px,118px) 1fr;gap:14px;align-items:center;margin:14px 0;padding:14px;border:3px solid;border-radius:16px;background:#fff}
 .park-safety-match.green{border-color:var(--green);background:#e9faef}.park-safety-match.yellow{border-color:#cba900;background:#fffce4}.park-safety-match.amber{border-color:var(--amber);background:#fff2df}.park-safety-match.red{border-color:var(--red);background:#fff0f0}
@@ -887,7 +887,7 @@ body.accessibility-emergency-mode:not(.reduced-motion) .communication-display{an
 @media(max-width:520px){.park-safety-match{grid-template-columns:1fr}.park-safety-score{min-height:78px}.park-safety-score span{font-size:2.6rem}}
 
 
-/* GENEVIEVE V35 EXACT USER LOGOS — 2026-07-30 */
+/* GENEVIEVE V39 EXACT USER LOGOS — 2026-07-30 */
 .approved-ga-logo {
   display: block !important;
   width: 64px !important;
@@ -958,3 +958,10 @@ body.accessibility-emergency-mode:not(.reduced-motion) .communication-display{an
     max-width: 116px !important;
   }
 }
+
+
+/* V39: the full branded header belongs on the Today landing page only. */
+body:not(.first-page-active) .topbar{display:none!important}
+body:not(.first-page-active) .page-step-bar{border-top:0}
+body.first-page-active .topbar{display:grid}
+@media(min-width:761px){body.first-page-active .topbar{display:flex}}

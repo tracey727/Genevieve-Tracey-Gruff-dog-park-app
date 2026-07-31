@@ -1,0 +1,15 @@
+GENEVIEVE DOG PARK — LIVE V39
+
+This ZIP is ready for a Vercel static deployment.
+
+On the Vercel page shown in Tracey’s screenshot:
+1. Project Name: genevieve-tracey-gruff-dog-park-live-v39
+   If Vercel says it exists, use: genevieve-tracey-gruff-dog-park-live-v39a
+2. Application Preset: Other
+3. Root Directory: ./
+4. Leave Build and Output Settings closed and unchanged.
+5. Leave Environment Variables empty.
+6. Tap Deploy.
+
+Important: The previous error was a duplicate Vercel project name, not a code-build failure.
+Build marker: 2026.07.31.39

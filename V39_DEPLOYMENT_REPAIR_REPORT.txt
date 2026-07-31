@@ -1,0 +1,25 @@
+GENEVIEVE DOG PARK V39 DEPLOYMENT REPAIR
+
+Corrected:
+- Version/cache reset upgraded from the stale Version 32 key to Version 39.
+- Service worker cache upgraded to a new Version 39 cache name.
+- Service worker registration URLs upgraded to Version 39.
+- PWA manifest start URL and application ID upgraded to Version 39.
+- Missing tree-logo fallback path replaced with an existing approved logo file.
+- Version-specific boot and repair scripts upgraded from V38 to V39 filenames.
+- Vercel package metadata assigned a unique deployment-safe project name.
+- GA logo remains locked on the left; tree-and-roots artwork remains on the right.
+- No framework, build command, output directory, or environment variables are required.
+
+FINAL VALIDATION:
+- 33/33 screens opened successfully in Chromium.
+- 220 unique HTML IDs checked; no duplicates.
+- 52 navigation controls checked; no missing screen targets.
+- 179 JavaScript DOM references checked; no missing elements.
+- 154 local file references checked; no missing files.
+- 33 service-worker assets checked; no missing cache assets.
+- Check-in save and check-out passed.
+- Park search and map display passed.
+- Today-only header passed.
+- GA-left and Tree-right image loading passed.
+- Final result: PASS, zero deployment issues found.
