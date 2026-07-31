@@ -5,7 +5,7 @@
   const Logic = window.GenevieveLogic;
   const NotifyLogic = window.GenevieveNotificationLogic;
   const KEY = 'genevieve_dogpark_full_restore_state_v3';
-  const VERSION = CFG.version || '2026.07.31.39';
+  const VERSION = CFG.version || '2026.07.31.40';
   const LEGAL_VERSION = CFG.legalVersion || '2026-07-24';
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
@@ -783,7 +783,7 @@
   async function notificationRegistration(){
     if(!('serviceWorker' in navigator))return null;
     let registration=await navigator.serviceWorker.getRegistration?.();
-    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260731.39',{updateViaCache:'none'});
+    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260731.40',{updateViaCache:'none'});
     return registration;
   }
   async function showDeviceNotification({
@@ -1287,7 +1287,7 @@
     // Legal acceptance remains available and visible, but it no longer hijacks the app landing screen.
     if('serviceWorker' in navigator) (async()=>{
       try{
-        const resetKey='genevieve_v39_live_deploy_reset_done';
+        const resetKey='genevieve_v40_live_deploy_reset_done';
         if(!localStorage.getItem(resetKey)){
           if('serviceWorker' in navigator){
             const registrations=await navigator.serviceWorker.getRegistrations();
@@ -1306,11 +1306,11 @@
           return;
         }
         if('serviceWorker' in navigator){
-          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260731.39',{updateViaCache:'none'});
+          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260731.40',{updateViaCache:'none'});
           await registration.update();
         }
       }catch(error){
-        console.warn('GENEVIEVE build 2026.07.31.39 cache reset could not complete automatically.',error);
+        console.warn('GENEVIEVE build 2026.07.31.40 cache reset could not complete automatically.',error);
       }
     })();
     setInterval(()=>refreshHeaderWeather(true),WEATHER_REFRESH_MS);

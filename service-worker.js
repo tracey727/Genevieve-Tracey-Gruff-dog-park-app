@@ -1,9 +1,9 @@
-const CACHE='genevieve-dog-parks-safety-compatibility-2026-07-31-v39-ga-left-only';
-const VERSION='2026.07.31.39';
+const CACHE='genevieve-dog-parks-safety-compatibility-2026-07-31-v40-inline-ga';
+const VERSION='2026.07.31.40';
 const ASSETS=[
-  './','./index.html','./styles.css?v=20260731.39','./config.js?v=20260731.39','./logic.js?v=20260731.39',
-  './notification-logic.js?v=20260731.39','./app.js?v=20260731.39','./repair.js?v=20260731.39','./backend.js?v=20260731.39','./native-billing-bridge.js?v=20260731.39',
-  './manifest.webmanifest?v=20260731.39','./genevieve-v39-boot.js?v=20260731.39','./genevieve-v39-repair.js?v=20260731.39','./assets/ga-master-icon-64-v35.png','./assets/ga-master-apple-touch-180-v35.png',
+  './','./index.html','./styles.css?v=20260731.40','./config.js?v=20260731.40','./logic.js?v=20260731.40',
+  './notification-logic.js?v=20260731.40','./app.js?v=20260731.40','./repair.js?v=20260731.40','./backend.js?v=20260731.40','./native-billing-bridge.js?v=20260731.40',
+  './manifest.webmanifest?v=20260731.40','./genevieve-v40-boot.js?v=20260731.40','./genevieve-v40-repair.js?v=20260731.40','./assets/ga-master-icon-64-v35.png','./assets/ga-master-apple-touch-180-v35.png',
   './assets/ga-master-app-icon-192-v35.png','./assets/ga-master-app-icon-512-v35.png',
   './assets/genevieve-ga-logo-v35.png','./assets/ga-master-locked-2026-07-29.jpeg','./assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg','./404.html',
   './legal/','./legal/legal.css','./legal/privacy-policy.html','./legal/terms-of-use.html','./legal/safety-disclaimer.html',

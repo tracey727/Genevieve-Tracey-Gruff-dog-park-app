@@ -875,7 +875,7 @@ body.accessibility-emergency-mode:not(.reduced-motion) .communication-display{an
 }
 
 
-/* v2026.07.31.39 — live park-needs percentage and colour rating */
+/* v2026.07.31.40 — live park-needs percentage and colour rating */
 .live-status-pill{background:#e9faef!important;border:2px solid var(--green)!important;color:var(--deep)!important;font-weight:950!important;max-width:none!important}
 .park-safety-match{display:grid;grid-template-columns:minmax(92px,118px) 1fr;gap:14px;align-items:center;margin:14px 0;padding:14px;border:3px solid;border-radius:16px;background:#fff}
 .park-safety-match.green{border-color:var(--green);background:#e9faef}.park-safety-match.yellow{border-color:#cba900;background:#fffce4}.park-safety-match.amber{border-color:var(--amber);background:#fff2df}.park-safety-match.red{border-color:var(--red);background:#fff0f0}
@@ -965,3 +965,11 @@ body:not(.first-page-active) .topbar{display:none!important}
 body:not(.first-page-active) .page-step-bar{border-top:0}
 body.first-page-active .topbar{display:grid}
 @media(min-width:761px){body.first-page-active .topbar{display:flex}}
+
+
+/* V40 — official GA logo is embedded in index.html, so it cannot 404 or be served from an old cache. */
+.approved-ga-logo {
+  display:block!important; visibility:visible!important; opacity:1!important;
+  object-fit:contain!important; object-position:center!important;
+  image-rendering:auto!important; color-scheme:light!important;
+}
