@@ -9,25 +9,25 @@
   "theme_color": "#06391f",
   "icons": [
     {
-      "src": "./assets/ga-master-app-icon-192-v29.png",
+      "src": "./assets/ga-master-app-icon-192-v35.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./assets/ga-master-app-icon-192-v29.png",
+      "src": "./assets/ga-master-app-icon-192-v35.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "./assets/ga-master-app-icon-512-v29.png",
+      "src": "./assets/ga-master-app-icon-512-v35.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./assets/ga-master-app-icon-512-v29.png",
+      "src": "./assets/ga-master-app-icon-512-v35.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

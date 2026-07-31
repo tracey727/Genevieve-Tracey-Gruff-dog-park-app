@@ -5,7 +5,7 @@
   const Logic = window.GenevieveLogic;
   const NotifyLogic = window.GenevieveNotificationLogic;
   const KEY = 'genevieve_dogpark_full_restore_state_v3';
-  const VERSION = CFG.version || '2026.07.30.35';
+  const VERSION = CFG.version || '2026.07.31.38';
   const LEGAL_VERSION = CFG.legalVersion || '2026-07-24';
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
@@ -417,7 +417,10 @@
       appHistoryDepth += 1;
       history.pushState({genevieveScreen:id,genevieveDepth:appHistoryDepth},'',`#${id}`);
     } else {
-      history.replaceState({genevieveScreen:id,genevieveDepth:appHistoryDepth},'',`#${id}`);
+      const initialTodayUrl = id === 'today' && !pushHistory
+        ? `${location.pathname}${location.search}`
+        : `#${id}`;
+      history.replaceState({genevieveScreen:id,genevieveDepth:appHistoryDepth},'',initialTodayUrl);
     }
     if(id==='park-details') renderParkDetails();
     if(id==='live-park') renderLivePark();
@@ -778,7 +781,7 @@
   async function notificationRegistration(){
     if(!('serviceWorker' in navigator))return null;
     let registration=await navigator.serviceWorker.getRegistration?.();
-    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260730.35',{updateViaCache:'none'});
+    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260731.38',{updateViaCache:'none'});
     return registration;
   }
   async function showDeviceNotification({
@@ -796,8 +799,8 @@
     const locationUrl=new URL(url,location.href).href;
     const options={
       body,
-      icon:new URL('./assets/ga-master-app-icon-192-v29.png',location.href).href,
-      badge:new URL('./assets/ga-master-icon-64-v29.png',location.href).href,
+      icon:new URL('./assets/ga-master-app-icon-192-v35.png',location.href).href,
+      badge:new URL('./assets/ga-master-icon-64-v35.png',location.href).href,
       tag:`genevieve-${key}`,
       renotify:Boolean(critical),
       requireInteraction:Boolean(critical),
@@ -1272,14 +1275,17 @@
     $('#roleSelect').value=state.currentRole;
     renderAll();
     const params=new URLSearchParams(location.search),requested=params.get('open'),hash=location.hash.slice(1);
-    const legacyBrokenJourneyLink=hash==='travel'&&requested!=='travel'&&Number(params.get('genevieveVersion')||0)<35;
-    const initialScreen=legacyBrokenJourneyLink?'journey':(requested&&document.getElementById(requested)?requested:(hash&&document.getElementById(hash)?hash:'today'));
+    const initialScreen=requested&&document.getElementById(requested)?requested:(hash&&document.getElementById(hash)?hash:'today');
     setScreen(initialScreen,false);
+    if(initialScreen==='today'){
+      requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));
+      setTimeout(()=>window.scrollTo({top:0,left:0,behavior:'auto'}),120);
+    }
     $('#modePill').textContent=`LIVE STATUS · ${window.GenevieveBackend?.enabled?'connected services configured':'active on this device'} · v${VERSION}`;
     // Legal acceptance remains available and visible, but it no longer hijacks the app landing screen.
     if('serviceWorker' in navigator) (async()=>{
       try{
-        const resetKey='genevieve_v35_journey_fix_reset_done';
+        const resetKey='genevieve_v32_fine_tooth_comb_reset_done';
         if(!localStorage.getItem(resetKey)){
           if('serviceWorker' in navigator){
             const registrations=await navigator.serviceWorker.getRegistrations();
@@ -1291,20 +1297,18 @@
           }
           localStorage.setItem(resetKey,'yes');
           const freshUrl=new URL(location.href);
-          freshUrl.searchParams.set('genevieveVersion','35');
-          const explicitScreen=freshUrl.searchParams.get('open');
-          const requestedScreen=explicitScreen||freshUrl.hash.slice(1);
-          const migratedScreen=requestedScreen==='travel'&&explicitScreen!=='travel'?'journey':requestedScreen;
-          freshUrl.hash=document.getElementById(migratedScreen)?migratedScreen:'today';
+          freshUrl.searchParams.set('genevieveVersion','32');
+          const requestedScreen=freshUrl.searchParams.get('open')||freshUrl.hash.slice(1);
+          freshUrl.hash=document.getElementById(requestedScreen)?requestedScreen:'today';
           location.replace(freshUrl.toString());
           return;
         }
         if('serviceWorker' in navigator){
-          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260730.35',{updateViaCache:'none'});
+          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260731.38',{updateViaCache:'none'});
           await registration.update();
         }
       }catch(error){
-        console.warn('GENEVIEVE build 2026.07.30.35 cache reset could not complete automatically.',error);
+        console.warn('GENEVIEVE build 2026.07.31.38 cache reset could not complete automatically.',error);
       }
     })();
     setInterval(()=>refreshHeaderWeather(true),WEATHER_REFRESH_MS);

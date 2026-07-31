@@ -875,7 +875,7 @@ body.accessibility-emergency-mode:not(.reduced-motion) .communication-display{an
 }
 
 
-/* v2026.07.30.35 — live park-needs percentage and colour rating */
+/* v2026.07.31.38 — live park-needs percentage and colour rating */
 .live-status-pill{background:#e9faef!important;border:2px solid var(--green)!important;color:var(--deep)!important;font-weight:950!important;max-width:none!important}
 .park-safety-match{display:grid;grid-template-columns:minmax(92px,118px) 1fr;gap:14px;align-items:center;margin:14px 0;padding:14px;border:3px solid;border-radius:16px;background:#fff}
 .park-safety-match.green{border-color:var(--green);background:#e9faef}.park-safety-match.yellow{border-color:#cba900;background:#fffce4}.park-safety-match.amber{border-color:var(--amber);background:#fff2df}.park-safety-match.red{border-color:var(--red);background:#fff0f0}
@@ -887,7 +887,74 @@ body.accessibility-emergency-mode:not(.reduced-motion) .communication-display{an
 @media(max-width:520px){.park-safety-match{grid-template-columns:1fr}.park-safety-score{min-height:78px}.park-safety-score span{font-size:2.6rem}}
 
 
-/* v2026.07.30.35 — Journey opens on its own page */
-.journey-home-hero{border-left-color:var(--gold)}
-.journey-home-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-@media(max-width:760px){.journey-home-grid{grid-template-columns:1fr}}
+/* GENEVIEVE V35 EXACT USER LOGOS — 2026-07-30 */
+.approved-ga-logo {
+  display: block !important;
+  width: 64px !important;
+  height: 64px !important;
+  min-width: 64px !important;
+  flex: 0 0 64px !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  box-sizing: border-box !important;
+  padding: 3px !important;
+  border: 0 !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  overflow: hidden !important;
+}
+.header-tree-lockup {
+  width: 170px !important;
+  height: 170px !important;
+  aspect-ratio: 1 / 1 !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 7px !important;
+  box-sizing: border-box !important;
+  border-radius: 14px !important;
+  background: #ffffff !important;
+  overflow: hidden !important;
+}
+.header-roots-journey-art {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  border: 0 !important;
+  background: #ffffff !important;
+}
+@media(max-width:760px) {
+  .approved-ga-logo {
+    width: 62px !important;
+    height: 62px !important;
+    min-width: 62px !important;
+    flex-basis: 62px !important;
+  }
+  .header-tree-lockup {
+    width: 126px !important;
+    height: 126px !important;
+  }
+}
+@media(max-width:420px) {
+  .approved-ga-logo {
+    width: 58px !important;
+    height: 58px !important;
+    min-width: 58px !important;
+    flex-basis: 58px !important;
+  }
+  .header-tree-lockup {
+    width: 116px !important;
+    height: 116px !important;
+  }
+  .header-brand-actions {
+    width: 116px !important;
+    max-width: 116px !important;
+  }
+  .header-brand-actions .global-emergency-wrap {
+    width: 116px !important;
+    max-width: 116px !important;
+  }
+}

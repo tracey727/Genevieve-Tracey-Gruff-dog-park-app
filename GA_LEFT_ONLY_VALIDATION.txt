@@ -1,0 +1,14 @@
+GENEVIEVE DOG PARK — GA LEFT LOGO ONLY VALIDATION
+
+PASS — Header uses GA PNG
+PASS — Header has locked JPEG fallback
+PASS — Repair script locks GA PNG
+PASS — Service worker pre-caches GA PNG
+PASS — Official GA PNG exists
+PASS — Tree logo remains present
+PASS — Emergency markup remains present
+
+The official GA image SHA-256:
+ac882529057d6e5c77c31f6c7bbf0a0e37c1f74fc78923d0d8893cec39446489
+
+No visible app content or layout was intentionally changed.

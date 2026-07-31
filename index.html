@@ -11,22 +11,23 @@
 <meta content="GENEVIEVE Dog Parks" name="apple-mobile-web-app-title"/>
 <meta content="GENEVIEVE App™ Dog Parks — Safety &amp; Compatibility System helps owners plan the whole park journey, manage dog profiles, assess heat and interaction risk, supervise visits, report hazards and optionally use private communication, visual safety and Auslan-support tools." name="description"/>
 <title>GENEVIEVE App™ Dog Parks — Safety &amp; Compatibility System</title>
-<link href="./assets/ga-master-icon-64-v29.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="./assets/ga-master-icon-64-v29.png" rel="shortcut icon"/>
-<link href="./assets/ga-master-apple-touch-180-v29.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./assets/ga-master-apple-touch-180-v29.png" rel="apple-touch-icon-precomposed" sizes="180x180"/>
-<link href="./manifest.webmanifest?v=20260730.35" rel="manifest"/>
-<link href="./styles.css?v=20260730.35" rel="stylesheet"/>
-<script src="./config.js?v=20260730.35"></script>
-<script src="./logic.js?v=20260730.35"></script>
-<script src="./notification-logic.js?v=20260730.35"></script>
+<link href="./assets/ga-master-icon-64-v35.png" rel="icon" sizes="64x64" type="image/png"/>
+<link href="./assets/ga-master-icon-64-v35.png" rel="shortcut icon"/>
+<link href="./assets/ga-master-apple-touch-180-v35.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./assets/ga-master-apple-touch-180-v35.png" rel="apple-touch-icon-precomposed" sizes="180x180"/>
+<link href="./manifest.webmanifest?v=20260731.38" rel="manifest"/>
+<link href="./styles.css?v=20260731.38" rel="stylesheet"/>
+<script src="./config.js?v=20260731.38"></script>
+<script src="./logic.js?v=20260731.38"></script>
+<script src="./notification-logic.js?v=20260731.38"></script>
+<script src="./genevieve-v38-boot.js?v=20260731.38"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <div class="app-shell">
 <header class="topbar">
 <div class="brand-row">
-<img alt="Approved GENEVIEVE App gold A and black G logo with pink glow" class="app-icon approved-ga-logo" src="./assets/ga-logo-square.png"/>
+<img alt="Approved GENEVIEVE App gold A and black G logo with pink glow" class="app-icon approved-ga-logo" src="./assets/genevieve-ga-logo-v35.png?v=20260731-ga-left-only" onerror="this.onerror=null;this.src='./assets/ga-master-locked-2026-07-29.jpeg?v=20260731-ga-left-fallback'"/>
 <div>
 <p class="eyebrow">DOG PARK SAFETY · AUSTRALIA</p>
 <h1>GENEVIEVE App<span class="tm">™</span> Dog Parks</h1>
@@ -73,7 +74,7 @@
 </div>
 <div class="header-brand-actions">
 <div aria-label="GENEVIEVE App Safety from roots to every journey official artwork" class="header-tree-lockup">
-<img alt="GENEVIEVE App Safety from roots to every journey official artwork" class="header-roots-journey-art" src="./assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg"/>
+<img alt="GENEVIEVE App Safety from roots to every journey official artwork" class="header-roots-journey-art" src="./assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg?v=20260731.38"/>
 </div>
 <div class="global-emergency-wrap">
 <button aria-controls="emergencyCallConfirm" aria-describedby="globalEmergencyHelp" aria-label="Press and hold for three seconds, then slide to open the phone dialler for Triple Zero" class="global-emergency-button emergency-hold-button" id="globalEmergencyButton" type="button"><span aria-hidden="true" class="emergency-pulse"></span><span class="emergency-button-copy"><b>Emergency 000</b><small>Hold 3 sec, then slide</small></span></button>
@@ -149,6 +150,7 @@
 <button data-go="emergency" type="button"><b>Emergency and services</b><small>Open urgent help and other support services.</small></button>
 </section>
 </section>
+
 <section class="screen" data-group="journey" id="before-leaving">
 <section class="hero card"><p class="eyebrow">JOURNEY · STEP 1</p><h2>Before leaving home</h2><p>Check the dog, weather, park requirements, documents and supplies before the trip begins.</p></section>
 <section class="grid two">
@@ -561,7 +563,7 @@
 <section class="screen" data-group="more" id="more">
 <section class="hero card"><p class="eyebrow">MORE</p><h2>Choose a group, then open only what you need</h2><p>Sections are collapsible so the page is easier to scan and less visually crowded.</p></section>
 <section class="card role-switch-card"><div><p class="eyebrow">APP VIEW</p><h2>Choose the section you need</h2><p class="muted" id="roleHelp">Dog Owner view is active.</p></div><label>View as <select aria-label="Choose app role on mobile" id="mobileRoleSelect"><option value="owner">Dog Owner</option><option value="visitor">Park Visitor</option><option value="worker">Park Worker / Contractor</option><option value="superintendent">Park Superintendent</option><option value="responder">Authorised Responder</option><option value="admin">System Administrator</option></select></label><p class="small muted">This device view changes which tools are shown. Any public operator or responder access still requires verified accounts and server-side permissions.</p></section>
-<section class="card update-card"><div><p class="eyebrow">APP VERSION</p><h2>Current repaired build</h2><p>Installed build: <b>2026.07.30.35</b>. Refresh keeps saved dog records while updating app files.</p></div><button class="secondary" id="forceAppUpdate" type="button">Refresh latest app version</button><p class="muted" id="updateMessage"></p></section>
+<section class="card update-card"><div><p class="eyebrow">APP VERSION</p><h2>Current repaired build</h2><p>Installed build: <b>2026.07.31.38</b>. Refresh keeps saved dog records while updating app files.</p></div><button class="secondary" id="forceAppUpdate" type="button">Refresh latest app version</button><p class="muted" id="updateMessage"></p></section>
 <div class="more-folders">
 <details open=""><summary>Dogs, matching and social tools</summary><div class="page-grid"><button data-go="best-mates"><b>Best Mates</b><small>Affinity links and park alerts</small></button><button data-go="compatibility"><b>Compatibility</b><small>Colour-coded dog and pair guidance</small></button><button data-go="companions"><b>Find Companions</b><small>Prospective recommendations</small></button><button data-go="puppy"><b>Puppy Socialisation</b><small>Controlled matching and clearance</small></button></div></details>
 <details><summary>Travel, parks and live visit tools</summary><div class="page-grid"><button data-go="travel"><b>Grey Nomad Trip Planner</b><small>Routes, stops, stays and safety filters</small></button><button data-go="beaches"><b>Dog Beaches</b><small>Boundaries, hours, tide and facilities</small></button><button data-go="checkin"><b>Voluntary Check In / Out</b><small>Optional community presence</small></button><button data-go="owner-duty"><b>Owner Duty</b><small>Supervision confirmations</small></button><button data-go="etiquette"><b>Park Etiquette</b><small>Body-language prompts and break actions</small></button></div></details>
@@ -571,11 +573,12 @@
 </div>
 </section>
 </main>
-<footer><p>© 2026 Tracey Ann Kennedy. GENEVIEVE App™. Trade mark application stated as pending.</p><p class="build-marker">Dog Parks build 2026.07.30.35 · Legal version 2026-07-24</p><p><a href="./legal/">Legal</a> · <a href="./legal/privacy-policy.html">Privacy</a> · <a href="./legal/support.html">Support</a> · <a href="./legal/account-deletion.html">Delete account</a></p></footer>
+<footer><p>© 2026 Tracey Ann Kennedy. GENEVIEVE App™. Trade mark application stated as pending.</p><p class="build-marker">Dog Parks build 2026.07.31.38 · Legal version 2026-07-24</p><p><a href="./legal/">Legal</a> · <a href="./legal/privacy-policy.html">Privacy</a> · <a href="./legal/support.html">Support</a> · <a href="./legal/account-deletion.html">Delete account</a></p></footer>
 <nav aria-label="Mobile navigation" class="bottom-nav"><button class="active" data-go="today" data-main="today">Today</button><button data-go="journey" data-main="journey">Journey</button><button data-go="park-search" data-main="parks">Parks</button><button data-go="dog-list" data-main="dogs">Dogs</button><button data-go="more" data-main="more">More</button></nav>
 </div>
-<script src="./native-billing-bridge.js?v=20260730.35"></script>
-<script src="./backend.js?v=20260730.35"></script>
-<script src="./app.js?v=20260730.35"></script><script src="./repair.js?v=20260730.35"></script>
+<script src="./native-billing-bridge.js?v=20260731.38"></script>
+<script src="./backend.js?v=20260731.38"></script>
+<script src="./app.js?v=20260731.38"></script><script src="./repair.js?v=20260731.38"></script>
+<script src="./genevieve-v38-repair.js?v=20260731-ga-left-only"></script>
 </body>
 </html>
