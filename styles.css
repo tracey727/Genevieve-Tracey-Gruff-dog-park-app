@@ -1008,3 +1008,33 @@ body.first-page-active .topbar{display:grid}
   object-fit:contain!important; object-position:center!important;
   image-rendering:auto!important; color-scheme:light!important;
 }
+
+/* V41 — One-tap status card: compact vertical spacing only. */
+#calmQuickStatusCard {
+  padding: 14px 16px;
+}
+#calmQuickStatusCard h2 {
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+#calmQuickStatusCard label {
+  gap: 4px;
+  margin-bottom: 7px;
+}
+#calmQuickStatusCard select {
+  min-height: 40px;
+  padding: 8px 10px;
+}
+#calmQuickStatusCard .button-row.compact {
+  gap: 6px;
+  margin-top: 6px;
+}
+#calmQuickStatusCard .button-row.compact button {
+  min-height: 38px;
+  padding: 7px 10px;
+  line-height: 1.2;
+}
+#calmQuickStatusCard #quickStatusMessage {
+  margin: 8px 0 0;
+  line-height: 1.35;
+}
