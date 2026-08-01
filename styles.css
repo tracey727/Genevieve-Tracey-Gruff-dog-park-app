@@ -886,6 +886,41 @@ body.accessibility-emergency-mode:not(.reduced-motion) .communication-display{an
 .park-need-breakdown{display:flex;flex-wrap:wrap;gap:6px}.need-chip{display:inline-block;padding:5px 8px;border-radius:999px;font-size:.73rem;font-weight:850;border:1px solid}.need-chip.matched{background:#e9faef;border-color:var(--green);color:#064e2d}.need-chip.missing{background:#fff0f0;border-color:var(--red);color:#7a1111}
 @media(max-width:520px){.park-safety-match{grid-template-columns:1fr}.park-safety-score{min-height:78px}.park-safety-score span{font-size:2.6rem}}
 
+/* 2026-08-01 — locked global Emergency placement beside More */
+.main-tabs>button[data-main]{flex:1 1 0;min-width:70px}
+.main-tabs>.nav-emergency-button{
+  position:relative!important;isolation:isolate!important;overflow:hidden!important;
+  flex:2 1 0!important;min-width:140px!important;min-height:48px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  padding:6px 10px!important;border:2px solid #fff!important;border-radius:12px!important;
+  background:linear-gradient(180deg,#ed1111 0%,#b90000 100%)!important;color:#fff!important;
+  touch-action:none!important;user-select:none!important;white-space:normal!important;
+}
+.nav-emergency-button::after{
+  content:"";position:absolute;z-index:-1;left:0;bottom:0;width:0;height:6px;background:#fff38a;transition:width .08s linear;
+}
+.nav-emergency-button.emergency-holding::after{width:100%;transition:width 3s linear}
+.nav-emergency-button .emergency-button-copy{align-items:center!important;text-align:center!important}
+.nav-emergency-button .emergency-button-copy b{font-size:.78rem!important}
+.nav-emergency-button .emergency-button-copy small{font-size:.55rem!important}
+.nav-emergency-button:hover,.nav-emergency-button:focus-visible{
+  background:linear-gradient(180deg,#ff2727 0%,#c50000 100%)!important;color:#fff!important;
+  outline:3px solid #fff38a!important;outline-offset:1px!important;filter:none!important;
+}
+@media(max-width:760px){
+  .bottom-nav{grid-template-columns:repeat(5,minmax(0,1fr)) minmax(0,2fr)!important}
+  .bottom-nav>.nav-emergency-button{
+    position:relative!important;isolation:isolate!important;overflow:hidden!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    min-width:0!important;min-height:48px!important;padding:4px 3px!important;
+    border:2px solid #fff!important;border-radius:10px!important;
+    background:linear-gradient(180deg,#ed1111 0%,#b90000 100%)!important;color:#fff!important;
+    touch-action:none!important;user-select:none!important;white-space:normal!important;
+  }
+  .bottom-nav>.nav-emergency-button .emergency-button-copy b{font-size:.68rem!important}
+  .bottom-nav>.nav-emergency-button .emergency-button-copy small{font-size:.48rem!important}
+}
+
 
 /* GENEVIEVE V39 EXACT USER LOGOS — 2026-07-30 */
 .approved-ga-logo {

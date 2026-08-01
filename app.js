@@ -1041,7 +1041,7 @@
 
   function bindForms(){
     $('#backStepButton')?.addEventListener('click', backOneStep);
-    [$('#globalEmergencyButton'),$('#emergencyPageHoldButton')].filter(Boolean).forEach(button=>{
+    [...$$('.nav-emergency-button'),$('#emergencyPageHoldButton')].filter(Boolean).forEach(button=>{
       button.addEventListener('pointerdown',event=>{
         if(event.button!==0)return;
         try{button.setPointerCapture?.(event.pointerId);}catch{}
