@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '2026.07.31.40';
+  const VERSION = '2026.08.02.43';
   const Logic = window.GenevieveLogic;
   const Bridge = () => window.GenevieveAppBridge;
   const $ = selector => document.querySelector(selector);

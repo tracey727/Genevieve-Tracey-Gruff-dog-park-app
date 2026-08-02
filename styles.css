@@ -875,7 +875,7 @@ body.accessibility-emergency-mode:not(.reduced-motion) .communication-display{an
 }
 
 
-/* v2026.07.31.40 — live park-needs percentage and colour rating */
+/* v2026.08.02.43 — live park-needs percentage and colour rating */
 .live-status-pill{background:#e9faef!important;border:2px solid var(--green)!important;color:var(--deep)!important;font-weight:950!important;max-width:none!important}
 .park-safety-match{display:grid;grid-template-columns:minmax(92px,118px) 1fr;gap:14px;align-items:center;margin:14px 0;padding:14px;border:3px solid;border-radius:16px;background:#fff}
 .park-safety-match.green{border-color:var(--green);background:#e9faef}.park-safety-match.yellow{border-color:#cba900;background:#fffce4}.park-safety-match.amber{border-color:var(--amber);background:#fff2df}.park-safety-match.red{border-color:var(--red);background:#fff0f0}
@@ -1037,4 +1037,19 @@ body.first-page-active .topbar{display:grid}
 #calmQuickStatusCard #quickStatusMessage {
   margin: 8px 0 0;
   line-height: 1.35;
+}
+
+
+/* V43 — emergency control interaction repair only. Keeps the control beside More at twice the width. */
+.nav-emergency-button,
+.urgent-service-button.emergency-hold-button {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  touch-action: none !important;
+  cursor: pointer !important;
+}
+.nav-emergency-button:active,
+.urgent-service-button.emergency-hold-button:active {
+  filter: brightness(.96) !important;
 }

@@ -5,7 +5,7 @@
   const Logic = window.GenevieveLogic;
   const NotifyLogic = window.GenevieveNotificationLogic;
   const KEY = 'genevieve_dogpark_full_restore_state_v3';
-  const VERSION = CFG.version || '2026.07.31.40';
+  const VERSION = CFG.version || '2026.08.02.43';
   const LEGAL_VERSION = CFG.legalVersion || '2026-07-24';
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
@@ -783,7 +783,7 @@
   async function notificationRegistration(){
     if(!('serviceWorker' in navigator))return null;
     let registration=await navigator.serviceWorker.getRegistration?.();
-    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260731.40',{updateViaCache:'none'});
+    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260802.43',{updateViaCache:'none'});
     return registration;
   }
   async function showDeviceNotification({
@@ -1042,21 +1042,37 @@
   function bindForms(){
     $('#backStepButton')?.addEventListener('click', backOneStep);
     [...$$('.nav-emergency-button'),$('#emergencyPageHoldButton')].filter(Boolean).forEach(button=>{
-      button.addEventListener('pointerdown',event=>{
-        if(event.button!==0)return;
-        try{button.setPointerCapture?.(event.pointerId);}catch{}
+      const startHold=event=>{
+        if(event.type==='pointerdown' && event.button!==0)return;
+        if(event.type==='pointerdown' && event.isPrimary===false)return;
+        event.preventDefault();
+        try{if(event.pointerId!==undefined)button.setPointerCapture?.(event.pointerId);}catch{}
         beginEmergencyHold(button);
-      });
-      ['pointerup','pointercancel'].forEach(type=>button.addEventListener(type,event=>{
-        try{if(event.pointerId!==undefined&&button.hasPointerCapture?.(event.pointerId))button.releasePointerCapture(event.pointerId);}catch{}
+      };
+      const stopHold=event=>{
+        event?.preventDefault?.();
+        try{if(event?.pointerId!==undefined&&button.hasPointerCapture?.(event.pointerId))button.releasePointerCapture(event.pointerId);}catch{}
         cancelEmergencyHold();
-      }));
+      };
+      button.addEventListener('pointerdown',startHold,{passive:false});
+      ['pointerup','pointercancel','lostpointercapture'].forEach(type=>button.addEventListener(type,stopHold,{passive:false}));
+      button.addEventListener('contextmenu',event=>event.preventDefault());
+      button.addEventListener('click',event=>event.preventDefault());
       button.addEventListener('keydown',event=>{
         if((event.key==='Enter'||event.key===' ')&&!event.repeat){event.preventDefault();beginEmergencyHold(button);}
       });
       button.addEventListener('keyup',event=>{
         if(event.key==='Enter'||event.key===' '){event.preventDefault();cancelEmergencyHold();}
       });
+      button.addEventListener('blur',cancelEmergencyHold);
+      if(!window.PointerEvent){
+        button.addEventListener('touchstart',startHold,{passive:false});
+        button.addEventListener('touchend',stopHold,{passive:false});
+        button.addEventListener('touchcancel',stopHold,{passive:false});
+        button.addEventListener('mousedown',startHold);
+        button.addEventListener('mouseup',stopHold);
+        button.addEventListener('mouseleave',stopHold);
+      }
     });
     $('#emergencyCallSlider')?.addEventListener('input',event=>{
       const value=Number(event.currentTarget.value);
@@ -1287,7 +1303,7 @@
     // Legal acceptance remains available and visible, but it no longer hijacks the app landing screen.
     if('serviceWorker' in navigator) (async()=>{
       try{
-        const resetKey='genevieve_v40_live_deploy_reset_done';
+        const resetKey='genevieve_v43_emergency_button_repair_done';
         if(!localStorage.getItem(resetKey)){
           if('serviceWorker' in navigator){
             const registrations=await navigator.serviceWorker.getRegistrations();
@@ -1299,18 +1315,18 @@
           }
           localStorage.setItem(resetKey,'yes');
           const freshUrl=new URL(location.href);
-          freshUrl.searchParams.set('genevieveVersion','39');
+          freshUrl.searchParams.set('genevieveVersion','43');
           const requestedScreen=freshUrl.searchParams.get('open')||freshUrl.hash.slice(1);
           freshUrl.hash=document.getElementById(requestedScreen)?requestedScreen:'today';
           location.replace(freshUrl.toString());
           return;
         }
         if('serviceWorker' in navigator){
-          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260731.40',{updateViaCache:'none'});
+          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260802.43',{updateViaCache:'none'});
           await registration.update();
         }
       }catch(error){
-        console.warn('GENEVIEVE build 2026.07.31.40 cache reset could not complete automatically.',error);
+        console.warn('GENEVIEVE build 2026.08.02.43 cache reset could not complete automatically.',error);
       }
     })();
     setInterval(()=>refreshHeaderWeather(true),WEATHER_REFRESH_MS);

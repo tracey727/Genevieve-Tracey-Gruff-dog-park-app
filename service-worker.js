@@ -1,9 +1,9 @@
-const CACHE='genevieve-dog-parks-safety-compatibility-2026-08-01-v41-one-tap-card';
-const VERSION='2026.07.31.40';
+const CACHE='genevieve-dog-parks-2026-08-02-v43-emergency-button-repair';
+const VERSION='2026.08.02.43';
 const ASSETS=[
-  './','./index.html','./styles.css?v=20260801.41','./config.js?v=20260731.40','./logic.js?v=20260731.40',
-  './notification-logic.js?v=20260731.40','./app.js?v=20260731.40','./repair.js?v=20260731.40','./backend.js?v=20260731.40','./native-billing-bridge.js?v=20260731.40',
-  './manifest.webmanifest?v=20260731.40','./genevieve-v40-boot.js?v=20260731.40','./genevieve-v40-repair.js?v=20260731.40','./assets/ga-master-icon-64-v35.png','./assets/ga-master-apple-touch-180-v35.png',
+  './','./index.html','./styles.css?v=20260802.43','./config.js?v=20260802.43','./logic.js?v=20260802.43',
+  './notification-logic.js?v=20260802.43','./app.js?v=20260802.43','./repair.js?v=20260802.43','./backend.js?v=20260802.43','./native-billing-bridge.js?v=20260802.43',
+  './manifest.webmanifest?v=20260802.43','./genevieve-v40-boot.js?v=20260802.43','./genevieve-v40-repair.js?v=20260802.43','./assets/ga-master-icon-64-v35.png','./assets/ga-master-apple-touch-180-v35.png',
   './assets/ga-master-app-icon-192-v35.png','./assets/ga-master-app-icon-512-v35.png',
   './assets/genevieve-ga-logo-v35.png','./assets/ga-master-locked-2026-07-29.jpeg','./assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg','./404.html',
   './legal/','./legal/legal.css','./legal/privacy-policy.html','./legal/terms-of-use.html','./legal/safety-disclaimer.html',
