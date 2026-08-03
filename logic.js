@@ -84,24 +84,25 @@
   }
 
   function guidanceBand10(score){
-    const value=Math.round(Math.max(0,Math.min(10,Number(score)||0))*10)/10;
-    if(value>=8)return{score:value,level:'green',label:'Green — more favourable profile conditions',action:'Continue direct observation, owner control and a staged introduction.'};
-    if(value>=6)return{score:value,level:'yellow',label:'Yellow — use caution',action:'Reduce pressure, introduce slowly and be ready to stop.'};
-    if(value>=4)return{score:value,level:'amber',label:'Amber — higher controls needed',action:'Use more distance, a quieter setting or choose another time.'};
-    return{score:value,level:'red',label:'Red — do not introduce now',action:'Do not proceed with the interaction under the current profile conditions.'};
+    const value=Math.round(Math.max(1,Math.min(10,Number(score)||1))*10)/10;
+    if(value<=2)return{score:value,level:'green',label:'Green — lower risk',action:'Continue direct observation, owner control and a staged introduction.'};
+    if(value<=5)return{score:value,level:'yellow',label:'Yellow — moderate risk',action:'Reduce pressure, introduce slowly and be ready to stop.'};
+    if(value<=7)return{score:value,level:'amber',label:'Amber — high risk',action:'Use more distance, a quieter setting or choose another time.'};
+    return{score:value,level:'red',label:'Red — very high risk',action:'Do not proceed with the interaction under the current conditions.'};
   }
   function dogProfileGuide(dog={}){
     const sociability=Math.max(0,Math.min(10,Number(dog.sociability)||0));
     const calmResponse=10-Math.max(0,Math.min(10,Number(dog.reactivity)||0));
     const energy= Math.max(0,Math.min(10,Number(dog.energy)||0));
     const energyManageability=10-Math.abs(energy-5);
-    const score=Math.round(((sociability+calmResponse+energyManageability)/3)*10)/10;
-    return{...guidanceBand10(score),components:{sociability,calmResponse,energy,energyManageability},explanation:'Average of sociability, inverse reactivity and energy manageability. This is guidance only, not a prediction or guarantee.'};
+    const favourableScore=(sociability+calmResponse+energyManageability)/3;
+    const score=Math.round(Math.max(1,Math.min(10,11-favourableScore))*10)/10;
+    return{...guidanceBand10(score),components:{sociability,calmResponse,energy,energyManageability},explanation:'Risk guide derived from sociability, reactivity and energy manageability. One is lower risk and ten is highest risk. This is guidance only, not a prediction or guarantee.'};
   }
   function pairCompatibilityGuide(a,b,env={}){
     const risk=interactionRisk(a,b,env);
     if(!risk)return null;
-    const score=Math.round(Math.max(0,Math.min(10,10-risk.riskScore/10))*10)/10;
+    const score=Math.round(Math.max(1,Math.min(10,risk.riskScore/10))*10)/10;
     return{...guidanceBand10(score),pairScore:score,riskScore:risk.riskScore,reasons:risk.reasons,profileA:dogProfileGuide(a),profileB:dogProfileGuide(b)};
   }
   function haversineKm(lat1,lon1,lat2,lon2){

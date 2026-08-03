@@ -15,12 +15,14 @@
 <link href="./assets/ga-logo-192.png" rel="shortcut icon"/>
 <link href="./assets/ga-logo-192.png" rel="apple-touch-icon" sizes="192x192"/>
 <link href="./assets/ga-logo-192.png" rel="apple-touch-icon-precomposed" sizes="192x192"/>
-<link href="./manifest.webmanifest?v=20260803.46" rel="manifest"/>
-<link href="./styles.css?v=20260803.46" rel="stylesheet"/>
-<script src="./config.js?v=20260803.46"></script>
-<script src="./logic.js?v=20260803.46"></script>
-<script src="./notification-logic.js?v=20260803.46"></script>
-<script src="./genevieve-v40-boot.js?v=20260803.46"></script>
+<link href="./manifest.webmanifest?v=20260803.52" rel="manifest"/>
+<link href="./styles.css?v=20260803.52" rel="stylesheet"/>
+<script src="./config.js?v=20260803.52"></script>
+<script src="./logic.js?v=20260803.52"></script>
+<script src="./trip-planner.js?v=20260803.52"></script>
+<script src="./national-trip-service.js?v=20260803.52"></script>
+<script src="./notification-logic.js?v=20260803.52"></script>
+<script src="./landing-guard.js?v=20260803.52"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -74,7 +76,7 @@
 </div>
 <div class="header-brand-actions">
 <div aria-label="GENEVIEVE App Safety from roots to every journey official artwork" class="header-tree-lockup">
-<img alt="GENEVIEVE App Safety from roots to every journey official artwork" class="header-roots-journey-art" src="./assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg?v=20260803.46"/>
+<img alt="GENEVIEVE App Safety from roots to every journey official artwork" class="header-roots-journey-art" src="./assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg?v=20260803.52"/>
 </div>
 </div>
 </div>
@@ -99,9 +101,16 @@
 <section class="hero card">
 <p class="eyebrow">TODAY’S QUESTION</p>
 <h2>Is this a suitable park visit for my dog right now?</h2>
+<form class="inline-form today-park-search" id="todayParkSearchForm">
+<label>Type the dog park, suburb or address
+<input autocomplete="street-address" id="todayParkQuery" maxlength="160" name="parkQuery" placeholder="Example: Musgrave Park, Labrador QLD" required/>
+</label>
+<button class="primary" type="submit">Check this park</button>
+</form>
+<p class="muted">GENEVIEVE will open the Parks page, search the location and show available park information and map choices.</p>
 <div class="answer yellow" id="todayAnswer"><b>Checks needed.</b><br/>Choose a dog and park, then run the heat and interaction checks.</div>
 <div class="button-row">
-<button class="primary" data-go="before-leaving">Plan today’s park visit</button><button data-go="travel">Plan a Grey Nomad trip</button>
+<button class="primary" data-go="before-leaving">Plan today’s park visit</button><button data-go="journey" data-journey-section="travel">Plan a Grey Nomad trip</button>
 <button data-go="heat-hazards">Check heat and hazards</button>
 <button data-go="compatibility">Check interaction risk</button>
 </div>
@@ -112,8 +121,8 @@
 </section>
 <section aria-label="GENEVIEVE risk scale" class="risk-scale card">
 <h2>One consistent GENEVIEVE risk scale</h2>
-<div class="risk-scale-bar"><span class="green">0–24<br/><b>Green</b></span><span class="yellow">25–49<br/><b>Yellow</b></span><span class="amber">50–74<br/><b>Amber</b></span><span class="red">75–100<br/><b>Red</b></span></div>
-<p class="muted">Every risk percentage runs from lower risk at 0 toward highest risk at 100.</p>
+<div class="risk-scale-bar"><span class="green">1–2<br/><b>Green</b></span><span class="yellow">3–5<br/><b>Yellow</b></span><span class="amber">6–7<br/><b>Amber</b></span><span class="red">8–10<br/><b>Red</b></span></div>
+<p class="muted"><b>1 is green, lower risk. 10 is red, highest risk.</b> Percentage results use the same direction: lower percentages are green and higher percentages are red.</p>
 </section>
 <section class="grid two">
 <article class="card field-panel"><h2>Today’s live snapshot</h2><div id="snapshot"></div></article>
@@ -134,14 +143,14 @@
 <section class="screen" data-group="journey" id="journey">
 <section class="hero card journey-home-hero">
 <p class="eyebrow">YOUR JOURNEY</p>
-<h2>Choose the part of your journey</h2>
-<p>Plan the visit from home, travel and arrive safely, check in or out, or open the separate long-distance trip planner.</p>
+<h2>Plan every trip from one Journey page</h2>
+<p>Use this one page for today’s park visit or a longer Grey Nomad trip. All journey planning is now together.</p>
 </section>
 <section aria-label="Journey choices" class="page-grid journey-home-grid">
 <button data-go="before-leaving" type="button"><b>1. Before leaving home</b><small>Dog, weather, destination, documents and supplies.</small></button>
 <button data-go="route-arrival" type="button"><b>2. Route and arrival</b><small>Drive, park, approach the gate, enter and leave safely.</small></button>
 <button data-go="checkin" type="button"><b>3. Check in or out</b><small>Optional community presence and current dog status.</small></button>
-<button data-go="travel" type="button"><b>Grey Nomad Trip Planner</b><small>Long-distance routes, rest stops, stays, food and emergency-vet planning.</small></button>
+<button data-go="journey" data-journey-section="travel" type="button"><b>Grey Nomad Trip Planner</b><small>Long-distance routes, rest stops, stays, food and emergency-vet planning on this Journey page.</small></button>
 <button data-go="heat-hazards" type="button"><b>Heat and hazards</b><small>Review weather, surfaces and current local reports.</small></button>
 <button data-go="emergency" type="button"><b>Emergency and services</b><small>Open urgent help and other support services.</small></button>
 </section>
@@ -289,13 +298,17 @@
 <section class="grid two"><form class="card field-panel" id="heatCheckForm"><label>Dog <select name="dog"></select></label><label>Park <select name="park"></select></label><label>Apparent / feels-like temperature °C <input max="60" min="-10" name="apparentTemperature" step="0.1" type="number" value="28"/></label><label>Humidity % <input max="100" min="0" name="humidity" type="number" value="55"/></label><label>UV index <input max="20" min="0" name="uvIndex" step="0.1" type="number" value="5"/></label><label class="toggle"><input name="directSun" type="checkbox"/> Direct sun</label><label class="toggle"><input checked name="shadeAvailable" type="checkbox"/> Reliable shade</label><label class="toggle"><input checked name="waterAvailable" type="checkbox"/> Cool fresh water</label><label class="toggle"><input name="hotSurface" type="checkbox"/> Hot asphalt, concrete or sand</label><label class="toggle"><input name="vulnerableDog" type="checkbox"/> Young, older, unwell, flat-faced or heat-vulnerable dog</label><div class="button-row"><button class="primary" type="submit">Calculate heat risk</button><button class="secondary" id="useCurrentWeather" type="button">Use my current weather</button></div></form><article class="card"><h2>Heat result</h2><div class="answer yellow" id="weatherStatus"><b>Manual entry ready.</b><br/>Location stays off until enabled in Settings.</div><div class="answer yellow" id="heatResult"><b>No result yet.</b></div><h3>Active local hazard reports</h3><div id="hazardList"></div></article></section>
 <section class="grid two"><form class="card" id="hazardForm"><h2>Report a park hazard</h2><label>Park <select name="park"></select></label><label>Hazard <select name="type"><option>Snake sighting</option><option>Paralysis ticks</option><option>Blue-green algae</option><option>Broken fence or gate</option><option>Glass or sharp object</option><option>1080 bait warning</option><option>Flood or storm damage</option><option>No water</option><option>Unsafe structure</option></select></label><label>Risk level <select name="risk"><option value="25">Yellow</option><option value="55">Amber</option><option value="80">Red</option></select></label><label>Details <textarea name="details" required></textarea></label><button class="amber" type="submit">Save hazard report</button></form><article class="card"><h2>Recent heat checks</h2><div id="heatHistory"></div></article></section>
 </section>
-<section class="screen" data-group="more" id="travel">
-<section class="hero card"><p class="eyebrow">GREY NOMAD &amp; WHOLE-TRIP PLANNER</p><h2>Plan a dog-friendly journey anywhere in Australia</h2><p>Choose the route style, number of stops, food and accommodation budgets, and safety features. GENEVIEVE then presents route-based parks, meals, stays and essential services as offers to choose from. Prices and availability must be confirmed directly.</p></section>
+<section aria-labelledby="greyNomadPlannerTitle" class="journey-consolidated-panel" data-group="journey" id="travel">
+<section class="card journey-long-distance-heading"><p class="eyebrow">JOURNEY · GREY NOMAD &amp; WHOLE-TRIP PLANNER</p><h2 id="greyNomadPlannerTitle">Any Australian start, destination and required places — GENEVIEVE calculates the dog stops</h2><p>Enter an Australian address, suburb or town, optional places that must be visited, and the dog. When the deployed route service is online, GENEVIEVE calculates the road geometry, required dog-care breaks, road overnights and any Tasmania ferry leg. It then offers day-by-day directions, parks, meals, stays and essential services. The person does not guess the number of stops.</p><div class="trip-attention-legend" aria-label="Trip planning attention alert colours"><b>Trip planning attention alerts</b><span class="green">1–2 Green</span><span class="yellow">3–5 Yellow</span><span class="amber">6–7 Amber</span><span class="red">8–10 Red</span><small>1 means lower planning attention. 10 means highest planning attention. These colours do not predict safety.</small></div></section>
 <section class="grid two">
 <form class="card field-panel" id="tripForm">
-<div class="grid two"><label>From <input name="from" placeholder="Gold Coast QLD" required/></label><label>To <input name="to" placeholder="Hobart TAS" required/></label></div>
-<div class="grid two"><label>Route style <select name="routeStyle"><option value="coastal">Coastal route</option><option value="inland">Inland route</option><option value="fastest">Fastest practical route</option><option value="scenic">Scenic route</option></select></label><label>How many planned stops? <input max="20" min="1" name="stopCount" type="number" value="4"/></label></div>
-<div class="grid two"><label>Maximum driving between dog breaks <select name="breakHours"><option value="1.5">1.5 hours</option><option selected="" value="2">2 hours</option><option value="2.5">2.5 hours</option><option value="3">3 hours</option></select></label><label>Dog <select name="dog"></select></label></div>
+<div class="automatic-trip-rule"><span aria-hidden="true">✓</span><div><b>Dog-first stop calculation is automatic</b><p>GENEVIEVE uses the route estimate and the selected dog profile. The standard ceiling is two hours between breaks; puppies, seniors and dogs with saved medical or support needs are planned at 1.5 hours. Stop earlier whenever the dog, weather, traffic or driver needs it.</p></div></div>
+<div class="answer yellow national-trip-status" id="tripCalculationStatus"><b>Australia-wide live calculation is ready to request.</b><br/>The deployed service resolves Australian places and road geometry without sending the dog’s name or medical details. If it cannot verify a route, GENEVIEVE shows a red alert and does not invent a stop count.</div>
+<div class="grid two"><div class="trip-location-field"><label>From <input autocomplete="street-address" list="australianTripPlaces" name="from" placeholder="Gold Coast QLD" required/></label><input name="fromLatitude" type="hidden"/><input name="fromLongitude" type="hidden"/><button class="secondary trip-location-button" id="useTripLocation" type="button">Use my current location</button><p class="small muted" id="tripLocationStatus">Or type a suburb, town or address.</p></div><label>To <input autocomplete="street-address" list="australianTripPlaces" name="to" placeholder="Hobart TAS or Tasmania" required/></label></div>
+<datalist id="australianTripPlaces"><option value="Gold Coast QLD"></option><option value="Brisbane QLD"></option><option value="Sydney NSW"></option><option value="Canberra ACT"></option><option value="Melbourne VIC"></option><option value="Geelong VIC"></option><option value="Devonport TAS"></option><option value="Launceston TAS"></option><option value="Hobart TAS"></option><option value="Tasmania"></option></datalist>
+<label>Places that must be visited, in order — optional <textarea maxlength="1200" name="requiredPlaces" placeholder="One Australian place per line&#10;Example: Dubbo NSW&#10;Example: Adelaide SA"></textarea><small>These shape the road route. They are not treated as dog breaks unless the calculated dog-care schedule also requires a break there.</small></label>
+<div class="grid two"><label>Dog whose needs set the stops <select name="dog" required></select></label><label>Route preference <select name="routeStyle"><option selected="" value="fastest">Fastest practical route</option><option value="coastal">Coastal route</option><option value="inland">Inland route</option><option value="scenic">Scenic route</option></select><small>For nationwide coastal, inland or scenic planning, add the places that must be visited. GENEVIEVE will not invent themed roads; external maps remain available for current alternatives.</small></label></div>
+<label>Planned departure date — optional <input name="departureDate" type="date"/></label>
 <label class="toggle"><input checked name="dogFriendlyOnly" type="checkbox"/> Show dog-friendly places only</label><details open=""><summary>Places and services wanted</summary><div class="filter-checks" id="tripNeeds"></div></details>
 <details><summary>Accommodation preferences</summary><div class="filter-checks" id="tripStayNeeds"><label class="toggle"><input name="stayNeeds" type="checkbox" value="Pet-friendly caravan park"/> Pet-friendly caravan park</label><label class="toggle"><input name="stayNeeds" type="checkbox" value="Pet-friendly hotel or motel"/> Pet-friendly hotel or motel</label><label class="toggle"><input name="stayNeeds" type="checkbox" value="Luxury dog-friendly stay"/> Luxury dog-friendly stay</label><label class="toggle"><input name="stayNeeds" type="checkbox" value="Pet-friendly Airbnb or holiday home"/> Pet-friendly Airbnb or holiday home</label><label class="toggle"><input name="stayNeeds" type="checkbox" value="Farm stay or cabin"/> Farm stay or cabin</label></div></details>
 <details><summary>Safety and facility filters</summary><div class="filter-checks" id="tripSafetyNeeds"><label class="toggle"><input name="safetyNeeds" type="checkbox" value="Secure fencing"/> Secure fencing</label><label class="toggle"><input name="safetyNeeds" type="checkbox" value="Double gate"/> Double gate</label><label class="toggle"><input name="safetyNeeds" type="checkbox" value="Lighting"/> Lighting</label><label class="toggle"><input name="safetyNeeds" type="checkbox" value="CCTV or security cameras"/> CCTV or security cameras</label><label class="toggle"><input name="safetyNeeds" type="checkbox" value="On-site security or staff"/> On-site security or staff</label><label class="toggle"><input name="safetyNeeds" type="checkbox" value="Shade"/> Shade</label><label class="toggle"><input name="safetyNeeds" type="checkbox" value="Fresh water"/> Fresh water</label><label class="toggle"><input name="safetyNeeds" type="checkbox" value="Toilets"/> Toilets</label><label class="toggle"><input name="safetyNeeds" type="checkbox" value="Easy parking"/> Easy parking</label><label class="toggle"><input name="safetyNeeds" type="checkbox" value="Quiet area"/> Quiet area</label><label class="toggle"><input name="safetyNeeds" type="checkbox" value="24-hour emergency vet nearby"/> 24-hour emergency vet nearby</label></div></details>
@@ -317,15 +330,33 @@
 <p class="muted">These are user-set spending limits, not quoted prices. GENEVIEVE uses them to shape the offers and search terms presented.</p>
 </details>
 <label>Extra needs or limits <textarea maxlength="800" name="notes" placeholder="Examples: avoid stairs, senior dog, no rough surfaces, wheelchair access"></textarea></label>
-<div class="button-row"><button class="primary" type="submit">Build complete trip plan</button><button class="secondary" id="clearTripPlan" type="button">Clear</button></div>
+<div class="button-row"><button class="primary" type="submit">Calculate my route and required stops</button><button class="secondary" id="clearTripPlan" type="button">Clear</button></div>
 </form>
-<article class="card"><h2>Your route, budget and offers</h2><div id="tripResult"><div class="empty">Enter a start and destination to build the trip.</div></div></article>
+<article class="card"><h2>Your calculated dog-first journey</h2><div id="tripResult"><div class="empty">Enter a start, destination and dog. GENEVIEVE will calculate the stops and show how to get there.</div></div></article>
 </section>
 <section class="card route-offers-panel" aria-labelledby="routeOffersTitle">
-<p class="eyebrow">OFFERS TO CHOOSE FROM</p><h2 id="routeOffersTitle">Parks, meals, stays and services along the chosen route</h2>
+<p class="eyebrow">OFFERS TO CHOOSE FROM</p><h2 id="routeOffersTitle">Parks, meals, stays and services at overnight hubs and the destination</h2>
 <div id="routeOffers"><div class="empty">Build a trip plan above and GENEVIEVE will present route-based options within the budget targets.</div></div>
 </section>
 <section class="card"><h2>Saved trip plans</h2><div id="savedTripPlans"><div class="empty">No saved trip plans.</div></div></section>
+<section class="card trip-findings-panel" aria-labelledby="tripFindingsTitle">
+<p class="eyebrow">ANIMAL PATENT · DATED TECHNICAL TESTING RECORD</p><h2 id="tripFindingsTitle">Record what actually happened on a saved trip</h2>
+<p>Save factual observations against the exact calculated route, stop rule, alert scores, timestamp and calculation fingerprint. This may support evidence of development and testing for the separate Animal patent record; it does not by itself establish patent validity, scope, ownership or grant.</p>
+<div class="grid two">
+<form class="field-panel patent-finding-form" id="tripFindingForm">
+<label>Saved calculated trip <select name="tripId" required><option value="">Choose a saved trip</option></select></label>
+<label>Observation date and time <input name="observedAt" type="datetime-local" required/></label>
+<label>Trip result <select name="tripResult" required><option value="completed-as-planned">Completed as planned</option><option value="completed-route-changed">Completed after route changed</option><option value="ended-early">Trip ended early</option><option value="not-completed">Trip not completed</option></select></label>
+<label>Actual dog-care stops taken <input min="0" max="200" name="actualBreakCount" type="number" required/></label>
+<label>Was an earlier stop needed than GENEVIEVE planned? <select name="earlierBreakNeeded" required><option value="no">No</option><option value="yes">Yes</option><option value="not-known">Not known</option></select></label>
+<label>Highest observed trip attention alert <span class="trip-score-input"><input max="10" min="1" name="highestAlertScore" type="number" value="1" required/> / 10</span><small>1 is green and lower attention. 10 is red and highest attention.</small></label>
+<label>Factual observations <textarea maxlength="2000" name="observations" placeholder="Record observable facts: stop timing, heat, dog behaviour, route change, traffic, facility availability or ferry outcome." required></textarea></label>
+<label class="toggle"><input name="factualConfirmation" type="checkbox" required/> I confirm this record contains my factual observations and clearly identifies anything I did not personally observe.</label>
+<button class="primary" type="submit">Save dated trip finding</button>
+</form>
+<article><div class="button-row compact"><button id="exportTripFindingsJson" type="button">Export findings JSON</button><button class="secondary" id="exportTripFindingsCsv" type="button">Export findings CSV</button></div><p class="muted">Exports remain owner-controlled. Keep original files, do not edit raw records, and provide them to a registered patent attorney if requested.</p><div id="tripFindingsList"><div class="empty">No trip findings recorded.</div></div></article>
+</div>
+</section>
 <section class="grid three travel-support-grid">
 <article class="card travel-emergency-link-card"><p class="eyebrow">AUSTRALIA-WIDE HELP</p><h2>Emergency and support services</h2><div class="travel-link-stack"><button class="emergency-services-link" data-open-emergency-services="" type="button">Open all emergency services</button></div><p class="muted">Triple Zero uses hold-and-slide confirmation. Police, SES, poisons, council, ranger, pound, veterinary and wildlife options remain available in the services chooser. The app does not contact any service automatically.</p></article>
 <article class="card"><p class="eyebrow">ANIMAL MEDICAL HELP</p><h2>Find emergency veterinarians along the route</h2><label>Town or destination <input id="travelVetLocation" placeholder="Town or suburb"/></label><div class="travel-link-stack"><a class="button-link" href="https://www.google.com/maps/search/?api=1&query=24+hour+emergency+vet+Australia" id="travelVetMapsLink" rel="noopener" target="_blank">Search 24-hour emergency vets</a><a class="button-link" href="https://www.google.com/maps/search/?api=1&query=veterinarian+open+now+Australia" id="travelVetOpenNowLink" rel="noopener" target="_blank">Search vets open now</a></div><p class="muted">Phone first. Hours, staffing and after-hours arrangements can change.</p></article>
@@ -574,27 +605,27 @@
 </section>
 </section>
 <section class="screen" data-group="more" id="data"><section class="hero card"><p class="eyebrow">DATA &amp; ACCOUNT</p><h2>Access, correct, export or delete</h2></section><section class="grid three"><article class="card"><h2>Export</h2><p>Dog profiles, owner inputs, trips, relationships and evidence history.</p><button id="dataExportButton">Export data</button></article><article class="card"><h2>Correct</h2><p>Update behavioural values and challenge inferred observations.</p><button data-go="dog-list">Review profiles</button></article><article class="card danger-card"><h2>Delete</h2><p>Delete local data now and use the public deletion page for a production account request.</p><button class="danger" id="dataDeleteButton">Delete local data</button><a class="button-link secondary-link" href="./legal/account-deletion.html">Open deletion page</a></article></section></section>
-<section class="screen" data-group="more" id="launch"><section class="hero card"><p class="eyebrow">DEPLOYMENT GATE</p><h2>Check the public launch configuration</h2><p>This checker refuses to mark missing domain, contact, backend or payment facts as complete.</p></section><section class="card"><button class="primary" id="runLaunchCheck">Run launch check</button><div id="launchResults"></div></section><section class="grid two"><article class="card"><h2>Public URLs</h2><div id="publicUrlList"></div></article><article class="card"><h2>Build facts</h2><ul class="checklist"><li>Root index.html</li><li>No npm or build step</li><li>Vercel configuration</li><li>GitHub Pages workflow</li><li>PWA manifest and service worker</li><li>404 page</li><li>Channel-safe payment router</li><li>31 restored functional screens</li><li>Consistent risk scale</li><li>Owner, visitor, worker, superintendent, responder and administrator roles</li></ul></article></section></section>
+<section class="screen" data-group="more" id="launch"><section class="hero card"><p class="eyebrow">DEPLOYMENT GATE</p><h2>Check the public launch configuration</h2><p>This checker refuses to mark missing domain, contact, backend or payment facts as complete.</p></section><section class="card"><button class="primary" id="runLaunchCheck">Run launch check</button><div id="launchResults"></div></section><section class="grid two"><article class="card"><h2>Public URLs</h2><div id="publicUrlList"></div></article><article class="card"><h2>Build facts</h2><ul class="checklist"><li>Root index.html</li><li>No npm or build step</li><li>Vercel configuration</li><li>GitHub Pages workflow</li><li>PWA manifest and service worker</li><li>404 page</li><li>Channel-safe payment router</li><li>30 functional screens after Journey consolidation</li><li>Consistent risk scale</li><li>Owner, visitor, worker, superintendent, responder and administrator roles</li></ul></article></section></section>
 <section class="screen" data-group="more" id="more">
 <section class="hero card"><p class="eyebrow">MORE</p><h2>Choose a group, then open only what you need</h2><p>Sections are collapsible so the page is easier to scan and less visually crowded.</p></section>
 <section class="card role-switch-card"><div><p class="eyebrow">APP VIEW</p><h2>Choose the section you need</h2><p class="muted" id="roleHelp">Dog Owner view is active.</p></div><label>View as <select aria-label="Choose app role on mobile" id="mobileRoleSelect"><option value="owner">Dog Owner</option><option value="visitor">Park Visitor</option><option value="worker">Park Worker / Contractor</option><option value="superintendent">Park Superintendent</option><option value="responder">Authorised Responder</option><option value="admin">System Administrator</option></select></label><p class="small muted">This device view changes which tools are shown. Any public operator or responder access still requires verified accounts and server-side permissions.</p></section>
-<section class="card update-card"><div><p class="eyebrow">APP VERSION</p><h2>Launch candidate</h2><p>Installed build: <b>2026.08.03.46</b>. Planned public launch: <b>8 August 2026</b>. Refresh keeps saved dog records while updating app files.</p></div><button class="secondary" id="forceAppUpdate" type="button">Refresh latest app version</button><p class="muted" id="updateMessage"></p></section>
+<section class="card update-card"><div><p class="eyebrow">APP VERSION</p><h2>Launch candidate</h2><p>Installed build: <b>2026.08.03.52</b>. Planned public launch: <b>8 August 2026</b>. Refresh keeps saved dog records, trips and factual findings while updating app files.</p></div><button class="secondary" id="forceAppUpdate" type="button">Refresh latest app version</button><p class="muted" id="updateMessage"></p></section>
 <div class="more-folders">
 <details open=""><summary>Dogs, matching and social tools</summary><div class="page-grid"><button data-go="best-mates"><b>Best Mates</b><small>Affinity links and park alerts</small></button><button data-go="compatibility"><b>Compatibility</b><small>Colour-coded dog and pair guidance</small></button><button data-go="companions"><b>Find Companions</b><small>Prospective recommendations</small></button><button data-go="puppy"><b>Puppy Socialisation</b><small>Controlled matching and clearance</small></button></div></details>
-<details><summary>Travel, parks and live visit tools</summary><div class="page-grid"><button data-go="travel"><b>Grey Nomad Trip Planner</b><small>Routes, stops, stays and safety filters</small></button><button data-go="beaches"><b>Dog Beaches</b><small>Boundaries, hours, tide and facilities</small></button><button data-go="checkin"><b>Voluntary Check In / Out</b><small>Optional community presence</small></button><button data-go="owner-duty"><b>Owner Duty</b><small>Supervision confirmations</small></button><button data-go="etiquette"><b>Park Etiquette</b><small>Body-language prompts and break actions</small></button></div></details>
+<details><summary>Travel, parks and live visit tools</summary><div class="page-grid"><button data-go="journey" data-journey-section="travel"><b>Grey Nomad Trip Planner</b><small>Opens inside the single Journey page</small></button><button data-go="beaches"><b>Dog Beaches</b><small>Boundaries, hours, tide and facilities</small></button><button data-go="checkin"><b>Voluntary Check In / Out</b><small>Optional community presence</small></button><button data-go="owner-duty"><b>Owner Duty</b><small>Supervision confirmations</small></button><button data-go="etiquette"><b>Park Etiquette</b><small>Body-language prompts and break actions</small></button></div></details>
 <details><summary>Safety, emergency and incident tools</summary><div class="page-grid"><button data-go="emergency"><b>Emergency &amp; Services</b><small>One toggle for 000 and every support service</small></button><button data-go="heat-hazards"><b>Heat &amp; Hazards</b><small>Weather, surfaces and local reports</small></button><button data-go="incident"><b>Incident Report</b><small>Structured factual evidence</small></button><button data-go="lost-found"><b>Lost &amp; Found</b><small>Local records and escalation plan</small></button><button data-go="notices"><b>Council Notices</b><small>Verified closures and maintenance</small></button></div></details>
 <details><summary>Accessibility, privacy and account</summary><div class="page-grid"><button class="deaf-access-tile" data-go="communication-access"><span class="access-tile-label">ACCESSIBILITY</span><b>Deaf &amp; Auslan Access</b><small>Visual cards and emergency communication</small></button><button data-go="notifications"><b>Notifications</b><small>Safety and document alerts</small></button><button data-go="settings"><b>Settings &amp; Privacy</b><small>Visibility, location and opt-outs</small></button><button data-go="data"><b>Data &amp; Account</b><small>Export, correction and deletion</small></button><button data-go="membership"><b>Membership</b><small>Billing routes and restore</small></button></div></details>
 <details><summary>Legal, roles and operations</summary><div class="page-grid"><button data-go="legal"><b>Legal Centre</b><small>Terms, privacy, safety and refunds</small></button><button data-go="roles"><b>Roles &amp; Access</b><small>Owner, visitor, worker and responder</small></button><button data-go="superintendent" data-role-button="superintendent,admin"><b>Park Superintendent</b><small>Facilities, notices and trends</small><span class="role-lock-note">Choose Park Superintendent view to open</span></button><button data-go="launch"><b>Launch Check</b><small>Deployment and service readiness</small></button></div></details>
 </div>
 </section>
 </main>
-<footer><p>© 2026 Tracey Ann Kennedy. GENEVIEVE App™. Trade mark application stated as pending.</p><p class="build-marker">Dog Parks build 2026.08.03.46 · Legal version 2026-08-03 · Planned launch 8 August 2026</p><p><a href="./legal/">Legal</a> · <a href="./legal/privacy-policy.html">Privacy</a> · <a href="./legal/support.html">Support</a> · <a href="./legal/account-deletion.html">Delete account</a></p></footer>
+<footer><p>© 2026 Tracey Ann Kennedy. GENEVIEVE App™. Trade mark application stated as pending.</p><p class="build-marker">Dog Parks build 2026.08.03.52 · Legal version 2026-08-03-trip-routing · Planned launch 8 August 2026</p><p><a href="./legal/">Legal</a> · <a href="./legal/privacy-policy.html">Privacy</a> · <a href="./legal/support.html">Support</a> · <a href="./legal/account-deletion.html">Delete account</a></p></footer>
 <nav aria-label="Mobile navigation" class="bottom-nav"><button class="active" data-go="today" data-main="today">Today</button><button data-go="journey" data-main="journey">Journey</button><button data-go="park-search" data-main="parks">Parks</button><button data-go="dog-list" data-main="dogs">Dogs</button><button data-go="more" data-main="more">More</button></nav>
 <aside aria-label="Persistent emergency action" class="persistent-emergency-dock"><button aria-controls="emergencyServiceToggle" aria-describedby="globalEmergencyHelp" aria-label="Press and hold for three seconds to open nearby emergency and animal services" class="nav-emergency-button emergency-hold-button" type="button"><span class="emergency-button-copy"><b>Emergency Help</b><small>Hold 3 sec for nearby services</small></span></button></aside>
 </div>
-<script src="./native-billing-bridge.js?v=20260803.46"></script>
-<script src="./backend.js?v=20260803.46"></script>
-<script src="./app.js?v=20260803.46"></script><script src="./repair.js?v=20260803.46"></script>
-<script src="./genevieve-v40-repair.js?v=20260803.46"></script>
+<script src="./native-billing-bridge.js?v=20260803.52"></script>
+<script src="./backend.js?v=20260803.52"></script>
+<script src="./app.js?v=20260803.52"></script><script src="./features.js?v=20260803.52"></script>
+<script src="./branding.js?v=20260803.52"></script>
 </body>
 </html>

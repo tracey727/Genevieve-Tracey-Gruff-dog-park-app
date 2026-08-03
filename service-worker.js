@@ -1,9 +1,9 @@
-const CACHE='genevieve-dog-parks-2026-08-03-v46-emergency-services';
-const VERSION='2026.08.03.46';
+const CACHE='genevieve-dog-parks-2026-08-03-v52-australia-trip-findings';
+const VERSION='2026.08.03.52';
 const ASSETS=[
-  './','./index.html','./styles.css?v=20260803.46','./config.js?v=20260803.46','./logic.js?v=20260803.46',
-  './notification-logic.js?v=20260803.46','./app.js?v=20260803.46','./repair.js?v=20260803.46','./backend.js?v=20260803.46','./native-billing-bridge.js?v=20260803.46',
-  './manifest.webmanifest?v=20260803.46','./genevieve-v40-boot.js?v=20260803.46','./genevieve-v40-repair.js?v=20260803.46','./assets/ga-logo-192.png','./assets/ga-logo-512.png',
+  './','./index.html','./styles.css?v=20260803.52','./config.js?v=20260803.52','./logic.js?v=20260803.52','./trip-planner.js?v=20260803.52','./national-trip-service.js?v=20260803.52',
+  './notification-logic.js?v=20260803.52','./app.js?v=20260803.52','./features.js?v=20260803.52','./backend.js?v=20260803.52','./native-billing-bridge.js?v=20260803.52',
+  './manifest.webmanifest?v=20260803.52','./landing-guard.js?v=20260803.52','./branding.js?v=20260803.52','./assets/ga-logo-192.png','./assets/ga-logo-512.png',
   './assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg','./404.html',
   './legal/','./legal/legal.css','./legal/privacy-policy.html','./legal/terms-of-use.html','./legal/safety-disclaimer.html',
   './legal/refund-cancellation-policy.html','./legal/account-deletion.html','./legal/community-guidelines.html',

@@ -5,8 +5,8 @@
   const Logic = window.GenevieveLogic;
   const NotifyLogic = window.GenevieveNotificationLogic;
   const KEY = 'genevieve_dogpark_full_restore_state_v3';
-  const VERSION = CFG.version || '2026.08.03.46';
-  const LEGAL_VERSION = CFG.legalVersion || '2026-08-03';
+  const VERSION = CFG.version || '2026.08.03.52';
+  const LEGAL_VERSION = CFG.legalVersion || '2026-08-03-trip-routing';
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
   const now = () => new Date().toISOString();
@@ -164,7 +164,7 @@
       {id:'mr-gruff',name:'Mr Gruff',dob:'2021-08-08',breed:'Companion dog',lifeStage:'adult',publicNote:'Ask owner before approach',notes:'Playful. Calm introductions and current observation remain important.',sociability:8,reactivity:3,energy:7,playIntensity:7,tolerance:7,resourceSharing:7,vulnerability:2,microchip:'',weight:'',medical:'',vet:'',emergencyContact:'',vaccinationStatus:'public-cleared',reproductiveStatus:'not-shared',supportNeeds:'none',supportNote:'',registrationExpiry:'',vaccinationDue:'',fleaTickDue:'',medicationDue:'',insuranceExpiry:''},
       {id:'luna',name:'Luna',dob:'2022-04-18',breed:'Companion dog',lifeStage:'adult',publicNote:'Gentle play; avoid rough greetings',notes:'Calm approach and sniff breaks.',sociability:8,reactivity:2,energy:6,playIntensity:5,tolerance:8,resourceSharing:7,vulnerability:2,microchip:'',weight:'',medical:'',vet:'',emergencyContact:'',vaccinationStatus:'public-cleared',reproductiveStatus:'not-shared',supportNeeds:'none',supportNote:'',registrationExpiry:'',vaccinationDue:'',fleaTickDue:'',medicationDue:'',insuranceExpiry:''}
     ],
-    departurePlans: [], arrivalChecks: [], checkins: [], supervisionReports: [], affinities: [], predictions: [], outcomes: [], observations: [], heatChecks: [], hazards: [], lostFound: [], incidents: [], maintenance: [], notices: [], trips: [], evidence: [],
+    departurePlans: [], arrivalChecks: [], checkins: [], supervisionReports: [], affinities: [], predictions: [], outcomes: [], observations: [], heatChecks: [], hazards: [], lostFound: [], incidents: [], maintenance: [], notices: [], trips: [], tripFindings: [], evidence: [],
     privacy: {discoverable:true,livePresence:true,affinityAlerts:true,recommendations:true,learningParticipation:true,preciseLocation:false,showMedicalToResponder:false,incognitoDefault:false},
     notifications: {bestMate:true,heat:true,hazards:true,documents:true,emergency:true,incidents:true,workerTasks:true,companion:false,quietStart:'20:00',quietEnd:'07:00',locationDetail:'park',permissionAsked:false,lastCheckedAt:null},
     notificationHistory: [],
@@ -212,6 +212,7 @@
   if(!state.dogs.some(d=>d.id==='luna'))state.dogs.push(structuredClone(defaultState.dogs[1]));
   state.dogs=state.dogs.map(d=>({reproductiveStatus:'not-shared',supportNeeds:'none',supportNote:'',insuranceExpiry:'',...d}));
   state.trips=Array.isArray(state.trips)?state.trips:[];
+  state.tripFindings=Array.isArray(state.tripFindings)?state.tripFindings:[];
   let installPromptEvent = null;
   if (!parks.some(park => park.id === state.selectedParkId)) state.selectedParkId = defaultState.selectedParkId;
   state.accessibility.emergencyVisualMode = false;
@@ -389,6 +390,16 @@
   }
 
   const groupForScreen = id => document.getElementById(id)?.dataset.group || 'more';
+  function scrollPageToTop(){
+    const reset=()=>{
+      window.scrollTo({top:0,left:0,behavior:'auto'});
+      if(document.scrollingElement)document.scrollingElement.scrollTop=0;
+      document.documentElement.scrollTop=0;
+      document.body.scrollTop=0;
+    };
+    reset();
+    requestAnimationFrame(reset);
+  }
   function applyRoleVisibility(){
     const role=state.currentRole;
     $$('[data-role-button]').forEach(el=>{
@@ -403,6 +414,8 @@
     if(help) help.innerHTML=`<b>${safe(names[role]||role)} view is active.</b> ${role==='superintendent'?'The facilities, maintenance, notices and trend tools are now available.':role==='worker'?'Worker safety, hazard, incident and maintenance-task notification rules are active. Verified operator tools still require an authorised account.':'Use the selector above when you need a different authorised view on this device.'}`;
   }
   function setScreen(id, pushHistory=true) {
+    const journeySection=id==='travel'?'travel':null;
+    if(journeySection)id='journey';
     let target=document.getElementById(id); if(!target) return;
     if(target.dataset.role && !target.dataset.role.split(',').includes(state.currentRole)) {
       alert('Choose Park Superintendent from More → App View to open these tools.');
@@ -437,11 +450,8 @@
       renderNotifications();
     }
     updateStepNavigation(id);
-    if(currentId!==id){
-      const header=document.querySelector('.topbar');
-      const headerBottom=header?window.scrollY+header.getBoundingClientRect().bottom:0;
-      window.scrollTo({top:Math.max(0,headerBottom),behavior:document.body.classList.contains('reduced-motion')?'auto':'smooth'});
-    }
+    scrollPageToTop();
+    if(journeySection)requestAnimationFrame(()=>document.getElementById(journeySection)?.scrollIntoView({block:'start',behavior:'auto'}));
   }
 
   let emergencyHoldTimer=null;
@@ -635,7 +645,7 @@
     const dog=dogById(id)||state.dogs[0]; if(!dog)return; state.selectedDogId=dog.id; $('#dogProfileTitle').textContent=`${dog.name}${dog.dob?` · born ${fmtDate(dog.dob)}`:''}`;
     const current=state.checkins.find(c=>c.dogId===dog.id); const dimensions=Logic.dims.map(k=>`<div class="stat"><b>${safe(k.replace(/([A-Z])/g,' $1'))}</b>${Number(dog[k])||0}/10</div>`).join('');
     const guide=Logic.dogProfileGuide(dog);
-    $('#dogProfileBody').innerHTML=`<section class="card dog-profile-score ${guide.level}"><div class="dog-card-heading"><div><p class="eyebrow">PROFILE COLOUR GUIDE</p><h2>${guide.score}/10 · ${safe(guide.label)}</h2></div><span class="dog-score-badge ${guide.level}">${guide.score}/10</span></div><p>${safe(guide.action)}</p><p class="muted">Average of sociability, inverse reactivity and energy manageability. Guidance only — not a diagnosis, prediction or safety guarantee.</p></section><section class="grid three"><article class="card"><h2>Public safety view</h2><p><b>${safe(dog.publicNote||'Ask owner before approach')}</b></p><p>${safe(dog.notes||'No public needs recorded.')}</p>${dogStatusMarkup(dog)}<div class="chips"><span class="chip">${safe(current?.status||'not checked in')}</span>${current?.needsSpace?'<span class="chip">needs space</span>':''}${current?.onLead?'<span class="chip">on lead</span>':''}${current?.training?'<span class="chip">in training</span>':''}</div></article><article class="card field-panel"><h2>Behavioural profile</h2><div class="grid two">${dimensions}</div></article><article class="card warning-card"><h2>Restricted emergency</h2><p><b>Microchip:</b> ${safe(dog.microchip||'Not entered')}<br><b>Weight:</b> ${safe(dog.weight||'Not entered')}<br><b>Medical:</b> ${safe(dog.medical||'Not entered')}<br><b>Vet:</b> ${safe(dog.vet||'Not entered')}<br><b>Emergency contact:</b> ${safe(dog.emergencyContact||'Not entered')}<br><b>Support need:</b> ${safe(supportNeedLabels[dog.supportNeeds]||'None recorded')} ${dog.supportNote?`— ${safe(dog.supportNote)}`:''}<br><b>Insurance expiry:</b> ${safe(dog.insuranceExpiry?fmtDate(dog.insuranceExpiry):'Not entered')}</p><p class="muted">Visible only to the owner in this web build. Production responder access must be justified and audited.</p></article></section><section class="card"><h2>Owner controls</h2><div class="chips"><span class="chip">Public name</span><span class="chip">Hide exact location</span><span class="chip">Incognito</span><span class="chip">Needs space</span><span class="chip">On lead</span><span class="chip">In training</span><span class="chip">Export history</span></div></section>`;
+    $('#dogProfileBody').innerHTML=`<section class="card dog-profile-score ${guide.level}"><div class="dog-card-heading"><div><p class="eyebrow">PROFILE RISK COLOUR GUIDE</p><h2>${guide.score}/10 · ${safe(guide.label)}</h2></div><span class="dog-score-badge ${guide.level}">${guide.score}/10</span></div><p>${safe(guide.action)}</p><p class="muted">One is lower risk (green); ten is highest risk (red). Derived from sociability, reactivity and energy manageability. Guidance only — not a diagnosis, prediction or safety guarantee.</p></section><section class="grid three"><article class="card"><h2>Public safety view</h2><p><b>${safe(dog.publicNote||'Ask owner before approach')}</b></p><p>${safe(dog.notes||'No public needs recorded.')}</p>${dogStatusMarkup(dog)}<div class="chips"><span class="chip">${safe(current?.status||'not checked in')}</span>${current?.needsSpace?'<span class="chip">needs space</span>':''}${current?.onLead?'<span class="chip">on lead</span>':''}${current?.training?'<span class="chip">in training</span>':''}</div></article><article class="card field-panel"><h2>Behavioural profile</h2><div class="grid two">${dimensions}</div></article><article class="card warning-card"><h2>Restricted emergency</h2><p><b>Microchip:</b> ${safe(dog.microchip||'Not entered')}<br><b>Weight:</b> ${safe(dog.weight||'Not entered')}<br><b>Medical:</b> ${safe(dog.medical||'Not entered')}<br><b>Vet:</b> ${safe(dog.vet||'Not entered')}<br><b>Emergency contact:</b> ${safe(dog.emergencyContact||'Not entered')}<br><b>Support need:</b> ${safe(supportNeedLabels[dog.supportNeeds]||'None recorded')} ${dog.supportNote?`— ${safe(dog.supportNote)}`:''}<br><b>Insurance expiry:</b> ${safe(dog.insuranceExpiry?fmtDate(dog.insuranceExpiry):'Not entered')}</p><p class="muted">Visible only to the owner in this web build. Production responder access must be justified and audited.</p></article></section><section class="card"><h2>Owner controls</h2><div class="chips"><span class="chip">Public name</span><span class="chip">Hide exact location</span><span class="chip">Incognito</span><span class="chip">Needs space</span><span class="chip">On lead</span><span class="chip">In training</span><span class="chip">Export history</span></div></section>`;
   }
   function supervisionAge(checkin){ return Math.max(0,Math.round((Date.now()-new Date(checkin.lastSupervision||checkin.time).getTime())/60000)); }
   function renderCheckins(){
@@ -653,7 +663,7 @@
     const el=$('#affinityList');if(el)el.innerHTML=state.affinities.length?state.affinities.map(a=>{const from=dogById(a.fromDogId)?.name,to=dogById(a.toDogId)?.name,p=parkById(a.parkId);return `<article class="affinity-card"><b>${safe(from)} → ${safe(to)}</b><p>${safe(a.mode)} · ${safe(a.status)} · ${safe(p.name)}</p>${a.status!=='active'?`<button data-accept-affinity="${a.id}">Record reciprocal consent</button>`:''}<label>Private removal reason <select data-removal-reason="${a.id}"><option value="owner_preference">Owner preference</option><option value="incompatible_play">Incompatible play</option><option value="reactivity">Reactivity</option><option value="resource_guarding">Resource guarding</option><option value="stress">Stress</option></select></label><button data-remove-affinity="${a.id}" class="danger">Remove relationship</button></article>`;}).join(''):'<div class="empty">No best-mate relationships saved.</div>';
   }
   function renderPredictionSelect(){ const select=$('#outcomeForm select[name="prediction"]');if(select)select.innerHTML=state.predictions.slice(0,50).map(p=>`<option value="${p.id}">${safe(dogById(p.dogAId)?.name)} + ${safe(dogById(p.dogBId)?.name)} · ${p.riskScore}%</option>`).join('')||'<option value="">Run a prediction first</option>'; }
-  function predictionHtml(p){ const a=dogById(p.dogAId),b=dogById(p.dogBId),band=Logic.riskBand(p.riskScore),pair=Logic.guidanceBand10(Math.max(0,10-p.riskScore/10)),ga=Logic.dogProfileGuide(a||{}),gb=Logic.dogProfileGuide(b||{}),statusWarning=(a?.reproductiveStatus==='on-heat'||b?.reproductiveStatus==='on-heat')?'<div class="answer red"><b>Owner-declared on-heat status.</b><br>Do not proceed with an off-leash introduction. Keep separated and check current local rules.</div>':'';return `<article class="prediction-card pair-score-card ${pair.level}"><h3>${safe(a?.name||'Dog')} + ${safe(b?.name||'Dog')}</h3><div class="dog-pair-colours"><span class="dog-score-badge ${ga.level}">${safe(a?.name||'Dog')}<br><b>${ga.score}/10</b></span><span class="pair-arrow" aria-hidden="true">↔</span><span class="dog-score-badge ${gb.level}">${safe(b?.name||'Dog')}<br><b>${gb.score}/10</b></span></div><div class="answer ${pair.level}"><b>Pair guidance ${pair.score}/10 — ${safe(pair.label)}</b><br>${safe(pair.action)}</div>${statusWarning}${riskHtml({...band,reasons:p.reasons})}<p class="muted">${safe(parkById(p.parkId).name)} · guidance only · model ${safe(p.modelVersion)}. A favourable colour never guarantees compatibility.</p></article>`; }
+  function predictionHtml(p){ const a=dogById(p.dogAId),b=dogById(p.dogBId),band=Logic.riskBand(p.riskScore),pair=Logic.guidanceBand10(Math.max(1,p.riskScore/10)),ga=Logic.dogProfileGuide(a||{}),gb=Logic.dogProfileGuide(b||{}),statusWarning=(a?.reproductiveStatus==='on-heat'||b?.reproductiveStatus==='on-heat')?'<div class="answer red"><b>Owner-declared on-heat status.</b><br>Do not proceed with an off-leash introduction. Keep separated and check current local rules.</div>':'';return `<article class="prediction-card pair-score-card ${pair.level}"><h3>${safe(a?.name||'Dog')} + ${safe(b?.name||'Dog')}</h3><div class="dog-pair-colours"><span class="dog-score-badge ${ga.level}">${safe(a?.name||'Dog')}<br><b>${ga.score}/10</b></span><span class="pair-arrow" aria-hidden="true">↔</span><span class="dog-score-badge ${gb.level}">${safe(b?.name||'Dog')}<br><b>${gb.score}/10</b></span></div><div class="answer ${pair.level}"><b>Pair risk ${pair.score}/10 — ${safe(pair.label)}</b><br>${safe(pair.action)}</div>${statusWarning}${riskHtml({...band,reasons:p.reasons})}<p class="muted">${safe(parkById(p.parkId).name)} · 1 is lower risk; 10 is highest risk · guidance only · model ${safe(p.modelVersion)}. A favourable colour never guarantees compatibility.</p></article>`; }
   function renderHeatHistory(){ const el=$('#heatHistory');if(el)el.innerHTML=state.heatChecks.slice(0,8).map(h=>recordCard(`${dogById(h.dogId)?.name||'Dog'} · ${h.riskScore}%`,`${parkById(h.parkId).name} · ${fmtTime(h.time)}`,Logic.riskBand(h.riskScore).level)).join('')||'<div class="empty">No heat checks saved.</div>'; }
   function renderHazards(){ const el=$('#hazardList');if(el)el.innerHTML=state.hazards.filter(h=>h.parkId===state.selectedParkId).map(h=>recordCard(h.type,`${h.details} · ${fmtTime(h.time)}`,Logic.riskBand(h.riskScore).level)).join('')||'<div class="empty">No local hazard reports for the selected park.</div>'; }
   function renderLostFound(){ const el=$('#lostFoundList');if(el)el.innerHTML=state.lostFound.map(r=>recordCard(`${r.type.toUpperCase()} · ${r.description}`,`${r.location} · ${r.contact||'No public contact note'} · ${fmtTime(r.time)}`,r.urgency==='danger'?'red':r.urgency==='urgent'?'amber':'yellow')).join('')||'<div class="empty">No lost/found records.</div>'; }
@@ -795,7 +805,7 @@
   async function notificationRegistration(){
     if(!('serviceWorker' in navigator))return null;
     let registration=await navigator.serviceWorker.getRegistration?.();
-    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260803.46',{updateViaCache:'none'});
+    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260803.52',{updateViaCache:'none'});
     return registration;
   }
   async function showDeviceNotification({
@@ -1157,6 +1167,21 @@
       }catch(error){if(message)message.textContent='Automatic refresh could not complete. Close this tab, reopen the website and use a private window once.';}
     });
     $('#quickDogSelect').addEventListener('change',renderToday);
+    const todayParkSearch=$('#todayParkSearchForm'),todayParkQuery=$('#todayParkQuery');
+    if(todayParkQuery){
+      try{todayParkQuery.value=localStorage.getItem('genevieve_today_park_query')||'';}catch{}
+      todayParkQuery.addEventListener('input',()=>{try{localStorage.setItem('genevieve_today_park_query',todayParkQuery.value);}catch{}});
+    }
+    todayParkSearch?.addEventListener('submit',event=>{
+      event.preventDefault();
+      const query=String(todayParkQuery?.value||'').trim();
+      if(!query)return;
+      try{localStorage.setItem('genevieve_today_park_query',query);}catch{}
+      const parkForm=$('#parkFilterForm');
+      if(parkForm?.elements.query)parkForm.elements.query.value=query;
+      setScreen('park-search');
+      parkForm?.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    });
     $('#todayStillSupervising').addEventListener('click',()=>{state.checkins.filter(c=>c.sessionOwner==='local-owner').forEach(c=>c.lastSupervision=now());evidence('all_supervision_confirmed');renderAll();});
     $('#confirmAllSupervision').addEventListener('click',()=>{state.checkins.filter(c=>c.sessionOwner==='local-owner').forEach(c=>c.lastSupervision=now());evidence('all_supervision_confirmed');renderAll();});
 
@@ -1283,7 +1308,7 @@
     });
 
     const exportData=()=>{evidence('data_exported');download(`GENEVIEVE-Dog-Park-data-${new Date().toISOString().slice(0,10)}.json`,JSON.stringify({exportedAt:now(),version:VERSION,state},null,2));};
-    $('#exportEvidence').addEventListener('click',()=>{evidence('evidence_exported');download(`GENEVIEVE-patent-evidence-${new Date().toISOString().slice(0,10)}.json`,JSON.stringify({exportedAt:now(),version:VERSION,evidence:state.evidence,predictions:state.predictions,outcomes:state.outcomes,heatChecks:state.heatChecks,affinities:state.affinities,environment:parks.map(p=>({parkId:p.id,checkins:currentCheckins(p.id).length,capacity:p.capacity}))},null,2));});
+    $('#exportEvidence').addEventListener('click',()=>{evidence('evidence_exported');download(`GENEVIEVE-patent-evidence-${new Date().toISOString().slice(0,10)}.json`,JSON.stringify({exportedAt:now(),version:VERSION,evidence:state.evidence,predictions:state.predictions,outcomes:state.outcomes,heatChecks:state.heatChecks,affinities:state.affinities,animalTripFindings:state.tripFindings,animalTripCalculations:state.trips.map(plan=>({id:plan.id,from:plan.from,to:plan.to,calculatedAt:plan.calculatedAt,calculationVersion:plan.calculationVersion,calculationHash:plan.calculationHash,automaticStopCount:plan.automaticStopCount,routeAttentionScore:plan.routeAttentionScore})),environment:parks.map(p=>({parkId:p.id,checkins:currentCheckins(p.id).length,capacity:p.capacity}))},null,2));});
     $('#exportAllData').addEventListener('click',exportData);$('#dataExportButton').addEventListener('click',exportData);
     const deleteData=()=>{if(confirm('Delete all local GENEVIEVE Dog Park data from this browser? This cannot be undone.')){localStorage.removeItem(KEY);state=structuredClone(defaultState);saveState();renderAll();openLegalAcceptance(true);}};$('#deleteAllData').addEventListener('click',deleteData);$('#dataDeleteButton').addEventListener('click',deleteData);
     $('#restorePurchases').addEventListener('click',()=>{const ok=window.GenevieveNativeBilling?.restore?.();$('#billingResult').className=`answer ${ok?'green':'red'}`;$('#billingResult').innerHTML=ok?'<b>Restore requested.</b>':'<b>Native store restore is not connected in this web build.</b>';});
@@ -1315,7 +1340,7 @@
     // Legal acceptance remains available and visible, but it no longer hijacks the app landing screen.
     if('serviceWorker' in navigator) (async()=>{
       try{
-        const resetKey='genevieve_v43_emergency_button_repair_done';
+        const resetKey='genevieve_release_v52_australia_trip_findings_cache_reset_done';
         if(!localStorage.getItem(resetKey)){
           if('serviceWorker' in navigator){
             const registrations=await navigator.serviceWorker.getRegistrations();
@@ -1327,18 +1352,18 @@
           }
           localStorage.setItem(resetKey,'yes');
           const freshUrl=new URL(location.href);
-          freshUrl.searchParams.set('genevieveVersion','46');
+          freshUrl.searchParams.set('genevieveVersion','52');
           const requestedScreen=freshUrl.searchParams.get('open')||freshUrl.hash.slice(1);
           freshUrl.hash=document.getElementById(requestedScreen)?requestedScreen:'today';
           location.replace(freshUrl.toString());
           return;
         }
         if('serviceWorker' in navigator){
-          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260803.46',{updateViaCache:'none'});
+          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260803.52',{updateViaCache:'none'});
           await registration.update();
         }
       }catch(error){
-        console.warn('GENEVIEVE build 2026.08.03.46 cache reset could not complete automatically.',error);
+        console.warn('GENEVIEVE build 2026.08.03.52 cache reset could not complete automatically.',error);
       }
     })();
     setInterval(()=>refreshHeaderWeather(true),WEATHER_REFRESH_MS);
