@@ -5,8 +5,8 @@
   const Logic = window.GenevieveLogic;
   const NotifyLogic = window.GenevieveNotificationLogic;
   const KEY = 'genevieve_dogpark_full_restore_state_v3';
-  const VERSION = CFG.version || '2026.08.02.43';
-  const LEGAL_VERSION = CFG.legalVersion || '2026-07-24';
+  const VERSION = CFG.version || '2026.08.03.46';
+  const LEGAL_VERSION = CFG.legalVersion || '2026-08-03';
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
   const now = () => new Date().toISOString();
@@ -461,13 +461,25 @@
     const panel=$('#emergencyCallConfirm');
     const slider=$('#emergencyCallSlider');
     const status=$('#emergencyCallStatus');
+    const serviceToggle=$('#emergencyServiceToggle');
+    const isTripleZeroControl=source?.id==='emergencyPageHoldButton';
+    if(!isTripleZeroControl){
+      if(panel)panel.hidden=true;
+      if(slider)slider.value='0';
+      if(serviceToggle)serviceToggle.open=true;
+      evidence('emergency_services_hub_opened',{holdSeconds:3,locationShared:false,callNotAutomatic:true});
+      serviceToggle?.scrollIntoView?.({block:'start'});
+      $('#serviceLocation')?.focus();
+      document.dispatchEvent(new CustomEvent('genevieve:emergency-services-opened'));
+      return;
+    }
     if(panel)panel.hidden=false;
     if(slider)slider.value='0';
     if(status){
       status.className='answer red';
       status.textContent='Slide all the way to the right only when you intend to call 000.';
     }
-    evidence('emergency_hold_completed',{holdSeconds:3,callNotAutomatic:true});
+    evidence('triple_zero_hold_completed',{holdSeconds:3,callNotAutomatic:true});
     panel?.scrollIntoView?.({block:'start'});
     slider?.focus();
   }
@@ -783,7 +795,7 @@
   async function notificationRegistration(){
     if(!('serviceWorker' in navigator))return null;
     let registration=await navigator.serviceWorker.getRegistration?.();
-    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260802.43',{updateViaCache:'none'});
+    if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20260803.46',{updateViaCache:'none'});
     return registration;
   }
   async function showDeviceNotification({
@@ -801,8 +813,8 @@
     const locationUrl=new URL(url,location.href).href;
     const options={
       body,
-      icon:new URL('./assets/ga-master-app-icon-192-v35.png',location.href).href,
-      badge:new URL('./assets/ga-master-icon-64-v35.png',location.href).href,
+      icon:new URL('./assets/ga-logo-192.png',location.href).href,
+      badge:new URL('./assets/ga-logo-192.png',location.href).href,
       tag:`genevieve-${key}`,
       renotify:Boolean(critical),
       requireInteraction:Boolean(critical),
@@ -1315,18 +1327,18 @@
           }
           localStorage.setItem(resetKey,'yes');
           const freshUrl=new URL(location.href);
-          freshUrl.searchParams.set('genevieveVersion','43');
+          freshUrl.searchParams.set('genevieveVersion','46');
           const requestedScreen=freshUrl.searchParams.get('open')||freshUrl.hash.slice(1);
           freshUrl.hash=document.getElementById(requestedScreen)?requestedScreen:'today';
           location.replace(freshUrl.toString());
           return;
         }
         if('serviceWorker' in navigator){
-          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260802.43',{updateViaCache:'none'});
+          const registration=await navigator.serviceWorker.register('./service-worker.js?v=20260803.46',{updateViaCache:'none'});
           await registration.update();
         }
       }catch(error){
-        console.warn('GENEVIEVE build 2026.08.02.43 cache reset could not complete automatically.',error);
+        console.warn('GENEVIEVE build 2026.08.03.46 cache reset could not complete automatically.',error);
       }
     })();
     setInterval(()=>refreshHeaderWeather(true),WEATHER_REFRESH_MS);

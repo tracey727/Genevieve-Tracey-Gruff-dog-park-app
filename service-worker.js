@@ -1,11 +1,10 @@
-const CACHE='genevieve-dog-parks-2026-08-02-v43-emergency-button-repair';
-const VERSION='2026.08.02.43';
+const CACHE='genevieve-dog-parks-2026-08-03-v46-emergency-services';
+const VERSION='2026.08.03.46';
 const ASSETS=[
-  './','./index.html','./styles.css?v=20260802.43','./config.js?v=20260802.43','./logic.js?v=20260802.43',
-  './notification-logic.js?v=20260802.43','./app.js?v=20260802.43','./repair.js?v=20260802.43','./backend.js?v=20260802.43','./native-billing-bridge.js?v=20260802.43',
-  './manifest.webmanifest?v=20260802.43','./genevieve-v40-boot.js?v=20260802.43','./genevieve-v40-repair.js?v=20260802.43','./assets/ga-master-icon-64-v35.png','./assets/ga-master-apple-touch-180-v35.png',
-  './assets/ga-master-app-icon-192-v35.png','./assets/ga-master-app-icon-512-v35.png',
-  './assets/genevieve-ga-logo-v35.png','./assets/ga-master-locked-2026-07-29.jpeg','./assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg','./404.html',
+  './','./index.html','./styles.css?v=20260803.46','./config.js?v=20260803.46','./logic.js?v=20260803.46',
+  './notification-logic.js?v=20260803.46','./app.js?v=20260803.46','./repair.js?v=20260803.46','./backend.js?v=20260803.46','./native-billing-bridge.js?v=20260803.46',
+  './manifest.webmanifest?v=20260803.46','./genevieve-v40-boot.js?v=20260803.46','./genevieve-v40-repair.js?v=20260803.46','./assets/ga-logo-192.png','./assets/ga-logo-512.png',
+  './assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg','./404.html',
   './legal/','./legal/legal.css','./legal/privacy-policy.html','./legal/terms-of-use.html','./legal/safety-disclaimer.html',
   './legal/refund-cancellation-policy.html','./legal/account-deletion.html','./legal/community-guidelines.html',
   './legal/subscription-terms.html','./legal/concession-pricing-policy.html','./legal/support.html','./legal/ip-notice.html'
@@ -33,8 +32,8 @@ self.addEventListener('push',event=>{
   const title=payload.title||'GENEVIEVE safety alert';
   const options={
     body:payload.body||'Open GENEVIEVE to review the alert.',
-    icon:'./assets/ga-master-app-icon-192-v35.png',
-    badge:'./assets/ga-master-icon-64-v35.png',
+    icon:'./assets/ga-logo-192.png',
+    badge:'./assets/ga-logo-192.png',
     tag:payload.tag||'genevieve-push-alert',
     requireInteraction:Boolean(payload.critical),
     vibrate:payload.critical?[500,200,500,200,700]:[250,100,250],

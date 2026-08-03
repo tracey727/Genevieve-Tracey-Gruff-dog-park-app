@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '2026.08.02.43';
+  const VERSION = '2026.08.03.46';
   const Logic = window.GenevieveLogic;
   const Bridge = () => window.GenevieveAppBridge;
   const $ = selector => document.querySelector(selector);
@@ -62,6 +62,7 @@
 
   let parkSearchHistory = [];
   let currentSearchLocation = null;
+  let emergencySearchLocation = null;
 
   function getState(){ return Bridge()?.getState?.() || {dogs:[],trips:[],incidents:[]}; }
   function getParks(){ return Bridge()?.getParks?.() || []; }
@@ -235,12 +236,45 @@
   }
 
   function updateServiceLinks(){
-    const location=String($('#serviceLocation')?.value||'Australia').trim()||'Australia';
+    const enteredLocation=String($('#serviceLocation')?.value||'').trim();
+    const location=emergencySearchLocation
+      ?`${emergencySearchLocation.latitude.toFixed(6)},${emergencySearchLocation.longitude.toFixed(6)}`
+      :enteredLocation||'Australia';
     $$('[data-service-search]').forEach(link=>{
-      const query=`${link.dataset.serviceSearch} ${location}`;
+      const query=emergencySearchLocation
+        ?`${link.dataset.serviceSearch} near ${location}`
+        :`${link.dataset.serviceSearch} ${location}`;
       link.href=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
       link.target='_blank';link.rel='noopener';
     });
+  }
+
+  function emergencyLocationStatus(message,level='yellow'){
+    const status=$('#emergencyLocationStatus');
+    if(!status)return;
+    status.className=`answer ${level}`;
+    status.innerHTML=message;
+  }
+
+  function useEmergencyLocation(){
+    if(!navigator.geolocation){
+      emergencyLocationStatus('<b>Current location is not supported by this browser.</b><br>Enter the suburb, council area or town instead.','red');
+      return;
+    }
+    emergencyLocationStatus('<b>Requesting location…</b><br>Choose Allow only if you want nearby service searches.','yellow');
+    navigator.geolocation.getCurrentPosition(position=>{
+      emergencySearchLocation={latitude:position.coords.latitude,longitude:position.coords.longitude};
+      const input=$('#serviceLocation');
+      if(input)input.value='Current device location';
+      updateServiceLinks();
+      emergencyLocationStatus('<b>Nearby service links are ready.</b><br>Your coordinates are used only in the Google Maps search links and are not saved by GENEVIEVE.','green');
+      Bridge()?.saveEvidence?.('emergency_nearby_services_prepared',{coordinatesStored:false,callNotAutomatic:true});
+    },error=>{
+      emergencySearchLocation=null;
+      const reason=error.code===1?'Location permission was not allowed.':error.code===2?'The device could not determine its location.':'The location request timed out.';
+      emergencyLocationStatus(`<b>${safe(reason)}</b><br>Enter the suburb, council area or town instead.`, 'red');
+      updateServiceLinks();
+    },{enableHighAccuracy:false,timeout:12000,maximumAge:300000});
   }
 
   function openServiceChooser(){
@@ -252,7 +286,7 @@
       const globalButton=$('#globalEmergencyButton');
       globalButton?.setAttribute('aria-expanded','true');
       toggle?.scrollIntoView?.({behavior:document.body.classList.contains('reduced-motion')?'auto':'smooth',block:'start'});
-      $('#serviceLocation')?.focus();
+    $('#serviceLocation')?.focus();
     },0);
   }
 
@@ -478,7 +512,7 @@
   function syncLegalLandingNotice(){
     const notice=$('#legalFirstUseNotice');if(!notice)return;
     const acceptance=getState().legalAcceptance||{};
-    const legalVersion=window.GENEVIEVE_CONFIG?.legalVersion||'2026-07-24';
+    const legalVersion=window.GENEVIEVE_CONFIG?.legalVersion||'2026-08-03';
     const accepted=acceptance.version===legalVersion&&acceptance.termsAndPrivacyAccepted===true&&acceptance.safetyAccepted===true&&Boolean(acceptance.acceptedAt);
     let dismissed=false;try{dismissed=sessionStorage.getItem('genevieve_legal_notice_dismissed')==='yes';}catch{}
     notice.hidden=accepted||dismissed;
@@ -507,7 +541,18 @@
     $('#printIncidentRegister')?.addEventListener('click',()=>window.print());
 
     $$('[data-open-emergency-services]').forEach(button=>button.addEventListener('click',openServiceChooser));
-    $('#serviceLocation')?.addEventListener('input',updateServiceLinks);
+    $('#serviceLocation')?.addEventListener('input',()=>{
+      emergencySearchLocation=null;
+      updateServiceLinks();
+      const location=String($('#serviceLocation')?.value||'').trim();
+      emergencyLocationStatus(location?`<b>Searching around ${safe(location)}.</b><br>Open a service below to view current nearby results in Google Maps.`:'Enter a location or choose current location. Location is used only to build the service search and is not stored by GENEVIEVE.','yellow');
+    });
+    $('#useEmergencyLocation')?.addEventListener('click',useEmergencyLocation);
+    document.addEventListener('genevieve:emergency-services-opened',()=>{
+      updateServiceLinks();
+      const toggle=$('#emergencyServiceToggle');
+      if(toggle)toggle.open=true;
+    });
     setupEmergencyButton();
     updateServiceLinks();
     updateTravelLinks();

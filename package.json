@@ -1,7 +1,10 @@
 {
-  "name": "genevieve-tracey-gruff-dog-park-live-v40",
-  "version": "40.0.0",
+  "name": "genevieve-tracey-gruff-dog-park-live-v46",
+  "version": "46.0.0",
   "private": true,
   "description": "GENEVIEVE App Dog Parks live static deployment with embedded official GA header logo",
-  "type": "commonjs"
+  "type": "commonjs",
+  "scripts": {
+    "test": "node tests/smoke-test.js"
+  }
 }

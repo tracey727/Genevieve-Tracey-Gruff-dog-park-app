@@ -11,16 +11,16 @@
 <meta content="GENEVIEVE Dog Parks" name="apple-mobile-web-app-title"/>
 <meta content="GENEVIEVE App™ Dog Parks — Safety &amp; Compatibility System helps owners plan the whole park journey, manage dog profiles, assess heat and interaction risk, supervise visits, report hazards and optionally use private communication, visual safety and Auslan-support tools." name="description"/>
 <title>GENEVIEVE App™ Dog Parks — Safety &amp; Compatibility System</title>
-<link href="./assets/ga-master-icon-64-v35.png" rel="icon" sizes="64x64" type="image/png"/>
-<link href="./assets/ga-master-icon-64-v35.png" rel="shortcut icon"/>
-<link href="./assets/ga-master-apple-touch-180-v35.png" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./assets/ga-master-apple-touch-180-v35.png" rel="apple-touch-icon-precomposed" sizes="180x180"/>
-<link href="./manifest.webmanifest?v=20260802.43" rel="manifest"/>
-<link href="./styles.css?v=20260802.43" rel="stylesheet"/>
-<script src="./config.js?v=20260802.43"></script>
-<script src="./logic.js?v=20260802.43"></script>
-<script src="./notification-logic.js?v=20260802.43"></script>
-<script src="./genevieve-v40-boot.js?v=20260802.43"></script>
+<link href="./assets/ga-logo-192.png" rel="icon" sizes="192x192" type="image/png"/>
+<link href="./assets/ga-logo-192.png" rel="shortcut icon"/>
+<link href="./assets/ga-logo-192.png" rel="apple-touch-icon" sizes="192x192"/>
+<link href="./assets/ga-logo-192.png" rel="apple-touch-icon-precomposed" sizes="192x192"/>
+<link href="./manifest.webmanifest?v=20260803.46" rel="manifest"/>
+<link href="./styles.css?v=20260803.46" rel="stylesheet"/>
+<script src="./config.js?v=20260803.46"></script>
+<script src="./logic.js?v=20260803.46"></script>
+<script src="./notification-logic.js?v=20260803.46"></script>
+<script src="./genevieve-v40-boot.js?v=20260803.46"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -74,7 +74,7 @@
 </div>
 <div class="header-brand-actions">
 <div aria-label="GENEVIEVE App Safety from roots to every journey official artwork" class="header-tree-lockup">
-<img alt="GENEVIEVE App Safety from roots to every journey official artwork" class="header-roots-journey-art" src="./assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg?v=20260802.43"/>
+<img alt="GENEVIEVE App Safety from roots to every journey official artwork" class="header-roots-journey-art" src="./assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg?v=20260803.46"/>
 </div>
 </div>
 </div>
@@ -92,9 +92,8 @@
 <button data-go="park-search" data-main="parks">Parks</button>
 <button data-go="dog-list" data-main="dogs">Dogs</button>
 <button data-go="more" data-main="more">More</button>
-<button aria-controls="emergencyCallConfirm" aria-describedby="globalEmergencyHelp" aria-label="Press and hold for three seconds, then slide to open the phone dialler for Triple Zero" class="nav-emergency-button emergency-hold-button" type="button"><span class="emergency-button-copy"><b>Emergency 000</b><small>Hold 3 sec, then slide</small></span></button>
 </nav>
-<span class="sr-only" id="globalEmergencyHelp">A short tap does not call. Keep holding for three seconds, then deliberately slide the confirmation control.</span>
+<span class="sr-only" id="globalEmergencyHelp">A short tap does nothing. Hold for three seconds to open nearby emergency and animal services. Triple Zero has a separate protected hold-and-slide control.</span>
 <main id="main">
 <section class="screen active" data-group="today" id="today">
 <section class="hero card">
@@ -335,11 +334,30 @@
 <section class="card"><p class="eyebrow">FUTURE GENEVIEVE BOARDING KENNELS MODE</p><h2>Home Boarding Match — planned, not active booking</h2><p>The existing profiles and safety controls may support a future verified boarding marketplace. Identity checks, property checks, insurance, payments, cancellations, reviews, incident response and dispute handling must be completed before public bookings are enabled.</p><div class="answer yellow"><b>Not active.</b><br/>No stranger-to-stranger booking is created from this Dog Park build.</div></section>
 </section>
 <section class="screen" data-group="more" id="emergency">
-<section class="hero card emergency-services-hero"><p class="eyebrow">EMERGENCY &amp; SERVICES</p><h2>Hold, then slide for Triple Zero</h2><p>For urgent police, fire or ambulance help, press and hold the Triple Zero control for three seconds, then deliberately slide the final confirmation. Other services remain available below.</p></section>
+<section class="hero card emergency-services-hero"><p class="eyebrow">EMERGENCY &amp; ANIMAL HELP</p><h2>Nearby help first, protected Triple Zero when needed</h2><p>The global Emergency control opens this complete services hub after a three-second hold. Use a suburb or explicitly request current location to find nearby animal services. For immediate danger or serious human injury, Triple Zero has its own three-second hold and final slide.</p></section>
 <details class="card emergency-services-panel" id="emergencyServiceToggle">
 <summary><span><b>Emergency and support services</b><small>000 hold-and-slide · police · SES · poisons · council · ranger · pound · vet · wildlife</small></span><span aria-hidden="true" class="emergency-summary-chevron">▾</span></summary>
 <div class="emergency-services-content">
-<section aria-labelledby="serviceChooserTitle" class="service-chooser" id="nonEmergencyServicePanel"><p class="eyebrow">SERVICE CHOOSER</p><h2 id="serviceChooserTitle">What help do you need?</h2><label>Your suburb, council area or current town <input id="serviceLocation" placeholder="Example: Labrador QLD" value="Gold Coast QLD"/></label><div class="service-grid"><button class="service-button urgent-service-button emergency-hold-button" id="emergencyPageHoldButton" type="button"><span aria-hidden="true" class="emergency-pulse"></span><span><b>Triple Zero (000)</b><small>Press and hold for 3 seconds, then slide</small></span></button><a class="service-button" data-service-search="council animal management ranger">Council animal management / ranger</a><a class="service-button" data-service-search="council pound lost found animals">Council pound / shelter</a><a class="service-button" data-service-search="emergency veterinarian open now">Emergency veterinarian</a><a class="service-button" href="tel:131444">Policelink / non-urgent police · 131 444</a><a class="service-button" href="tel:132500">SES storm or flood help · 132 500</a><a class="service-button" href="tel:131126">Poisons Information Centre · 13 11 26</a><a class="service-button" data-service-search="local police station">Local police station</a><a class="service-button" data-service-search="wildlife rescue">Wildlife rescue</a><button class="service-button" data-go="lost-found" type="button">Lost dog alert</button><button class="service-button" data-go="incident" type="button">Record an incident</button></div><p class="muted">Service availability and phone numbers may vary by state or council. Search results open separately so the user can verify the current official provider.</p></section>
+<section aria-labelledby="serviceChooserTitle" class="service-chooser" id="nonEmergencyServicePanel">
+<p class="eyebrow">NEARBY SERVICE CHOOSER</p><h2 id="serviceChooserTitle">What help do you need?</h2>
+<div class="emergency-location-controls"><label>Your suburb, council area or current town <input autocomplete="address-level2" id="serviceLocation" placeholder="Example: Labrador QLD"/></label><button class="secondary" id="useEmergencyLocation" type="button">Use my current location</button></div>
+<p class="answer yellow" id="emergencyLocationStatus" role="status">Enter a location or choose current location. Location is used only to build the service search and is not stored by GENEVIEVE.</p>
+<div class="service-grid">
+<button class="service-button urgent-service-button emergency-hold-button" id="emergencyPageHoldButton" type="button"><span aria-hidden="true" class="emergency-pulse"></span><span><b>Triple Zero (000)</b><small>Immediate danger · hold 3 seconds, then slide</small></span></button>
+<a class="service-button" data-service-search="24 hour emergency veterinarian open now">Nearest 24-hour emergency veterinarian</a>
+<a class="service-button" data-service-search="veterinarian open now">Nearest veterinarian open now</a>
+<a class="service-button" data-service-search="council animal management ranger">Council animal management / ranger</a>
+<a class="service-button" data-service-search="council pound lost found animals">Council pound / animal shelter</a>
+<a class="service-button" data-service-search="RSPCA animal shelter">Nearest RSPCA service</a>
+<a class="service-button" data-service-search="animal rescue shelter">Animal rescue / shelter</a>
+<a class="service-button" data-service-search="wildlife rescue hospital">Wildlife rescue / wildlife hospital</a>
+<a class="service-button" data-service-search="local police station">Local police station</a>
+<a class="service-button" href="tel:131444">Police Assistance Line · 131 444</a>
+<a class="service-button" href="tel:132500">SES storm or flood help · 132 500</a>
+<a class="service-button" href="tel:131126">Poisons Information Centre · 13 11 26</a>
+<button class="service-button" data-go="lost-found" type="button">Create lost or found dog alert</button>
+<button class="service-button" data-go="incident" type="button">Record an incident</button>
+</div><p class="muted">Search results open in Google Maps so the user can check the current provider, distance, opening hours and telephone number. Phone first where possible. GENEVIEVE does not dispatch, book or confirm any service.</p></section>
 <section aria-labelledby="emergencyCallConfirmTitle" class="emergency-call-confirm" hidden id="emergencyCallConfirm"><p class="eyebrow">FINAL CALL CONFIRMATION</p><h2 id="emergencyCallConfirmTitle">Slide fully to call Triple Zero (000)</h2><p>This opens the phone dialler only. GENEVIEVE does not contact emergency services, transmit your location, or confirm that help is coming.</p><label for="emergencyCallSlider">Slide to call 000 <input id="emergencyCallSlider" max="100" min="0" step="1" type="range" value="0"/></label><p class="answer red" id="emergencyCallStatus" role="status">Slide all the way to the right only when you intend to call 000.</p><button class="secondary" id="cancelEmergencyCall" type="button">Cancel call control</button></section>
 </div>
 </details>
@@ -403,7 +421,7 @@
 <p>System notifications and the in-app inbox work from information available on this device. Alerts created on another phone, by a council or by a work team require the secured account backend and server push service before they can reach this device while GENEVIEVE is closed. The app must never be treated as proof that emergency services, a ranger, a veterinarian, a worker or a supervisor was contacted.</p>
 </section>
 </section>
-<section class="screen" data-group="more" id="membership"><section class="hero card"><p class="eyebrow">MEMBERSHIP</p><h2>One membership group, four approved products</h2><p id="billingChannelMessage"></p></section><section class="card disclosure"><b>Trial and renewal disclosure</b><p>30 days free for eligible new subscribers. Then the selected price is charged every month or year and the subscription automatically renews until cancelled. Cancel before the trial ends to avoid the first charge. Deleting the app does not cancel the subscription. Manage or cancel through the same store or payment provider used to subscribe.</p><p>Nothing excludes rights that cannot lawfully be excluded under the Australian Consumer Law.</p></section><div class="pricing-grid" id="planList"></div><section class="card"><div class="legal-links"><a href="./legal/subscription-terms.html">Subscription Terms</a><a href="./legal/refund-cancellation-policy.html">Refund &amp; Cancellation</a><a href="./legal/terms-of-use.html">Terms of Use</a><a href="./legal/privacy-policy.html">Privacy Policy</a></div><button class="secondary" id="restorePurchases">Restore store purchases</button><div class="answer yellow" id="billingResult">No purchase action yet.</div></section></section>
+<section class="screen" data-group="more" id="membership"><section class="hero card"><p class="eyebrow">MEMBERSHIP</p><h2>One membership group, four approved products</h2><p id="billingChannelMessage"></p></section><section class="card disclosure launch-payment-gate"><b>Payment launch gate</b><p>Public launch is planned for 8 August 2026. Web checkout remains disabled until each verified Stripe payment link is added. Apple and Google purchases remain disabled until signed native-store billing is connected and tested. The app will not substitute or guess a payment destination.</p></section><section class="card disclosure"><b>Trial and renewal disclosure</b><p>30 days free for eligible new subscribers. Then the selected price is charged every month or year and the subscription automatically renews until cancelled. Cancel before the trial ends to avoid the first charge. Deleting the app does not cancel the subscription. Manage or cancel through the same store or payment provider used to subscribe.</p><p>Nothing excludes rights that cannot lawfully be excluded under the Australian Consumer Law.</p></section><div class="pricing-grid" id="planList"></div><section class="card"><div class="legal-links"><a href="./legal/subscription-terms.html">Subscription Terms</a><a href="./legal/refund-cancellation-policy.html">Refund &amp; Cancellation</a><a href="./legal/terms-of-use.html">Terms of Use</a><a href="./legal/privacy-policy.html">Privacy Policy</a></div><button class="secondary" id="restorePurchases">Restore store purchases</button><div class="answer yellow" id="billingResult">No purchase action yet.</div></section></section>
 <section class="screen" data-group="more" id="communication-access">
 <section class="hero card accessibility-hero">
 <p class="eyebrow">OPTIONAL ACCESSIBILITY</p>
@@ -504,7 +522,7 @@
 <p class="answer yellow" id="legalAcceptanceSummary">Checking the legal acceptance stored on this device…</p>
 </section>
 <section aria-describedby="legalAcceptanceDescription" aria-labelledby="legalAcceptanceTitle" class="card legal-acceptance-panel" id="legalAcceptancePanel">
-<p class="eyebrow">LEGAL VERSION 2026-07-24</p>
+<p class="eyebrow">LEGAL VERSION 2026-08-03</p>
 <h2 id="legalAcceptanceTitle">Legal acceptance</h2>
 <p id="legalAcceptanceDescription">Review and actively accept the Terms of Use, Privacy Policy and permanent Safety Disclaimer inside the app.</p>
 <div class="legal-acceptance-warning">
@@ -560,7 +578,7 @@
 <section class="screen" data-group="more" id="more">
 <section class="hero card"><p class="eyebrow">MORE</p><h2>Choose a group, then open only what you need</h2><p>Sections are collapsible so the page is easier to scan and less visually crowded.</p></section>
 <section class="card role-switch-card"><div><p class="eyebrow">APP VIEW</p><h2>Choose the section you need</h2><p class="muted" id="roleHelp">Dog Owner view is active.</p></div><label>View as <select aria-label="Choose app role on mobile" id="mobileRoleSelect"><option value="owner">Dog Owner</option><option value="visitor">Park Visitor</option><option value="worker">Park Worker / Contractor</option><option value="superintendent">Park Superintendent</option><option value="responder">Authorised Responder</option><option value="admin">System Administrator</option></select></label><p class="small muted">This device view changes which tools are shown. Any public operator or responder access still requires verified accounts and server-side permissions.</p></section>
-<section class="card update-card"><div><p class="eyebrow">APP VERSION</p><h2>Current repaired build</h2><p>Installed build: <b>2026.08.02.43</b>. Refresh keeps saved dog records while updating app files.</p></div><button class="secondary" id="forceAppUpdate" type="button">Refresh latest app version</button><p class="muted" id="updateMessage"></p></section>
+<section class="card update-card"><div><p class="eyebrow">APP VERSION</p><h2>Launch candidate</h2><p>Installed build: <b>2026.08.03.46</b>. Planned public launch: <b>8 August 2026</b>. Refresh keeps saved dog records while updating app files.</p></div><button class="secondary" id="forceAppUpdate" type="button">Refresh latest app version</button><p class="muted" id="updateMessage"></p></section>
 <div class="more-folders">
 <details open=""><summary>Dogs, matching and social tools</summary><div class="page-grid"><button data-go="best-mates"><b>Best Mates</b><small>Affinity links and park alerts</small></button><button data-go="compatibility"><b>Compatibility</b><small>Colour-coded dog and pair guidance</small></button><button data-go="companions"><b>Find Companions</b><small>Prospective recommendations</small></button><button data-go="puppy"><b>Puppy Socialisation</b><small>Controlled matching and clearance</small></button></div></details>
 <details><summary>Travel, parks and live visit tools</summary><div class="page-grid"><button data-go="travel"><b>Grey Nomad Trip Planner</b><small>Routes, stops, stays and safety filters</small></button><button data-go="beaches"><b>Dog Beaches</b><small>Boundaries, hours, tide and facilities</small></button><button data-go="checkin"><b>Voluntary Check In / Out</b><small>Optional community presence</small></button><button data-go="owner-duty"><b>Owner Duty</b><small>Supervision confirmations</small></button><button data-go="etiquette"><b>Park Etiquette</b><small>Body-language prompts and break actions</small></button></div></details>
@@ -570,12 +588,13 @@
 </div>
 </section>
 </main>
-<footer><p>© 2026 Tracey Ann Kennedy. GENEVIEVE App™. Trade mark application stated as pending.</p><p class="build-marker">Dog Parks build 2026.08.02.43 · Legal version 2026-07-24</p><p><a href="./legal/">Legal</a> · <a href="./legal/privacy-policy.html">Privacy</a> · <a href="./legal/support.html">Support</a> · <a href="./legal/account-deletion.html">Delete account</a></p></footer>
-<nav aria-label="Mobile navigation" class="bottom-nav"><button class="active" data-go="today" data-main="today">Today</button><button data-go="journey" data-main="journey">Journey</button><button data-go="park-search" data-main="parks">Parks</button><button data-go="dog-list" data-main="dogs">Dogs</button><button data-go="more" data-main="more">More</button><button aria-controls="emergencyCallConfirm" aria-describedby="globalEmergencyHelp" aria-label="Press and hold for three seconds, then slide to open the phone dialler for Triple Zero" class="nav-emergency-button emergency-hold-button" type="button"><span class="emergency-button-copy"><b>Emergency 000</b><small>Hold 3 sec, then slide</small></span></button></nav>
+<footer><p>© 2026 Tracey Ann Kennedy. GENEVIEVE App™. Trade mark application stated as pending.</p><p class="build-marker">Dog Parks build 2026.08.03.46 · Legal version 2026-08-03 · Planned launch 8 August 2026</p><p><a href="./legal/">Legal</a> · <a href="./legal/privacy-policy.html">Privacy</a> · <a href="./legal/support.html">Support</a> · <a href="./legal/account-deletion.html">Delete account</a></p></footer>
+<nav aria-label="Mobile navigation" class="bottom-nav"><button class="active" data-go="today" data-main="today">Today</button><button data-go="journey" data-main="journey">Journey</button><button data-go="park-search" data-main="parks">Parks</button><button data-go="dog-list" data-main="dogs">Dogs</button><button data-go="more" data-main="more">More</button></nav>
+<aside aria-label="Persistent emergency action" class="persistent-emergency-dock"><button aria-controls="emergencyServiceToggle" aria-describedby="globalEmergencyHelp" aria-label="Press and hold for three seconds to open nearby emergency and animal services" class="nav-emergency-button emergency-hold-button" type="button"><span class="emergency-button-copy"><b>Emergency Help</b><small>Hold 3 sec for nearby services</small></span></button></aside>
 </div>
-<script src="./native-billing-bridge.js?v=20260802.43"></script>
-<script src="./backend.js?v=20260802.43"></script>
-<script src="./app.js?v=20260802.43"></script><script src="./repair.js?v=20260802.43"></script>
-<script src="./genevieve-v40-repair.js?v=20260802.43"></script>
+<script src="./native-billing-bridge.js?v=20260803.46"></script>
+<script src="./backend.js?v=20260803.46"></script>
+<script src="./app.js?v=20260803.46"></script><script src="./repair.js?v=20260803.46"></script>
+<script src="./genevieve-v40-repair.js?v=20260803.46"></script>
 </body>
 </html>

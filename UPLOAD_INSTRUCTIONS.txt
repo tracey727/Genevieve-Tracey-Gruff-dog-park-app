@@ -1,0 +1,15 @@
+GENEVIEVE DOG PARKS — BUILD 2026.08.03.46
+
+1. Unzip the delivery.
+2. Open the extracted folder.
+3. Upload every file and folder INSIDE it to the root of:
+   tracey727/Genevieve-Tracey-Gruff-dog-park-app
+4. Replace the existing production files when prompted.
+5. Do not upload the unopened ZIP as a single repository file.
+6. In Vercel, confirm the production deployment uses the main branch and no build command/output directory override.
+7. After deployment, open the production URL in a private browser window and run the manual checks in LAUNCH_READINESS_2026-08-03.md.
+
+IMPORTANT
+- Web payments remain intentionally unavailable until the four verified Stripe payment links are inserted in config.js.
+- Apple/Google billing needs signed native builds and store testing; Vercel alone cannot activate it.
+- Shared accounts/community data remain local until a secured backend is configured and tested.
