@@ -1,37 +1,25 @@
 {
-  "name": "GENEVIEVE App™ Dog Parks — Safety & Compatibility System",
-  "short_name": "GENEVIEVE Parks",
-  "description": "Plan safer dog-park visits, assess compatibility and risk, supervise visits and optionally use private communication, visual safety and Auslan-support features.",
-  "start_url": "./?genevieveVersion=52#today",
-  "scope": "./",
+  "name": "GENEVIEVE App™ Dog Parks",
+  "short_name": "GENEVIEVE",
+  "description": "Dog park suitability, safety, journey stops, compatibility and voluntary check-in system.",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#eef8f1",
+  "orientation": "any",
+  "background_color": "#fff7fa",
   "theme_color": "#06391f",
   "icons": [
     {
-      "src": "./assets/ga-logo-192.png",
+      "src": "/assets/ga-logo-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "./assets/ga-logo-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "./assets/ga-logo-512.png",
+      "src": "/assets/ga-logo-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./assets/ga-logo-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
-  ],
-  "id": "./?app=genevieve-dog-park-v52"
+  ]
 }

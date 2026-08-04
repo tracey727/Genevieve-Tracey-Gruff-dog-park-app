@@ -1,56 +1,93 @@
-const CACHE='genevieve-dog-parks-2026-08-03-v52-australia-trip-findings';
-const VERSION='2026.08.03.52';
-const ASSETS=[
-  './','./index.html','./styles.css?v=20260803.52','./config.js?v=20260803.52','./logic.js?v=20260803.52','./trip-planner.js?v=20260803.52','./national-trip-service.js?v=20260803.52',
-  './notification-logic.js?v=20260803.52','./app.js?v=20260803.52','./features.js?v=20260803.52','./backend.js?v=20260803.52','./native-billing-bridge.js?v=20260803.52',
-  './manifest.webmanifest?v=20260803.52','./landing-guard.js?v=20260803.52','./branding.js?v=20260803.52','./assets/ga-logo-192.png','./assets/ga-logo-512.png',
-  './assets/genevieve-safety-from-roots-locked-2026-07-29.jpeg','./404.html',
-  './legal/','./legal/legal.css','./legal/privacy-policy.html','./legal/terms-of-use.html','./legal/safety-disclaimer.html',
-  './legal/refund-cancellation-policy.html','./legal/account-deletion.html','./legal/community-guidelines.html',
-  './legal/subscription-terms.html','./legal/concession-pricing-policy.html','./legal/support.html','./legal/ip-notice.html'
+const CACHE_NAME = 'dogpark-app-v1';
+const ASSETS_TO_CACHE = [
+  '/',
+  '/index.html',
+  '/404.html',
+  '/styles.css',
+  '/app.js',
+  '/app-logic.js',
+  '/config.js',
+  '/manifest.webmanifest',
+  '/assets/favicon-64.png',
+  '/assets/ga-logo-192.png',
+  '/assets/ga-logo-512.png',
+  '/assets/apple-touch-icon.png'
 ];
-self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE&&key.includes('genevieve')).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
-self.addEventListener('message',event=>{if(event.data==='SKIP_WAITING')self.skipWaiting();});
-self.addEventListener('notificationclick',event=>{
-  event.notification.close();
-  const target=event.action==='emergency'
-    ?new URL('./#emergency',self.location.href).href
-    :event.notification.data?.url||new URL('./#notifications',self.location.href).href;
-  event.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(async clients=>{
-    for(const client of clients){
-      if('navigate' in client)await client.navigate(target);
-      if('focus' in client)return client.focus();
-    }
-    if(self.clients.openWindow)return self.clients.openWindow(target);
-    return undefined;
-  }));
+
+const OWNED_CACHE_PREFIXES = ['dogpark-app-', 'genevieve-dog-parks-'];
+const CORE_URLS = new Set(ASSETS_TO_CACHE.map(path => new URL(path, self.location.origin).href));
+
+function isCacheable(response) {
+  return response && response.status === 200 && response.type === 'basic';
+}
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(ASSETS_TO_CACHE))
+      .then(() => self.skipWaiting())
+  );
 });
-self.addEventListener('push',event=>{
-  let payload={};
-  try{payload=event.data?.json?.()||{};}catch{payload={body:event.data?.text?.()||''};}
-  const title=payload.title||'GENEVIEVE safety alert';
-  const options={
-    body:payload.body||'Open GENEVIEVE to review the alert.',
-    icon:'./assets/ga-logo-192.png',
-    badge:'./assets/ga-logo-192.png',
-    tag:payload.tag||'genevieve-push-alert',
-    requireInteraction:Boolean(payload.critical),
-    vibrate:payload.critical?[500,200,500,200,700]:[250,100,250],
-    lang:'en-AU',
-    timestamp:Date.now(),
-    actions:payload.critical?[{action:'open',title:'Open alert'},{action:'emergency',title:'Emergency help'}]:[{action:'open',title:'Open GENEVIEVE'}],
-    data:{url:payload.url||new URL('./#notifications',self.location.href).href}
-  };
-  event.waitUntil(self.registration.showNotification(title,options));
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cache) => {
+          const isTargetedLegacy = OWNED_CACHE_PREFIXES.some(prefix => cache.startsWith(prefix));
+          if (cache !== CACHE_NAME && isTargetedLegacy) {
+            return caches.delete(cache);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
 });
-self.addEventListener('fetch',event=>{
-  if(event.request.method!=='GET')return;
-  const url=new URL(event.request.url);
-  if(url.origin!==self.location.origin)return;
-  if(event.request.mode==='navigate'){
-    event.respondWith(fetch(event.request,{cache:'no-store'}).then(response=>{const copy=response.clone();caches.open(CACHE).then(cache=>cache.put('./index.html',copy));return response;}).catch(()=>caches.match('./index.html')));
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+  if (event.request.headers.has('range')) return;
+  if (!event.request.url.startsWith(self.location.origin)) return;
+
+  const url = new URL(event.request.url);
+
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(async () => {
+        const cache = await caches.open(CACHE_NAME);
+        const exactPage = await cache.match(event.request, { ignoreSearch: true });
+        if (exactPage) return exactPage;
+
+        const hasExtension = /\/[^/?]+\.[^/]+$/.test(url.pathname);
+        const fallback = await cache.match(hasExtension ? '/404.html' : '/index.html');
+        return fallback || Response.error();
+      })
+    );
     return;
   }
-  event.respondWith(fetch(event.request).then(response=>{if(response&&response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(event.request,copy));}return response;}).catch(()=>caches.match(event.request)));
+
+  if (CORE_URLS.has(url.href)) {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        if (cachedResponse) return cachedResponse;
+        return fetch(event.request).then((networkResponse) => {
+          if (!isCacheable(networkResponse)) return networkResponse;
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
+          return networkResponse;
+        });
+      })
+    );
+    return;
+  }
+
+  event.respondWith(
+    fetch(event.request).then((networkResponse) => {
+      if (isCacheable(networkResponse)) {
+        const responseToCache = networkResponse.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
+      }
+      return networkResponse;
+    }).catch(() => caches.match(event.request).then((cached) => cached || Response.error()))
+  );
 });
