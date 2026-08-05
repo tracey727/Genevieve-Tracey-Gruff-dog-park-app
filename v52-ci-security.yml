@@ -1,0 +1,51 @@
+name: V52 CI and Security
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v52-verification:
+    name: V52 Tests, Quality and Security
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install locked dependencies
+        env:
+          NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
+        run: npm ci
+
+      - name: Check code quality
+        run: npm run lint --if-present
+
+      - name: Run tests
+        env:
+          CI: true
+        run: npm test
+
+      - name: Verify backend
+        run: npm run verify:backend --if-present
+
+      - name: Build production app
+        run: npm run build --if-present
+
+      - name: Run security audit
+        run: npm audit --audit-level=high
