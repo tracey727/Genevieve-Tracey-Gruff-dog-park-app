@@ -1,0 +1,9 @@
+GENEVIEVE V52 RUNTIME DATABASE PATCH — UPDATE ONLY
+
+1. Extract this ZIP.
+2. In GitHub, use a staging/preview branch, not the production main branch.
+3. Upload every file and folder inside the extracted patch to the repository root.
+4. Replace matching files when prompted.
+5. Wait for the Vercel Preview deployment to become Ready.
+
+This patch makes the backend use DATABASE_RUNTIME_URL before the Neon-managed DATABASE_URL.

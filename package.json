@@ -1,9 +1,22 @@
 {
   "name": "genevieve-tracey-gruff-dog-park-app",
-  "version": "52.0.0",
+  "version": "52.1.2",
   "private": true,
-  "description": "Clean V52 static PWA deployment for GENEVIEVE App Dog Parks",
+  "description": "GENEVIEVE App Dog Parks V52 PWA with restricted runtime database URL precedence and staging controls",
   "scripts": {
-    "test": "node tests/smoke-test.js && node tests/logic-test.js"
+    "test": "node tests/smoke-test.cjs && node tests/logic-test.mjs && node tests/storage-adapter-test.mjs && node tests/backend-unit.mjs",
+    "verify:backend": "node --check api/health.js && node --check api/state.js && node --check api/checkins.js && node --check api/checkins/[id].js && node --check api/auth/register.js && node --check api/auth/login.js && node --check api/auth/logout.js && node --check api/auth/me.js && node --check api/admin/metrics.js && node --check api/internal/maintenance.js && node --check scripts/migrate.mjs && node --check scripts/verify-audit.mjs && node --check scripts/encrypt-backup.mjs && node --check api/parks/[id]/occupancy.js && node --check scripts/grant-runtime.mjs",
+    "migrate": "node scripts/migrate.mjs",
+    "verify:audit": "node scripts/verify-audit.mjs",
+    "backup": "bash scripts/backup.sh",
+    "verify:backup": "bash scripts/verify-backup.sh",
+    "grant:runtime": "node scripts/grant-runtime.mjs"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20 <25"
+  },
+  "dependencies": {
+    "pg": "8.16.3"
   }
 }
