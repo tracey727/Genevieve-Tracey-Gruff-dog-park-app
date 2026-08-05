@@ -1,0 +1,20 @@
+GENEVIEVE V52 GITHUB ACTIONS ZIP
+
+This ZIP contains:
+.github/workflows/v52-ci-security.yml
+.github/dependabot.yml
+
+IMPORTANT:
+Upload or extract the CONTENTS into the ROOT of the repository.
+Do not place the outer folder itself inside the repository.
+
+GitHub web upload steps:
+1. Open tracey727/Genevieve-Tracey-Gruff-dog-park-app.
+2. Select Add file > Upload files.
+3. Extract this ZIP on your device first.
+4. Upload the .github folder from the extracted files.
+5. Commit with this message:
+   ci: add V52 automated testing and security workflow
+
+Note: Some phone file pickers hide folders beginning with a dot. If .github is hidden,
+use a computer, GitHub Desktop, or upload the two files to their exact paths manually.
