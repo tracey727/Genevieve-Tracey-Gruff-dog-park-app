@@ -19,7 +19,9 @@
     const weights={sociability:1.1,reactivity:1.55,energy:1,playIntensity:1.25,tolerance:1.45,resourceSharing:1.25,vulnerability:.9};
     let distance=0,maxDistance=0;
     dims.forEach(key=>{distance+=Math.abs((Number(a[key])||5)-(Number(b[key])||5))*weights[key];maxDistance+=10*weights[key];});
-    let risk=100*distance/maxDistance;
+    let risk = maxDistance > 0 ? (100 * distance / maxDistance) : 0;
+if (isNaN(risk) || risk === Infinity) risk = 0;
+
     risk+=Math.max(0,((Number(a.reactivity)||0)+(Number(b.reactivity)||0)-12))*2.2;
     risk+=Math.max(0,Math.abs((Number(a.playIntensity)||0)-(Number(b.tolerance)||0))-4)*2.3;
     risk+=Math.max(0,Math.abs((Number(b.playIntensity)||0)-(Number(a.tolerance)||0))-4)*2.3;
