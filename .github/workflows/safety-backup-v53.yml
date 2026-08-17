@@ -1,0 +1,31 @@
+name: GENEVIEVE V53 Safety Backup
+
+on:
+  push:
+    branches:
+      - safety-backup-2026-08-18-v53
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out exact deployed V53 commit
+        uses: actions/checkout@v4
+        with:
+          ref: ce67897916bbd443a36855003f1e9e67f5ec273c
+          fetch-depth: 1
+      - name: Create exact source backup
+        run: |
+          mkdir -p backup
+          git archive --format=tar HEAD | tar -x -C backup
+          printf 'Production URL: https://genevieve-tracey-gruff-dog-park-app-eight.vercel.app/\nSource commit: ce67897916bbd443a36855003f1e9e67f5ec273c\nBackup date: 2026-08-18 Australia/Brisbane\n' > backup/SAFETY_BACKUP_INFO.txt
+      - name: Upload ZIP backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: GENEVIEVE_Dog_Park_V53_Safety_Backup_2026-08-18
+          path: backup/
+          if-no-files-found: error
+          compression-level: 6
