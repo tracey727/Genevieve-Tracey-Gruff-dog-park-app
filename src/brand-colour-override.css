@@ -1,5 +1,6 @@
 /* GENEVIEVE App™ Dog Park — locked brand palette override
-   Colour-only layer. No layout, logic, data, safety or interaction rules are changed. */
+   Colour-only layer. No layout, logic, data, safety or interaction rules are changed.
+   Production refresh: supplied tree-roots-infinity logo is retained in the existing top-left brand slot. */
 
 :root {
   --forest: #1B4D2B;
