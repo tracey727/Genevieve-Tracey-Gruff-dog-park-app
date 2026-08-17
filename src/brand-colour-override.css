@@ -1,6 +1,7 @@
 /* GENEVIEVE App™ Dog Park — locked brand palette override
    Colour-only layer. No layout, logic, data, safety or interaction rules are changed.
-   Production refresh: supplied tree-roots-infinity logo is retained in the existing top-left brand slot. */
+   Production refresh: supplied tree-roots-infinity logo is retained in the existing top-left brand slot.
+   Production deploy trigger: 2026-08-18 07:02 AEST. */
 
 :root {
   --forest: #1B4D2B;
