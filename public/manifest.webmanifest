@@ -1,0 +1,12 @@
+{
+  "name": "GENEVIEVE App™",
+  "short_name": "GENEVIEVE",
+  "description": "Safety from roots to every journey.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f2e8",
+  "theme_color": "#123d2c",
+  "icons": [
+    { "src": "/assets/genevieve-official-logo.jpeg", "sizes": "581x774", "type": "image/jpeg", "purpose": "any" }
+  ]
+}
