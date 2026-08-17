@@ -32,3 +32,5 @@ jobs:
           git add -A
           git commit -m "Build GENEVIEVE V53 from master blueprint"
           git push origin HEAD:${GITHUB_REF_NAME}
+
+# retry after checksum correction
