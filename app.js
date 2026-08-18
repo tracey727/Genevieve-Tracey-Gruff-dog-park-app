@@ -55,13 +55,23 @@ function restoreApprovedShell() {
       </article>`);
   }
 
-  // The red emergency control is permitted on Screen 1 (Today) only.
   const today = document.querySelector('[data-screen="today"]');
+
+  // The full GENEVIEVE brand header belongs to Screen 1 only.
+  const brandHeader = document.querySelector('.brand-header');
+  if (today && brandHeader && brandHeader.parentElement !== today) {
+    const heading = today.querySelector('.screen-heading');
+    if (heading) today.insertBefore(brandHeader, heading);
+    else today.prepend(brandHeader);
+    brandHeader.dataset.screenOneOnly = 'true';
+  }
+
+  // The red emergency control is permitted on Screen 1 (Today) only.
   const emergencyWrap = document.querySelector('.emergency-wrap');
   if (today && emergencyWrap && emergencyWrap.parentElement !== today) {
     const heading = today.querySelector('.screen-heading');
     if (heading) heading.insertAdjacentElement('afterend', emergencyWrap);
-    else today.prepend(emergencyWrap);
+    else today.append(emergencyWrap);
     emergencyWrap.dataset.screenOneOnly = 'true';
   }
 
@@ -73,7 +83,7 @@ function restoreApprovedShell() {
       html{background:var(--brand-forest)}
       body{background:radial-gradient(circle at 10% 0%,rgba(39,150,75,.28),transparent 30rem),linear-gradient(180deg,#103f31 0%,#215d36 34%,rgba(39,150,75,.54) 100%)}
       .app-shell{width:min(960px,100%);background:linear-gradient(180deg,#e8f8eb 0%,#fbfffb 48%,#eaf8ed 100%);border-left:7px solid var(--brand-forest);border-right:7px solid var(--brand-forest)}
-      .brand-header{margin-inline:-18px;padding:15px 18px;border-bottom:4px solid #082719;background:linear-gradient(135deg,#103f31 0%,#072719 100%);color:#fff;position:sticky;top:0;z-index:35;box-shadow:0 10px 28px rgba(7,39,25,.18)}
+      .brand-header{margin:0 -18px 18px;padding:15px 18px;border-bottom:4px solid #082719;background:linear-gradient(135deg,#103f31 0%,#072719 100%);color:#fff;position:static;top:auto;z-index:auto;box-shadow:0 10px 28px rgba(7,39,25,.18)}
       .brand-header img{width:64px;height:64px;object-fit:cover;object-position:center;border:2px solid rgba(201,162,39,.82);border-radius:18px;background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.24)}
       .brand-header .eyebrow{color:#fff}.brand-header h1{color:#f7efd0;font-weight:650}
       .stage-pill{border-color:rgba(201,162,39,.92);background:rgba(255,255,255,.10);color:#fff4c2}
