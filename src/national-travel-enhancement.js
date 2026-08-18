@@ -186,7 +186,7 @@ function createPanel() {
       <span class="gv-national-badge">V53 · national</span>
     </div>
     <form class="gv-national-form">
-      <label><span>From</span><input name="from" autocomplete="street-address" placeholder="Current location, town or Australian address" value="Current location" required></label>
+      <label><span>From</span><input name="from" autocomplete="street-address" placeholder="Current location, town or Australian address" required></label>
       <button class="gv-use-gps" type="button">Use my current GPS</button>
       <label><span>To</span><input name="to" autocomplete="street-address" placeholder="Town, suburb or Australian destination" required></label>
       <label class="gv-wide"><span>Required places on the way <small>(optional · one per line · max 8)</small></span><textarea name="requiredPlaces" rows="3" placeholder="Coffs Harbour NSW\nPort Macquarie NSW"></textarea></label>
