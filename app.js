@@ -55,6 +55,16 @@ function restoreApprovedShell() {
       </article>`);
   }
 
+  // The red emergency control is permitted on Screen 1 (Today) only.
+  const today = document.querySelector('[data-screen="today"]');
+  const emergencyWrap = document.querySelector('.emergency-wrap');
+  if (today && emergencyWrap && emergencyWrap.parentElement !== today) {
+    const heading = today.querySelector('.screen-heading');
+    if (heading) heading.insertAdjacentElement('afterend', emergencyWrap);
+    else today.prepend(emergencyWrap);
+    emergencyWrap.dataset.screenOneOnly = 'true';
+  }
+
   if (!document.querySelector('#genevieve-approved-brand-restoration')) {
     const style = document.createElement('style');
     style.id = 'genevieve-approved-brand-restoration';
@@ -77,6 +87,11 @@ function restoreApprovedShell() {
       .accessibility-grid strong,.accessibility-grid span{display:block}.accessibility-grid strong{color:var(--brand-forest);font-size:.86rem}.accessibility-grid span{margin-top:5px;color:var(--muted);font-size:.76rem;line-height:1.45}
       .deaf-auslan-card{margin-top:12px;padding:15px;border:1px solid rgba(201,162,39,.62);border-radius:16px;background:#fffdf4}.deaf-auslan-card>strong{display:block;margin-top:7px;color:var(--brand-forest);font-size:1rem}
       .verification-badge{display:inline-block;padding:5px 8px;border:1px solid #d3b45b;border-radius:999px;background:#fff3c8;color:#66500d;font-size:.66rem;font-weight:950;letter-spacing:.08em}
+      .emergency-hold.is-armed{background:linear-gradient(135deg,#5b151c,#941d28);box-shadow:0 0 0 4px rgba(148,29,40,.14),0 12px 28px rgba(148,29,40,.24)}
+      .emergency-slide-shell{margin-top:9px;padding:12px 13px;border:1px solid rgba(148,29,40,.22);border-radius:15px;background:#fff7f6;color:#70131c}
+      .emergency-slide-shell[hidden]{display:none!important}
+      .emergency-slide-label{display:grid;gap:7px;font-size:.76rem;font-weight:900;letter-spacing:.02em}
+      .emergency-slide{width:100%;margin:0;accent-color:#941d28;touch-action:pan-x}
       .bottom-nav{width:min(940px,calc(100% - 18px));grid-template-columns:repeat(9,1fr);gap:4px;padding:7px;border:1px solid rgba(201,162,39,.42);border-radius:20px 20px 0 0;background:linear-gradient(135deg,#103f31 0%,#072719 100%);box-shadow:0 -12px 34px rgba(7,39,25,.28)}
       .bottom-nav button{min-width:0;min-height:54px;padding:5px 2px;border:1px solid transparent;border-radius:12px;color:#fff}.bottom-nav button span{color:#fff;font-size:1rem}.bottom-nav button small{color:#fff;font-size:.58rem;font-weight:800}
       .bottom-nav button.is-current{border-color:rgba(201,162,39,.92);background:rgba(255,255,255,.14);color:#fff;box-shadow:inset 0 0 0 1px rgba(201,162,39,.28)}
@@ -135,34 +150,121 @@ showScreen(screens.some(screen => screen.dataset.screen === initial) ? initial :
 const dialog = document.querySelector('#emergency-dialog');
 const holdButton = document.querySelector('#emergency-hold');
 const closeEmergency = document.querySelector('#close-emergency');
-let holdTimer = null;
+const emergencyHelp = document.querySelector('#emergency-help');
+const holdCopy = holdButton?.querySelector('small');
+const emergencyWrap = holdButton?.closest('.emergency-wrap');
+let emergencySliderShell = document.querySelector('#emergency-slide-shell');
 
-function cancelHold() {
+if (holdCopy) holdCopy.textContent = 'Hold 3 seconds, then slide';
+
+if (emergencyWrap && !emergencySliderShell) {
+  emergencySliderShell = document.createElement('div');
+  emergencySliderShell.id = 'emergency-slide-shell';
+  emergencySliderShell.className = 'emergency-slide-shell';
+  emergencySliderShell.hidden = true;
+  emergencySliderShell.innerHTML = `
+    <label class="emergency-slide-label" for="emergency-slide">
+      <span>Slide fully right to open emergency assistance</span>
+      <input id="emergency-slide" class="emergency-slide" type="range" min="0" max="100" value="0" step="1" disabled aria-label="Slide to open emergency assistance" />
+    </label>`;
+  holdButton.insertAdjacentElement('afterend', emergencySliderShell);
+}
+
+const emergencySlider = document.querySelector('#emergency-slide');
+let holdTimer = null;
+let emergencyArmed = false;
+
+function resetEmergencyControl(message = 'Opening this control does not dispatch help or transmit your location.') {
   clearTimeout(holdTimer);
   holdTimer = null;
-  holdButton.classList.remove('is-holding');
+  emergencyArmed = false;
+  holdButton?.classList.remove('is-holding', 'is-armed');
+  if (holdCopy) holdCopy.textContent = 'Hold 3 seconds, then slide';
+  if (emergencySlider) {
+    emergencySlider.value = '0';
+    emergencySlider.disabled = true;
+  }
+  if (emergencySliderShell) emergencySliderShell.hidden = true;
+  if (emergencyHelp) emergencyHelp.textContent = message;
+}
+
+function cancelHold() {
+  if (emergencyArmed) return;
+  clearTimeout(holdTimer);
+  holdTimer = null;
+  holdButton?.classList.remove('is-holding');
+}
+
+function armEmergency() {
+  clearTimeout(holdTimer);
+  holdTimer = null;
+  emergencyArmed = true;
+  holdButton?.classList.remove('is-holding');
+  holdButton?.classList.add('is-armed');
+  if (holdCopy) holdCopy.textContent = 'Hold complete — slide fully right';
+  if (emergencySliderShell) emergencySliderShell.hidden = false;
+  if (emergencySlider) {
+    emergencySlider.disabled = false;
+    emergencySlider.value = '0';
+    emergencySlider.focus({ preventScroll: true });
+  }
+  if (emergencyHelp) emergencyHelp.textContent = 'Three-second hold complete. Slide fully right to open the protected emergency assistance panel.';
+  navigator.vibrate?.([90, 60, 90]);
 }
 
 function startHold(event) {
   if (event.type === 'keydown' && !['Enter', ' '].includes(event.key)) return;
-  if (holdTimer) return;
+  if (holdTimer || emergencyArmed) return;
   if (event.type === 'keydown') event.preventDefault();
 
-  holdButton.classList.add('is-holding');
-  holdTimer = setTimeout(() => {
-    cancelHold();
-    dialog.showModal();
-  }, 3000);
+  holdButton?.classList.add('is-holding');
+  holdTimer = setTimeout(armEmergency, 3000);
 }
 
-['pointerdown', 'keydown'].forEach(type => holdButton.addEventListener(type, startHold));
-['pointerup', 'pointerleave', 'pointercancel', 'keyup', 'blur'].forEach(type => holdButton.addEventListener(type, cancelHold));
+['pointerdown', 'keydown'].forEach(type => holdButton?.addEventListener(type, startHold));
+['pointerup', 'pointerleave', 'pointercancel', 'keyup', 'blur'].forEach(type => holdButton?.addEventListener(type, cancelHold));
 
-closeEmergency.addEventListener('click', () => dialog.close());
-dialog.addEventListener('cancel', cancelHold);
+emergencySlider?.addEventListener('input', () => {
+  if (!emergencyArmed) {
+    emergencySlider.value = '0';
+    return;
+  }
 
-document.querySelector('[data-emergency-screen]').addEventListener('click', () => {
-  dialog.close();
+  if (Number(emergencySlider.value) >= 95) {
+    emergencyArmed = false;
+    emergencySlider.disabled = true;
+    emergencySlider.value = '0';
+    if (emergencySliderShell) emergencySliderShell.hidden = true;
+    holdButton?.classList.remove('is-armed');
+    if (holdCopy) holdCopy.textContent = 'Emergency assistance open';
+    if (emergencyHelp) emergencyHelp.textContent = 'Emergency assistance is open. No help or location has been dispatched automatically.';
+    dialog?.showModal();
+    navigator.vibrate?.(120);
+  }
+});
+
+emergencySlider?.addEventListener('change', () => {
+  if (emergencyArmed && Number(emergencySlider.value) < 95) emergencySlider.value = '0';
+});
+
+// Navigating away from Screen 1 always disarms the emergency gesture.
+document.addEventListener('click', event => {
+  const navigation = event.target.closest?.('[data-screen-target],[data-open-screen]');
+  if (!navigation) return;
+  const destination = navigation.dataset.screenTarget || navigation.dataset.openScreen;
+  if (destination && destination !== 'today') resetEmergencyControl();
+}, true);
+
+closeEmergency?.addEventListener('click', () => {
+  dialog?.close();
+  resetEmergencyControl();
+});
+
+dialog?.addEventListener('cancel', () => resetEmergencyControl());
+
+document.querySelector('[data-emergency-screen]')?.addEventListener('click', () => {
+  dialog?.close();
+  resetEmergencyControl();
   showScreen('emergency');
 });
 
@@ -199,7 +301,6 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   });
 }
-
 
 async function initLinkedStages() {
   await initStage3();
