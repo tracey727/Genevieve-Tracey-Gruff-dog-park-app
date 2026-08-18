@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "npm test && vite build",
-    "test": "node tests/audit.mjs && node tests/stage2-audit.mjs && node tests/stage3-audit.mjs && node tests/stage4-audit.mjs && node tests/stage5-audit.mjs && node tests/screens1-9-audit.mjs"
+    "test": "node tests/audit.mjs && node tests/stage2-audit.mjs && node tests/stage3-audit.mjs && node tests/stage4-audit.mjs && node tests/stage5-audit.mjs && node tests/screens1-9-audit.mjs && node tests/ui-payments-integrity-audit.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0"
