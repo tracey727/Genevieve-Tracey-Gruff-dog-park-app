@@ -1,79 +1,320 @@
-/* GENEVIEVE App™ Dog Park — locked brand palette override
-   Colour-only layer. No layout, logic, data, safety or interaction rules are changed.
-   Production refresh: supplied tree-roots-infinity logo is retained in the existing top-left brand slot.
-   Production deploy trigger: 2026-08-18 07:02 AEST. */
+/* GENEVIEVE App™ Dog Park — premium green/gold presentation lock
+   Approved 18 Aug 2026.
+   Presentation-only layer: no location, emergency, hazard, colour-alert,
+   weather, Neon, payment, privacy or navigation logic is changed here.
+   User-created Genevieve roots tree is used from /assets/genevieve-roots-512.png. */
 
 :root {
   --forest: #1B4D2B;
+  --forest-deep: #123D2C;
   --forest-2: #6BA86E;
   --gold: #C9A227;
+  --gold-light: #E2C85E;
+  --ivory: #FBF8EF;
+  --cream: #F4EFE2;
   --ink: #173128;
   --line: rgba(27, 77, 43, 0.16);
   --shadow: 0 18px 55px rgba(27, 77, 43, 0.12);
 }
 
 html {
-  background: #deece4;
+  background: #dce9df;
 }
 
 body {
+  color: var(--ink);
   background:
-    radial-gradient(circle at 8% 4%, rgba(249, 246, 238, 0.96) 0, transparent 28%),
-    radial-gradient(circle at 92% 16%, rgba(107, 168, 110, 0.16) 0, transparent 30%),
-    linear-gradient(145deg, #e8f3ed 0%, #dcebe4 48%, #f5f0e4 100%);
+    radial-gradient(circle at 8% 5%, rgba(249, 246, 238, 0.88) 0, transparent 27%),
+    radial-gradient(circle at 93% 13%, rgba(107, 168, 110, 0.20) 0, transparent 31%),
+    radial-gradient(circle at 16% 84%, rgba(201, 162, 39, 0.09) 0, transparent 27%),
+    linear-gradient(145deg, #dcebe2 0%, #e9f0e7 44%, #eee9db 100%);
 }
 
+.app-shell {
+  background: linear-gradient(180deg, rgba(251, 248, 239, 0.20), rgba(229, 238, 230, 0.34));
+}
+
+/* Premium header — user-created tree, no replacement/mock logo. */
 .topbar {
-  border-color: rgba(27, 77, 43, 0.15);
-  box-shadow: 0 12px 34px rgba(27, 77, 43, 0.10);
+  background: linear-gradient(135deg, rgba(18, 61, 44, 0.985), rgba(27, 77, 43, 0.965));
+  border-color: rgba(201, 162, 39, 0.66);
+  box-shadow: 0 14px 36px rgba(18, 61, 44, 0.19);
+}
+
+.brand {
+  position: relative;
+  min-width: 0;
 }
 
 .brand img {
-  box-shadow: 0 6px 18px rgba(27, 77, 43, 0.12);
-  border-color: rgba(27, 77, 43, 0.14);
+  display: none !important;
+}
+
+.brand::before {
+  content: "";
+  width: 82px;
+  height: 82px;
+  flex: 0 0 82px;
+  display: block;
+  background: var(--ivory) url('/assets/genevieve-roots-512.png') center / contain no-repeat;
+  border: 1px solid rgba(201, 162, 39, 0.82);
+  border-radius: 20px;
+  box-shadow: 0 7px 22px rgba(0, 0, 0, 0.15), inset 0 0 0 4px rgba(255,255,255,0.36);
+}
+
+.brand.compact::before {
+  width: 72px;
+  height: 72px;
+  flex-basis: 72px;
+  border-radius: 18px;
+}
+
+.brand strong {
+  color: #fffdf6;
+  letter-spacing: 0.16em;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.12);
+}
+
+.brand span {
+  color: var(--gold-light);
+}
+
+.brand em {
+  color: #efe7d4;
+}
+
+.status-cluster,
+.status-cluster b {
+  color: #f8f2df;
+}
+
+.net-dot.online {
+  background: #76ba79;
+  box-shadow: 0 0 0 4px rgba(118, 186, 121, 0.14);
+}
+
+/* Approved gold emergency control. Hold/3-second/slide behaviour stays in App.jsx. */
+.emergency-wrap {
+  background: transparent;
+}
+
+.emergency-hold {
+  color: #243422;
+  background: linear-gradient(180deg, #E3CB6A 0%, #C9A227 100%);
+  border-color: #9d7b12;
+  box-shadow: 0 10px 24px rgba(121, 92, 10, 0.20), inset 0 1px 0 rgba(255,255,255,0.46);
+}
+
+.emergency-hold span {
+  font-size: 0;
+  letter-spacing: 0.02em;
+}
+
+.emergency-hold span::after {
+  content: "EMERGENCY: HOLD 3 SECS & SLIDE";
+  font-size: clamp(0.82rem, 1.7vw, 1rem);
+  font-weight: 850;
+  letter-spacing: 0.045em;
+}
+
+.emergency-hold.armed {
+  color: #fffaf0;
+  background: linear-gradient(180deg, #8f2429 0%, #741a20 100%);
+  border-color: #64151a;
+}
+
+.emergency-hold.armed span::after {
+  content: "ARMED — SLIDE TO OPEN";
+}
+
+.emergency-hold i {
+  background: rgba(255,255,255,0.24);
+}
+
+.emergency-range {
+  accent-color: var(--gold);
+}
+
+/* Warm panels improve visual tracking and reduce white-on-white eye strain. */
+.screen,
+.form-card,
+.cloud-card,
+.route-card,
+.safe-haven,
+.technical-note,
+.feed-card,
+.marine-panel,
+.medical-vault,
+.gps-card,
+.golden-rules,
+.qr-card {
+  background-color: rgba(251, 248, 239, 0.91);
+  border-color: rgba(201, 162, 39, 0.27);
+}
+
+.screen {
+  box-shadow: 0 18px 48px rgba(27, 77, 43, 0.08);
 }
 
 .search-box,
 button.primary,
 .dog-tabs button.active,
 .auth-tabs button.active {
-  background: #1B4D2B;
+  background: var(--forest);
+}
+
+.search-box {
+  border-color: rgba(201, 162, 39, 0.74);
+  box-shadow: 0 8px 20px rgba(27, 77, 43, 0.12);
 }
 
 button.primary {
-  border-color: #1B4D2B;
+  border-color: var(--forest);
   box-shadow: 0 8px 18px rgba(27, 77, 43, 0.16);
 }
 
 .search-box button {
-  background: #C9A227;
+  background: linear-gradient(180deg, #D8B843, #C9A227);
   color: #2f2713;
+  border-color: #a88717;
 }
 
 .counter-card {
-  background: linear-gradient(140deg, #1B4D2B, #6BA86E);
+  background: linear-gradient(140deg, #123D2C, #1B4D2B 58%, #3d7450);
+  border: 1px solid rgba(201, 162, 39, 0.55);
 }
 
 .screen-title small,
-.eyebrow,
-.brand span {
-  color: #C9A227;
+.eyebrow {
+  color: #9b7711;
 }
 
 .field input:focus,
 .field textarea:focus,
-.auth-form input:focus {
-  border-color: #6BA86E;
-  box-shadow: 0 0 0 3px rgba(107, 168, 110, 0.16);
+.auth-form input:focus,
+.search-box input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.16);
+  outline: none;
 }
 
 .segmented button.active {
-  background: rgba(107, 168, 110, 0.18);
-  border-color: #6BA86E;
-  color: #1B4D2B;
-  box-shadow: inset 0 0 0 1px #6BA86E;
+  background: rgba(201, 162, 39, 0.14);
+  border-color: var(--gold);
+  color: var(--forest-deep);
+  box-shadow: inset 0 0 0 1px rgba(201, 162, 39, 0.55);
 }
 
-.net-dot.online {
-  background: #6BA86E;
+/* Toggle contract: GREEN = off, GOLD = on. */
+.toggle .switch {
+  background: linear-gradient(180deg, #4f8a63, #2f6d4c) !important;
+  border: 1px solid rgba(18, 61, 44, 0.48);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.toggle input:checked + .switch {
+  background: linear-gradient(180deg, #E0C75B, #C9A227) !important;
+  border-color: #9e7c14;
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12), inset 0 1px 2px rgba(255,255,255,0.30);
+}
+
+.toggle input:focus-visible + .switch {
+  outline: 3px solid rgba(201, 162, 39, 0.38);
+  outline-offset: 3px;
+}
+
+/* Sophisticated hazard registry artwork. Existing threat values/reporting logic remain untouched. */
+.threat-grid button {
+  background: linear-gradient(180deg, rgba(251,248,239,0.98), rgba(244,239,226,0.98));
+  border-color: rgba(201, 162, 39, 0.42);
+  box-shadow: 0 9px 24px rgba(27, 77, 43, 0.08);
+}
+
+.threat-grid button:hover {
+  border-color: rgba(201, 162, 39, 0.78);
+  transform: translateY(-1px);
+}
+
+.threat-grid button.active {
+  background: linear-gradient(150deg, #123D2C, #1B4D2B);
+  border-color: var(--gold);
+  color: #fffaf0;
+  box-shadow: 0 12px 28px rgba(18, 61, 44, 0.18), inset 0 0 0 1px rgba(201,162,39,0.30);
+}
+
+.threat-grid button i {
+  width: 76px;
+  height: 76px;
+  display: block;
+  margin: 0 auto 8px;
+  font-size: 0 !important;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  filter: drop-shadow(0 4px 8px rgba(27,77,43,0.10));
+}
+
+.threat-grid button:nth-child(1) i { background-image: url('/assets/hazard-snake-wildlife.svg'); }
+.threat-grid button:nth-child(2) i { background-image: url('/assets/hazard-council-infrastructure.svg'); }
+.threat-grid button:nth-child(3) i { background-image: url('/assets/hazard-bait-poison.svg'); }
+.threat-grid button:nth-child(4) i { background-image: url('/assets/hazard-altercation-incident.svg'); }
+
+.threat-grid button span {
+  font-weight: 760;
+  letter-spacing: 0.01em;
+}
+
+.feed-row {
+  border-color: rgba(27, 77, 43, 0.10);
+  background: rgba(249, 246, 238, 0.68);
+}
+
+/* Colour-alert safety contract: do not replace the active safe/warn/amber/red selectors.
+   These accents deliberately sit outside the existing alert-card and crowd-warning rules. */
+.alert-card,
+.crowd-warning,
+.stat-pill {
+  box-shadow: 0 7px 18px rgba(27, 77, 43, 0.06);
+}
+
+.bottom-nav {
+  background: rgba(251, 248, 239, 0.97);
+  border-top-color: rgba(201, 162, 39, 0.38);
+  box-shadow: 0 -10px 30px rgba(27, 77, 43, 0.08);
+}
+
+.bottom-nav button.active {
+  color: var(--gold);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(201, 162, 39, 0.55);
+  outline-offset: 3px;
+}
+
+@media (max-width: 720px) {
+  .brand::before {
+    width: 64px;
+    height: 64px;
+    flex-basis: 64px;
+    border-radius: 16px;
+  }
+
+  .brand.compact::before {
+    width: 58px;
+    height: 58px;
+    flex-basis: 58px;
+  }
+
+  .brand strong {
+    letter-spacing: 0.10em;
+  }
+
+  .threat-grid button i {
+    width: 64px;
+    height: 64px;
+  }
 }
