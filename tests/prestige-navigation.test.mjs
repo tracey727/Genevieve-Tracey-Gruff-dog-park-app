@@ -9,6 +9,7 @@ const html = read('index.html');
 const js = read('src/prestige-nav-enhancement.js');
 const css = read('src/prestige-nav-enhancement.css');
 const hazardCss = read('src/hazard-photo-cards.css');
+const serviceWorker = read('public/sw.js');
 
 test('prestige navigation enhancement is loaded after the app and payment layer', () => {
   assert.match(html, /src\/main\.jsx/);
@@ -36,6 +37,20 @@ test('screen changes aggressively reset every likely scroll container to top', (
   assert.match(js, /setTimeout\(hardResetToTop, 180\)/);
   assert.match(js, /screenSignature/);
   assert.match(js, /MutationObserver/);
+});
+
+test('navigation observer does not self-trigger by rewriting identical text', () => {
+  assert.match(js, /function setTextIfChanged/);
+  assert.match(js, /node\.textContent !== value/);
+  assert.match(js, /observerFrame = requestAnimationFrame\(processNavigationMutation\)/);
+  assert.doesNotMatch(js, /if \(label\) label\.textContent = meta\.label/);
+  assert.doesNotMatch(js, /if \(current\) current\.textContent = secondaryActive/);
+});
+
+test('phone service worker cache is bumped for the repaired build', () => {
+  assert.match(serviceWorker, /genevieve-master-v53-repair-20260818-1822/);
+  assert.match(serviceWorker, /skipWaiting/);
+  assert.match(serviceWorker, /clients\.claim/);
 });
 
 test('navigation colour contract remains green inactive and gold active', () => {

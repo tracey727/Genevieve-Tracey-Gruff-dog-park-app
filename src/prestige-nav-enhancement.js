@@ -15,11 +15,16 @@ const NAV_META = [
 
 let lastSignature = '';
 let moreOpen = false;
+let observerFrame = 0;
 
 function originalButtons() {
   const nav = document.querySelector('.bottom-nav');
   if (!nav) return [];
   return [...nav.querySelectorAll(':scope > button:not(.genevieve-more-tab)')];
+}
+
+function setTextIfChanged(node, value) {
+  if (node && node.textContent !== value) node.textContent = value;
 }
 
 function activeIndex() {
@@ -81,8 +86,7 @@ function syncMoreState() {
   const meta = NAV_META[index];
   const secondaryActive = Boolean(meta && !meta.primary);
   more.classList.toggle('active', secondaryActive || moreOpen);
-  const current = more.querySelector('.nav-purpose');
-  if (current) current.textContent = secondaryActive ? meta.label : 'Menu';
+  setTextIfChanged(more.querySelector('.nav-purpose'), secondaryActive ? meta.label : 'Menu');
 }
 
 function ensureMoreSheet() {
@@ -144,8 +148,7 @@ function decorateNavigation() {
     button.classList.toggle('nav-secondary', !meta.primary);
     button.setAttribute('aria-label', `${meta.label} — ${meta.purpose}`);
 
-    const label = button.querySelector('span:not(.nav-purpose)');
-    if (label) label.textContent = meta.label;
+    setTextIfChanged(button.querySelector('span:not(.nav-purpose)'), meta.label);
     button.querySelector('i')?.setAttribute('aria-hidden', 'true');
 
     let purpose = button.querySelector('.nav-purpose');
@@ -154,7 +157,7 @@ function decorateNavigation() {
       purpose.className = 'nav-purpose';
       button.appendChild(purpose);
     }
-    purpose.textContent = meta.purpose;
+    setTextIfChanged(purpose, meta.purpose);
   });
 
   let more = nav.querySelector('.genevieve-more-tab');
@@ -176,20 +179,26 @@ function decorateNavigation() {
   syncMoreState();
 }
 
+function processNavigationMutation() {
+  observerFrame = 0;
+  decorateNavigation();
+  const next = screenSignature();
+  if (next !== lastSignature) {
+    lastSignature = next;
+    closeMore();
+    syncMoreState();
+    scheduleTopReset();
+  }
+}
+
 function installScreenChangeReset() {
   const root = document.getElementById('root');
   if (!root) return;
 
   lastSignature = screenSignature();
   const observer = new MutationObserver(() => {
-    decorateNavigation();
-    const next = screenSignature();
-    if (next !== lastSignature) {
-      lastSignature = next;
-      closeMore();
-      syncMoreState();
-      scheduleTopReset();
-    }
+    if (observerFrame) return;
+    observerFrame = requestAnimationFrame(processNavigationMutation);
   });
   observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
 
