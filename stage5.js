@@ -24,3 +24,6 @@ function bind(){
  window.addEventListener('focus',()=>load());
 }
 export async function initStage5(){bind();await load();}
+
+// Presentation and Stripe Payment-Link layer is intentionally client-only and isolated from safety APIs.
+import('./ui-enhancements.js').catch(()=>{});
