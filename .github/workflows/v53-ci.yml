@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - agent/master-blueprint-live-v53
+      - stage1-5-preview-2026-08-19
       - main
   pull_request:
     branches:
