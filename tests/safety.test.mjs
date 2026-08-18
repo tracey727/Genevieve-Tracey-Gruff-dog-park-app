@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { haversineMeters, crowdSummary, crowdAlert, isDuplicateHazard, safetyScore } from '../src/safety.mjs';
+import { haversineMeters, crowdSummary, crowdAlert, findDuplicateHazard, isDuplicateHazard, consolidateHazards, safetyScore } from '../src/safety.mjs';
 
 test('distance calculation is sane', () => {
   assert.ok(haversineMeters(-27.94, 153.43, -27.9401, 153.4301) < 20);
@@ -19,9 +19,22 @@ test('crowd ratio triggers amber at 30 percent and red at 100 percent', () => {
 
 test('hazard consolidation catches same threat inside 30 metres and 60 minutes', () => {
   const now = Date.now();
-  const candidate = { threat_type: 'snake', latitude: -27.94, longitude: 153.43 };
-  const existing = [{ threat_type: 'snake', latitude: -27.9401, longitude: 153.4301, seen_at: new Date(now - 10 * 60 * 1000).toISOString() }];
+  const candidate = { threat_type: 'snake', location_key: 'park', latitude: -27.94, longitude: 153.43 };
+  const existing = [{ threat_type: 'snake', location_key: 'park', latitude: -27.9401, longitude: 153.4301, seen_at: new Date(now - 10 * 60 * 1000).toISOString() }];
   assert.equal(isDuplicateHazard(candidate, existing, now), true);
+  assert.equal(findDuplicateHazard(candidate, existing, now), existing[0]);
+});
+
+test('two independent hazard rows consolidate into one verified hazard', () => {
+  const now = Date.now();
+  const hazards = [
+    { id: 'a', threat_type: 'poison', location_key: 'park', latitude: -27.94, longitude: 153.43, seen_at: new Date(now - 5 * 60 * 1000).toISOString(), verification_count: 1, verified: false },
+    { id: 'b', threat_type: 'poison', location_key: 'park', latitude: -27.9401, longitude: 153.4301, seen_at: new Date(now - 2 * 60 * 1000).toISOString(), verification_count: 1, verified: false }
+  ];
+  const consolidated = consolidateHazards(hazards);
+  assert.equal(consolidated.length, 1);
+  assert.equal(consolidated[0].verified, true);
+  assert.equal(consolidated[0].verification_count >= 2, true);
 });
 
 test('safety score remains bounded and lowers for heat-sensitive dogs', () => {

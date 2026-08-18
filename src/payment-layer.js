@@ -1,8 +1,11 @@
 import '../config.js';
 import './payment-layer.css';
+import { secureGet } from './secureStore.js';
 
 const LOGO='/assets/genevieve-roots-512.png';
 const MEMBERSHIP_SESSION_KEY='genevieve:stripe:checkout_session';
+const MEMBERSHIP_REFERENCE_KEY='genevieve:stripe:member_reference';
+const STRIPE_PORTAL_LOGIN='https://billing.stripe.com/p/login/dRm7sM5Qi57R4FmgV01wY00';
 const PLAN_COPY={
   standardMonthly:{label:'Standard Monthly',price:'$14.99 AUD',period:'per month'},
   concessionMonthly:{label:'Concession Monthly',price:'$10.49 AUD',period:'per month'},
@@ -18,6 +21,13 @@ function savedMembershipSession(){return localStorage.getItem(MEMBERSHIP_SESSION
 function saveMembershipSession(value){
   const id=String(value||'').trim();
   if(/^cs_[A-Za-z0-9_]+$/.test(id)) localStorage.setItem(MEMBERSHIP_SESSION_KEY,id);
+}
+function membershipReference(){
+  let value=localStorage.getItem(MEMBERSHIP_REFERENCE_KEY)||'';
+  if(/^[A-Za-z0-9_-]{8,120}$/.test(value)) return value;
+  value=`member_${crypto.randomUUID().replaceAll('-','_')}`;
+  localStorage.setItem(MEMBERSHIP_REFERENCE_KEY,value);
+  return value;
 }
 function formatStripeDate(seconds){
   if(!Number.isFinite(Number(seconds))) return '';
@@ -40,8 +50,11 @@ async function startCheckout(planKey){
   try{
     const direct=paymentLinkFor(planKey);
     if(direct){window.location.assign(direct);return}
+    const handler=await secureGet('handler',{}).catch(()=>({}));
     const response=await fetch('/api/create-checkout-session',{
-      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({planKey})
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({planKey,email:handler?.email||'',memberRef:membershipReference()})
     });
     const data=await response.json().catch(()=>({}));
     if(!response.ok||!data.url) throw new Error(data.error||'Payments are not connected yet.');
@@ -57,7 +70,10 @@ async function startCheckout(planKey){
 
 async function openCustomerPortal(){
   const sessionId=savedMembershipSession();
-  if(!sessionId) return openModal();
+  if(!sessionId){
+    window.location.assign(STRIPE_PORTAL_LOGIN);
+    return;
+  }
   try{
     const response=await fetch('/api/create-portal-session',{
       method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId})
@@ -71,7 +87,7 @@ async function openCustomerPortal(){
 function membershipStatusCopy(membership){
   const status=String(membership?.status||'unknown');
   let text='Stripe verified: Membership status unavailable';
-  if(status==='trialing') text=`Stripe verified: Trial active${membership.trialEnd?` until ${formatStripeDate(membership.trialEnd)}`:''}`;
+  if(status==='trialing') text=`Stripe verified: 30-day trial active${membership.trialEnd?` until ${formatStripeDate(membership.trialEnd)}`:''}`;
   else if(status==='active') text='Stripe verified: Membership active';
   else if(status==='past_due') text='Stripe verified: Payment past due — update your payment method';
   else if(status==='unpaid') text='Stripe verified: Payment unpaid — membership needs attention';
@@ -86,9 +102,12 @@ function membershipStatusCopy(membership){
 
 async function refreshMembershipStatus(){
   const sessionId=savedMembershipSession();
-  if(!sessionId) return;
   const membership=document.querySelector('.membership');
   const statusEl=membership?.querySelector('span');
+  if(!sessionId){
+    if(statusEl&&/not yet connected|checkout available/i.test(statusEl.textContent||'')) statusEl.textContent='Stripe connected · 30-day free trial available below.';
+    return;
+  }
   if(statusEl) statusEl.textContent='Verifying membership directly with Stripe…';
   try{
     const response=await fetch('/api/membership-status',{
@@ -134,7 +153,7 @@ function ensureModal(){
         <div class="genevieve-wallet-badge stripe">stripe<br><small>Card checkout</small></div>
       </div>
       <div class="genevieve-plan-grid">
-        ${Object.entries(PLAN_COPY).map(([key,p])=>`<button type="button" class="genevieve-pay-choice" data-plan="${key}"><small>${p.label}</small><strong>${p.price}</strong><span>${p.period} · planned 30-day trial for eligible new subscribers</span></button>`).join('')}
+        ${Object.entries(PLAN_COPY).map(([key,p])=>`<button type="button" class="genevieve-pay-choice" data-plan="${key}"><small>${p.label}</small><strong>${p.price}</strong><span>${p.period} · 30-day free trial for eligible new subscribers</span></button>`).join('')}
       </div>
       <div class="genevieve-pay-error" role="alert"></div>
       <p class="genevieve-pay-note"><b>Before subscribing:</b> 30 days free for eligible new subscribers. Then the selected price renews automatically each month or year until cancelled. Cancel before the trial ends to avoid the first charge. Deleting the app does not cancel a subscription.</p>
@@ -149,6 +168,15 @@ function ensureModal(){
   return modal;
 }
 
+function makeManageButton(label,extraClass=''){
+  const button=document.createElement('button');
+  button.type='button';
+  button.className=`genevieve-manage-membership ${extraClass}`.trim();
+  button.textContent=label;
+  button.addEventListener('click',openCustomerPortal);
+  return button;
+}
+
 function injectMembershipControl(){
   const membership=document.querySelector('.membership');
   if(!membership) return;
@@ -158,13 +186,20 @@ function injectMembershipControl(){
     button.innerHTML='Pay securely / choose membership<span>Stripe · Apple Pay · Google Pay</span>';
     button.addEventListener('click',openModal);membership.appendChild(button);
   }
-  if(savedMembershipSession()&&!membership.querySelector('.genevieve-manage-membership')){
-    const manage=document.createElement('button');
-    manage.type='button';manage.className='genevieve-manage-membership';manage.textContent='Manage membership with Stripe';
-    manage.addEventListener('click',openCustomerPortal);membership.appendChild(manage);
+  if(!membership.querySelector('.genevieve-membership-actions')){
+    const actions=document.createElement('div');
+    actions.className='genevieve-membership-actions';
+    actions.setAttribute('aria-label','Membership billing actions');
+    if(savedMembershipSession()){
+      actions.appendChild(makeManageButton('💳 Update Payment Method'));
+      actions.appendChild(makeManageButton('❌ Cancel Subscription','danger'));
+    }else{
+      actions.appendChild(makeManageButton('Manage an existing Stripe membership'));
+    }
+    membership.appendChild(actions);
   }
   const status=membership.querySelector('span');
-  if(status&&/not yet connected to a payment processor/i.test(status.textContent||'')) status.textContent='Secure membership checkout available below.';
+  if(status&&/not yet connected to a payment processor/i.test(status.textContent||'')) status.textContent='Stripe connected · 30-day free trial available below.';
 }
 
 function handleReturnState(){

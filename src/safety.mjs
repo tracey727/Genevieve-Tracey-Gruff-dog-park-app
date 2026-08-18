@@ -42,13 +42,58 @@ export function crowdAlert(offGame, summary) {
   return null;
 }
 
-export function isDuplicateHazard(candidate, existing, now = Date.now()) {
-  return (existing || []).some((hazard) => {
-    if ((hazard.threat_type || hazard.threatType) !== candidate.threat_type) return false;
-    const time = Date.parse(hazard.seen_at || hazard.seenAt || hazard.created_at || 0);
-    if (!Number.isFinite(time) || Math.abs(now - time) > 60 * 60 * 1000) return false;
-    if (![candidate.latitude, candidate.longitude, hazard.latitude, hazard.longitude].every(Number.isFinite)) return false;
-    return haversineMeters(candidate.latitude, candidate.longitude, hazard.latitude, hazard.longitude) <= 30;
+function hazardTime(hazard) {
+  return Date.parse(hazard?.seen_at || hazard?.seenAt || hazard?.created_at || hazard?.createdAt || 0);
+}
+
+function sameHazardWindow(candidate, hazard, referenceTime = null) {
+  if (!candidate || !hazard) return false;
+  if ((hazard.threat_type || hazard.threatType) !== (candidate.threat_type || candidate.threatType)) return false;
+  if (candidate.location_key && hazard.location_key && candidate.location_key !== hazard.location_key) return false;
+
+  const candidateTime = referenceTime ?? hazardTime(candidate);
+  const existingTime = hazardTime(hazard);
+  if (!Number.isFinite(candidateTime) || !Number.isFinite(existingTime) || Math.abs(candidateTime - existingTime) > 60 * 60 * 1000) return false;
+
+  const coords = [candidate.latitude, candidate.longitude, hazard.latitude, hazard.longitude].map(Number);
+  if (!coords.every(Number.isFinite)) return false;
+  return haversineMeters(coords[0], coords[1], coords[2], coords[3]) <= 30;
+}
+
+export function findDuplicateHazard(candidate, existing, now = null) {
+  const referenceTime = now == null ? hazardTime(candidate) : Number(now);
+  return (existing || []).find((hazard) => sameHazardWindow(candidate, hazard, referenceTime)) || null;
+}
+
+export function isDuplicateHazard(candidate, existing, now = null) {
+  return Boolean(findDuplicateHazard(candidate, existing, now));
+}
+
+export function consolidateHazards(hazards) {
+  const sorted = [...(hazards || [])]
+    .filter((hazard) => Number.isFinite(hazardTime(hazard)))
+    .sort((a, b) => hazardTime(b) - hazardTime(a));
+  const groups = [];
+
+  for (const hazard of sorted) {
+    let group = groups.find((candidateGroup) => sameHazardWindow(candidateGroup[0], hazard));
+    if (!group) {
+      group = [];
+      groups.push(group);
+    }
+    group.push(hazard);
+  }
+
+  return groups.map((group) => {
+    const representative = group[0];
+    const reportedCount = group.reduce((sum, item) => sum + Math.max(1, Number(item.verification_count || item.verificationCount || 1)), 0);
+    const verificationCount = Math.max(group.length, reportedCount);
+    return {
+      ...representative,
+      verification_count: verificationCount,
+      verified: Boolean(group.some((item) => item.verified) || group.length >= 2),
+      consolidated_reports: group.length
+    };
   });
 }
 
