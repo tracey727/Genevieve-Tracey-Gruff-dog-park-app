@@ -1,1 +1,21 @@
-{"name":"genevieve-app-tracey-gruff-stage4","version":"4.0.0-stage4","private":true,"type":"module","engines":{"node":"22.x"},"scripts":{"test":"node tests/audit.mjs && node tests/stage2-audit.mjs && node tests/stage3-audit.mjs && node tests/stage4-audit.mjs && node tests/stage5-audit.mjs"},"dependencies":{"@neondatabase/serverless":"^1.0.0"},"genevieveLinkedStage":"Stage 5","genevieveStage5Policy":"stage5-presence-privacy-2026-08-18"}
+{
+  "name": "genevieve-app-tracey-gruff-stage4",
+  "version": "4.0.0-stage4",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "node tests/audit.mjs && node tests/stage2-audit.mjs && node tests/stage3-audit.mjs && node tests/stage4-audit.mjs && node tests/stage5-audit.mjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0"
+  },
+  "devDependencies": {
+    "vite": "^6.4.1"
+  },
+  "genevieveLinkedStage": "Stage 5",
+  "genevieveStage5Policy": "stage5-presence-privacy-2026-08-18"
+}
