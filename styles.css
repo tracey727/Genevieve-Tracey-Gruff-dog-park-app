@@ -2,13 +2,19 @@
 @import url('./premium.css');
 
 /* Audit-visible core tokens retained in the entry stylesheet. */
-:root{--green:#1B4D2B;--gold:#C9A227}
-html{min-width:320px}
-.bottom-nav{padding-bottom:env(safe-area-inset-bottom)}
-.emergency-hold{position:relative}
-button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline-offset:3px}
-@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
+:root {
+  --green: #1B4D2B;
+  --gold: #C9A227;
+}
+html { min-width: 320px; }
+.bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
+.emergency-hold { position: relative; }
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible { outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
 /* Stage 3 — source-of-truth */
 /* Stage 4 — gated suitability */
 /* Stage 5 — private presence */
-.night-safety-banner{display:block}
+.night-safety-banner { display: block; }
