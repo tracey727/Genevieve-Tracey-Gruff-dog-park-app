@@ -1,0 +1,119 @@
+/* GENEVIEVE App™ — Option C hazard cards
+   Real photography + existing Genevieve hazard badge + clear label.
+   Hazard IDs/report logic and colour-alert logic are not modified. */
+
+.threat-grid {
+  gap: 14px !important;
+}
+
+.threat-grid button {
+  --hazard-photo: none;
+  position: relative !important;
+  isolation: isolate;
+  overflow: hidden !important;
+  min-height: 220px !important;
+  padding: 18px !important;
+  border-radius: 24px !important;
+  border: 1px solid rgba(201,162,39,.48) !important;
+  background-color: #173d2c !important;
+  background-image:
+    linear-gradient(180deg, rgba(7,30,21,.12) 0%, rgba(7,30,21,.36) 48%, rgba(7,30,21,.88) 100%),
+    var(--hazard-photo) !important;
+  background-size: cover !important;
+  background-position: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-end !important;
+  gap: 7px !important;
+  color: #fffaf0 !important;
+  text-align: left !important;
+  box-shadow: 0 14px 34px rgba(18,61,44,.16) !important;
+}
+
+.threat-grid button:nth-child(1) {
+  --hazard-photo: url('https://unsplash.com/photos/gray-and-brown-snake-_3Qd_aYQIew/download?force=true&w=1200');
+}
+.threat-grid button:nth-child(2) {
+  --hazard-photo: url('https://unsplash.com/photos/road-construction-signs-and-barrier-on-a-street-JhYMMikexXs/download?force=true&w=1200');
+}
+.threat-grid button:nth-child(3) {
+  --hazard-photo: url('https://unsplash.com/photos/warning-keep-out-poison-baited-area-signage-YHaZboQ4UAw/download?force=true&w=1200');
+}
+.threat-grid button:nth-child(4) {
+  --hazard-photo: url('https://unsplash.com/photos/two-dogs-fighting-on-grass-YgtBbWeU2C0/download?force=true&w=1200');
+}
+
+/* Existing SVG artwork becomes the premium badge rather than the whole card. */
+.threat-grid button i {
+  position: absolute !important;
+  z-index: 3 !important;
+  top: 14px !important;
+  left: 14px !important;
+  width: 54px !important;
+  height: 54px !important;
+  margin: 0 !important;
+  border-radius: 17px !important;
+  border: 1px solid rgba(201,162,39,.76) !important;
+  background-color: rgba(251,248,239,.94) !important;
+  background-size: 38px 38px !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,.20) !important;
+  backdrop-filter: blur(5px);
+}
+
+.threat-grid button span {
+  position: relative;
+  z-index: 3;
+  display: block;
+  font: 700 1.08rem/1.15 Georgia, 'Times New Roman', serif !important;
+  color: #fffdf6 !important;
+  text-shadow: 0 1px 8px rgba(0,0,0,.42);
+}
+
+.threat-grid button::after {
+  position: relative;
+  z-index: 3;
+  display: block;
+  max-width: 94%;
+  color: rgba(255,250,240,.88);
+  font-size: .72rem;
+  font-weight: 650;
+  line-height: 1.35;
+  text-shadow: 0 1px 7px rgba(0,0,0,.46);
+}
+
+.threat-grid button:nth-child(1)::after { content: 'Snake sightings, wildlife encounters and animal-related risk.'; }
+.threat-grid button:nth-child(2)::after { content: 'Damaged paths, fencing, access, maintenance or council safety issues.'; }
+.threat-grid button:nth-child(3)::after { content: 'Suspected baiting, poison, chemical or contaminated-area threats.'; }
+.threat-grid button:nth-child(4)::after { content: 'Altercations, unsafe behaviour, dog conflict or other incidents.'; }
+
+.threat-grid button:hover {
+  transform: translateY(-2px) !important;
+  border-color: rgba(226,200,94,.92) !important;
+  box-shadow: 0 18px 40px rgba(18,61,44,.21) !important;
+}
+
+.threat-grid button.active {
+  border: 2px solid #E2C85E !important;
+  background-image:
+    linear-gradient(180deg, rgba(18,61,44,.10) 0%, rgba(18,61,44,.34) 46%, rgba(18,61,44,.92) 100%),
+    var(--hazard-photo) !important;
+  box-shadow: 0 0 0 3px rgba(201,162,39,.16), 0 18px 42px rgba(18,61,44,.22) !important;
+}
+
+.threat-grid button:focus-visible {
+  outline: 3px solid rgba(201,162,39,.62) !important;
+  outline-offset: 3px !important;
+}
+
+@media (max-width: 720px) {
+  .threat-grid { grid-template-columns: 1fr 1fr !important; }
+  .threat-grid button { min-height: 190px !important; padding: 15px !important; }
+  .threat-grid button i { width: 48px !important; height: 48px !important; background-size: 34px 34px !important; }
+}
+
+@media (max-width: 460px) {
+  .threat-grid { grid-template-columns: 1fr !important; }
+  .threat-grid button { min-height: 178px !important; }
+  .threat-grid button span { font-size: 1.05rem !important; }
+}
