@@ -12,6 +12,7 @@ const statusApi=read('api/membership-status.js');
 const portalApi=read('api/create-portal-session.js');
 const checkout=read('api/create-checkout-session.js');
 const paymentLayer=read('src/payment-layer.js');
+const stripeCore=read('server/stripe.js');
 
 test('Stripe webhook signatures are accepted only when current and valid',()=>{
   const secret='whsec_test_only_not_a_real_secret';
@@ -47,24 +48,28 @@ test('subscription lifecycle receiver covers required entitlement events',()=>{
 
 test('membership is verified server-side with Stripe and refund lookup',()=>{
   assert.match(statusApi,/membershipFromCheckoutSession/);
-  const core=read('server/stripe.js');
-  assert.match(core,/\/subscriptions\//);
-  assert.match(core,/\/invoice_payments/);
-  assert.match(core,/\/refunds/);
-  assert.match(core,/status === 'active' \|\| status === 'trialing'/);
+  assert.match(stripeCore,/\/subscriptions\//);
+  assert.match(stripeCore,/\/invoice_payments/);
+  assert.match(stripeCore,/\/refunds/);
+  assert.match(stripeCore,/status === 'active' \|\| status === 'trialing'/);
 });
 
-test('customer portal and browser membership refresh are wired',()=>{
+test('customer portal exposes explicit update-payment and cancellation actions',()=>{
   assert.match(portalApi,/\/billing_portal\/sessions/);
   assert.match(paymentLayer,/genevieve:stripe:checkout_session/);
   assert.match(paymentLayer,/\/api\/membership-status/);
   assert.match(paymentLayer,/\/api\/create-portal-session/);
-  assert.match(paymentLayer,/Manage membership with Stripe/);
+  assert.match(paymentLayer,/Update Payment Method/);
+  assert.match(paymentLayer,/Cancel Subscription/);
+  assert.match(paymentLayer,/billing\.stripe\.com\/p\/login/);
 });
 
-test('trial checkout explicitly collects a payment method',()=>{
+test('trial checkout explicitly collects a payment method and pins the Stripe API version',()=>{
   assert.match(checkout,/payment_method_collection/);
   assert.match(checkout,/subscription_data\[trial_period_days\]/);
-  assert.match(checkout,/STRIPE_SECRET_KEY/);
+  assert.match(checkout,/integration_identifier/);
+  assert.match(stripeCore,/2026-06-24\.dahlia/);
+  assert.match(stripeCore,/Stripe-Version/);
+  assert.match(stripeCore,/STRIPE_SECRET_KEY/);
   assert.doesNotMatch(paymentLayer,/sk_(?:live|test)_/);
 });
