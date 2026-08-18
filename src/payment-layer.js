@@ -1,7 +1,7 @@
 import '../config.js';
 import './payment-layer.css';
 
-const LOGO='/assets/genevieve-official-logo.jpeg';
+const LOGO='/assets/genevieve-roots-512.png';
 const PLAN_COPY={
   standardMonthly:{label:'Standard Monthly',price:'$14.99 AUD',period:'per month'},
   concessionMonthly:{label:'Concession Monthly',price:'$10.49 AUD',period:'per month'},
@@ -71,7 +71,7 @@ function ensureModal(){
   modal.innerHTML=`<div class="genevieve-pay-backdrop" role="presentation">
     <section class="genevieve-pay-sheet" role="dialog" aria-modal="true" aria-labelledby="genevievePayTitle">
       <div class="genevieve-pay-head">
-        <img src="${LOGO}" alt="GENEVIEVE App logo">
+        <img src="${LOGO}" alt="GENEVIEVE App tree, roots and infinity logo">
         <div><small>GENEVIEVE APP™ MEMBERSHIP</small><h2 id="genevievePayTitle">Choose your secure membership</h2></div>
         <button class="genevieve-pay-close" type="button" aria-label="Close payments">×</button>
       </div>
