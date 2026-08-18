@@ -1,0 +1,72 @@
+/* Preview-only professional hazard and Stripe presentation. */
+.hazard-professional-card{
+  display:grid!important;
+  grid-template-columns:84px 1fr!important;
+  gap:16px!important;
+  align-items:center!important;
+  min-height:116px!important;
+  padding:15px!important;
+  border:1px solid rgba(201,162,39,.55)!important;
+  border-radius:7px!important;
+  background:#fffdf8!important;
+  color:#082d24!important;
+  text-align:left!important;
+  box-shadow:0 8px 22px rgba(8,45,36,.07)!important;
+  opacity:1!important;
+}
+.hazard-professional-card:disabled{opacity:1!important;cursor:not-allowed!important}
+.hazard-professional-card img{
+  display:block;
+  width:84px;
+  height:84px;
+  object-fit:contain;
+  border-radius:6px;
+  background:#fbf8ef;
+}
+.hazard-professional-copy{display:block!important;margin:0!important;opacity:1!important}
+.hazard-professional-copy strong{
+  display:block;
+  color:#082d24;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:1rem;
+  font-weight:600;
+  line-height:1.2;
+}
+.hazard-professional-copy small{
+  display:block!important;
+  margin-top:6px!important;
+  color:#68736d!important;
+  font-size:.72rem!important;
+  font-weight:650!important;
+  line-height:1.35!important;
+}
+
+.stripe-membership-panel{
+  margin-top:18px!important;
+  border:1px solid rgba(201,162,39,.52)!important;
+  border-left:2px solid #c9a227!important;
+  background:#fffdf8!important;
+}
+.stripe-membership-heading{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.stripe-verified-kicker{display:block;color:#7b6420;font-size:.62rem;font-weight:850;letter-spacing:.15em;margin-bottom:4px}
+.stripe-connected-badge{padding:5px 8px;border:1px solid rgba(201,162,39,.68);border-radius:4px;background:#f7f0d7;color:#493c13;font-size:.64rem;font-weight:850;letter-spacing:.05em}
+.stripe-preview-warning{margin:12px 0;padding:10px 12px;border:1px solid #d9c276;border-left:3px solid #c9a227;border-radius:5px;background:#fff9e8;color:#51451f;font-size:.76rem;line-height:1.45}
+.stripe-plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}
+.stripe-plan-card{padding:14px;border:1px solid rgba(8,45,36,.16);border-radius:6px;background:#fff;box-shadow:0 6px 16px rgba(8,45,36,.045)}
+.stripe-plan-card[data-plan-status="pending"]{background:#f7f6f1}
+.stripe-plan-status{display:block;color:#80691e;font-size:.57rem;font-weight:900;letter-spacing:.1em;line-height:1.25}
+.stripe-plan-card h3{margin:7px 0 4px;color:#082d24;font-family:Georgia,"Times New Roman",serif;font-size:1rem;font-weight:600}
+.stripe-plan-card p{margin:5px 0;color:#68736d;font-size:.72rem;line-height:1.4}
+.stripe-plan-price{color:#082d24!important;font-size:1.15rem!important;font-weight:800!important}
+.stripe-plan-price small{font-size:.66rem;font-weight:650;color:#68736d}
+.stripe-plan-action,.stripe-portal-link{display:block;margin-top:10px;padding:10px 11px;border:1px solid #082d24;border-radius:5px;background:#082d24;color:#fff;font-size:.72rem;font-weight:800;text-align:center;text-decoration:none;box-shadow:none}
+.stripe-plan-action.pending{border-color:#c9c8bf!important;background:#ecebe5!important;color:#77756d!important;opacity:1!important}
+.stripe-portal-link{width:max-content;max-width:100%;border-color:rgba(201,162,39,.62);background:#fffdf8;color:#082d24}
+
+@media(max-width:560px){
+  .threat-grid{grid-template-columns:1fr!important}
+  .hazard-professional-card{grid-template-columns:72px 1fr!important;min-height:102px!important;padding:12px!important}
+  .hazard-professional-card img{width:72px;height:72px}
+  .stripe-plan-grid{grid-template-columns:1fr}
+  .stripe-membership-heading{align-items:center}
+}
