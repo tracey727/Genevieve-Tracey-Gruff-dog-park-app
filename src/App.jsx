@@ -10,10 +10,11 @@ import {
   postHazard
 } from './neon.js';
 import {
+  consolidateHazards,
   crowdAlert,
   crowdSummary,
+  findDuplicateHazard,
   haversineMeters,
-  isDuplicateHazard,
   safetyScore
 } from './safety.mjs';
 
@@ -69,6 +70,17 @@ function openMap(query) {
   window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`, '_blank', 'noopener,noreferrer');
 }
 function tel(phone) { window.location.href = `tel:${String(phone).replace(/\s/g, '')}`; }
+function hazardFingerprint(hazard) {
+  const lat = Number(hazard?.latitude);
+  const lon = Number(hazard?.longitude);
+  return [
+    hazard?.threat_type || hazard?.threatType || '',
+    hazard?.location_key || '',
+    Number.isFinite(lat) ? lat.toFixed(5) : '',
+    Number.isFinite(lon) ? lon.toFixed(5) : '',
+    hazard?.seen_at || hazard?.seenAt || hazard?.created_at || ''
+  ].join('|');
+}
 
 function EmergencySlider({ onOpen }) {
   const [holding, setHolding] = useState(false);
@@ -149,17 +161,25 @@ function App() {
   const [authMessage, setAuthMessage] = useState('');
   const [supervision, setSupervision] = useState({ active: false, distance: null, status: 'Ready', coords: null });
   const [conductAccepted, setConductAccepted] = useState(loadLocal('conductAccepted', false));
+  const [reportStrikes, setReportStrikes] = useState(loadLocal('reportStrikes', 0));
   const [qrUrl, setQrUrl] = useState('');
   const [toast, setToast] = useState('');
   const sessionToken = useMemo(() => newToken('attendanceToken'), []);
   const reportToken = useMemo(() => newToken('reportToken'), []);
   const activeDog = dogs.find((d) => d.id === activeDogId) || dogs[0] || null;
   const dogBreed = breedInfo(activeDog?.breed || '');
+  const reportRestricted = reportStrikes > 3;
   const allAttendance = useMemo(() => [...remoteAttendance, ...localAttendance], [remoteAttendance, localAttendance]);
   const crowd = useMemo(() => crowdSummary(allAttendance), [allAttendance]);
   const allHazards = useMemo(() => {
     const seen = new Set();
-    return [...localHazards, ...remoteHazards].filter((h) => { const k = h.id || `${h.report_token}-${h.seen_at}`; if (seen.has(k)) return false; seen.add(k); return true; });
+    const unique = [...localHazards, ...remoteHazards].filter((hazard) => {
+      const fingerprint = hazardFingerprint(hazard);
+      if (seen.has(fingerprint)) return false;
+      seen.add(fingerprint);
+      return true;
+    });
+    return consolidateHazards(unique);
   }, [localHazards, remoteHazards]);
   const locationHazards = allHazards.filter((h) => h.location_key === location.key && Date.now() - Date.parse(h.seen_at || h.created_at || 0) < 24 * 60 * 60 * 1000);
   const alert = crowdAlert(offGame, crowd);
@@ -181,11 +201,17 @@ function App() {
   useEffect(() => { saveLocal('attendanceEvents', localAttendance.slice(-300)); }, [localAttendance]);
   useEffect(() => { saveLocal('hazards', localHazards.slice(-200)); }, [localHazards]);
   useEffect(() => { saveLocal('conductAccepted', conductAccepted); }, [conductAccepted]);
+  useEffect(() => { saveLocal('reportStrikes', reportStrikes); }, [reportStrikes]);
 
   useEffect(() => {
     let cancelled = false;
+    if (!location.station) {
+      setWeather(null);
+      setWeatherState('unverified');
+      return () => { cancelled = true; };
+    }
     setWeatherState('loading');
-    fetch(`/api/bom?station=${encodeURIComponent(location.station || 'gold-coast-seaway')}`)
+    fetch(`/api/bom?station=${encodeURIComponent(location.station)}`)
       .then((r) => { if (!r.ok) throw new Error('weather'); return r.json(); })
       .then((data) => { if (!cancelled) { setWeather(data); setWeatherState('live'); } })
       .catch(() => { if (!cancelled) setWeatherState('offline'); });
@@ -212,7 +238,8 @@ function App() {
 
   const selectLocation = () => {
     const name = locationQuery.trim(); if (!name) return;
-    setLocation({ key: slug(name), name, verified: false, station: 'gold-coast-seaway' });
+    const key = slug(name);
+    setLocation({ key, name, verified: false, station: key === DEFAULT_LOCATION.key ? DEFAULT_LOCATION.station : null });
     setLocationQuery(''); setScreen(2);
   };
 
@@ -239,8 +266,14 @@ function App() {
     setLocalAttendance((prev) => [...prev, event]);
     if (eventType === 'checkin') setCheckedIn({ location, at: event.created_at, coords });
     else setCheckedIn(null);
-    try { await postAttendance(event); setCloudState('Neon live'); refreshCloud(); }
-    catch { setCloudState('Saved locally — cloud queued'); }
+    try {
+      const sync = await postAttendance(event);
+      if (sync?.localOnly) setCloudState('Privacy shield · attendance local only');
+      else if (sync?.published) { setCloudState('Neon live'); refreshCloud(); }
+    } catch (error) {
+      if (error?.code === 'attendance_queued') setCloudState('10-minute privacy delay queued locally');
+      else setCloudState('Saved locally — cloud queued');
+    }
   };
 
   const checkIn = async () => {
@@ -249,7 +282,7 @@ function App() {
     try { coords = await getCoords(); } catch {}
     await addAttendanceEvent('checkin', coords);
     navigator.vibrate?.(70);
-    setToast('Checked in locally first. Community sync is running.');
+    setToast('Checked in locally first. Your privacy shields are applied before any public community sync.');
   };
 
   const saveProfile = async () => {
@@ -317,7 +350,7 @@ function App() {
         const saved = await neon.from('dog_profiles').upsert(row, { onConflict: 'id' });
         if (saved.error) throw saved.error;
       }
-      setAuthMessage('Private backup completed to your RLS-protected Neon account.');
+      setAuthMessage('Private backup completed to your RLS-protected Neon account. Insurance and vaccination exchange fields remain device-only by design.');
     } catch (error) { setAuthMessage(`Local save is safe. Cloud backup failed: ${error?.message || 'temporary connection issue'}`); }
   };
 
@@ -341,7 +374,9 @@ function App() {
         setProfile(p); await secureSet('handler', p);
       }
       if (dp.data?.length) {
+        const localById = new Map(dogs.map((dog) => [dog.id, dog]));
         const restored = dp.data.map((d) => ({
+          ...(localById.get(d.id) || {}),
           id: d.id, name: d.name, breed: d.breed, size: d.size_category, energy: d.energy_baseline,
           inTraining: d.in_training, prefersSpace: d.prefers_space, brachycephalic: d.brachycephalic
         }));
@@ -357,10 +392,42 @@ function App() {
       app: 'GENEVIEVE App™ Digital Exchange Card',
       created: new Date().toISOString(),
       handler: { name: profile.displayName || 'Handler', phone: profile.phone || '', email: profile.email || '' },
-      dog: activeDog ? { name: activeDog.name, breed: activeDog.breed, size: activeDog.size } : null,
+      dog: activeDog ? {
+        name: activeDog.name,
+        breed: activeDog.breed,
+        size: activeDog.size,
+        insurance: activeDog.insuranceProvider || activeDog.insurancePolicy ? {
+          provider: activeDog.insuranceProvider || '',
+          policy: activeDog.insurancePolicy || ''
+        } : null,
+        vaccinations: activeDog.vaccinationSummary || ''
+      } : null,
       note: 'Shared voluntarily on-device after an incident. Verify details directly with the other handler.'
     };
     setQrUrl(await QRCode.toDataURL(JSON.stringify(payload), { margin: 1, width: 360, errorCorrectionLevel: 'M' }));
+  };
+
+  const saveMisconduct = async (details) => {
+    const text = String(details || '').trim().slice(0, 1200);
+    if (!text) return false;
+    const current = await secureGet('misconduct-log', []);
+    const existing = Array.isArray(current) ? current : [];
+    const entry = {
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+      locationName: location.name,
+      details: text
+    };
+    await secureSet('misconduct-log', [...existing, entry].slice(-50));
+    setToast('Private misconduct note encrypted on this device. It was not published to the community feed.');
+    return true;
+  };
+
+  const recordRejectedReport = () => setReportStrikes((value) => value + 1);
+  const acceptConduct = () => {
+    setConductAccepted(true);
+    setReportStrikes(0);
+    setToast('Community Code agreed. Any local reporting restriction has been cleared.');
   };
 
   const startSupervision = async () => {
@@ -378,9 +445,9 @@ function App() {
       if (!base) return;
       const distance = haversineMeters(base.latitude, base.longitude, p.coords.latitude, p.coords.longitude);
       let status = '🟢 Safe Range';
-      if (distance >= 45 && distance < 50) { status = '⚠️ Approaching boundary / exit range'; navigator.vibrate?.(80); }
+      if (distance >= 45 && distance < 50) { status = '⚠️ Within 5m of the 50m departure guard'; navigator.vibrate?.([80, 50, 80]); }
       if (distance >= 50) {
-        status = '⚠️ Outside park range — deadman timer running';
+        status = '⚠️ Outside 50m departure guard — deadman timer running';
         outsideSince ||= Date.now();
         if (Date.now() - outsideSince >= 5 * 60 * 1000) {
           await addAttendanceEvent('checkout');
@@ -404,7 +471,8 @@ function App() {
     cloudState, crowd, alert, offGame, setOffGame, checkedIn, checkIn, startSupervision, allHazards: locationHazards,
     saveProfile, saveDog, removeDog, session, authForm, setAuthForm, authSubmit, authMessage, signOut, backupPrivateData, restorePrivateData,
     setScreen, getCoords, reportToken, localHazards, setLocalHazards, remoteHazards, refreshCloud,
-    supervision, stopSupervision, conductAccepted, setConductAccepted, qrUrl, generateExchange
+    supervision, stopSupervision, conductAccepted, reportStrikes, reportRestricted, recordRejectedReport, acceptConduct,
+    qrUrl, generateExchange, saveMisconduct
   };
 
   return (
@@ -449,7 +517,7 @@ function TodayScreen(p) {
       <div><span className="eyebrow">TODAY</span><h1>{greeting}</h1><p>Your local-first safety command centre.</p></div>
       <StatPill label="SAFETY SCORE" value={`${p.score}/100`} tone={p.score >= 80 ? 'green' : p.score >= 60 ? 'amber' : 'red'} />
     </div>
-    <div className="freshness">🕒 Live Data: {p.freshness} · {p.weatherState === 'live' ? 'BOM feed live' : 'cached/local safety mode'}</div>
+    <div className="freshness">🕒 Live Data: {p.freshness} · {p.weatherState === 'live' ? 'BOM feed live' : p.weatherState === 'unverified' ? 'no verified weather station selected' : 'cached/local safety mode'}</div>
     <div className="search-box">
       <input value={p.locationQuery} onChange={(e) => p.setLocationQuery(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && p.selectLocation()} placeholder="Search Parks, Beaches, or Regions…" />
       <button onClick={p.selectLocation}>Search</button>
@@ -463,7 +531,7 @@ function TodayScreen(p) {
       </div>
     </div>
     <div className="weather-strip">
-      <StatPill label="Temperature" value={p.weather?.temperatureC != null ? `${p.weather.temperatureC}°C` : 'Offline'} />
+      <StatPill label="Temperature" value={p.weather?.temperatureC != null ? `${p.weather.temperatureC}°C` : 'Unavailable'} />
       <StatPill label="Feels like" value={p.weather?.apparentC != null ? `${p.weather.apparentC}°C` : '—'} />
       <StatPill label="Wind" value={p.weather?.windKmh != null ? `${p.weather.windKmh} km/h` : '—'} />
       <StatPill label="Crowd" value={`${p.crowd.total} mates`} />
@@ -472,7 +540,7 @@ function TodayScreen(p) {
       {!p.checkedIn ? <button className="primary big" onClick={p.checkIn}>Check in</button> : <button className="primary big" onClick={p.startSupervision}>Start Supervision Mode</button>}
       <button className="danger-outline big" onClick={() => p.setScreen(6)}>🚨 Report Hazard</button>
     </div>
-    <p className="privacy-seal">🔒 Anonymous check-in active. Personal profile fields stay encrypted on this device unless you explicitly use private backup.</p>
+    <p className="privacy-seal">🔒 {p.profile.visibility === 'public' ? 'Public Fuzzy Sync uses anonymous attendance tokens only.' : 'Ghost / Pack privacy keeps attendance on this device instead of publishing public telemetry.'}</p>
   </section>;
 }
 
@@ -481,14 +549,14 @@ function JourneyScreen(p) {
     <ScreenTitle eyebrow="SCREEN 2 · JOURNEY & STATUS" title={p.location.name}>Crowd, marine and community intelligence for the selected location.</ScreenTitle>
     <div className="verified-line">📍 {p.location.name} <span className={p.location.verified ? 'verified' : 'pilot-badge'}>{p.location.verified ? '✅ Council Verified' : '◌ Community / not council-verified'}</span></div>
     <div className="marine-panel">
-      <div><small>🌊 BEACH SAFETY</small><strong>{p.weatherState === 'live' ? 'Live BOM observation' : 'Offline weather cache'}</strong></div>
+      <div><small>🌊 BEACH SAFETY</small><strong>{p.weatherState === 'live' ? 'Live BOM observation' : p.weatherState === 'unverified' ? 'Verified feed not selected' : 'Offline weather cache'}</strong></div>
       <div className="mini-grid">
         <span><b>{p.weather?.temperatureC ?? '—'}°C</b> Air</span>
         <span><b>{p.weather?.windKmh ?? '—'} km/h</b> Wind</span>
         <span><b>Feed pending</b> Tide</span>
         <span><b>Feed pending</b> Water / algae</span>
       </div>
-      <small className="source-note">Weather is wired to the Bureau of Meteorology feed. Tide, algae and water-quality integrations remain visibly unverified rather than displaying invented safety data.</small>
+      <small className="source-note">Weather is only shown as live when a verified Bureau of Meteorology station is mapped to this location. Tide, algae and water-quality integrations remain visibly unverified rather than displaying invented safety data.</small>
     </div>
     <div className="counter-card"><strong>{p.crowd.total}</strong><span>mates currently represented in live/cached attendance</span></div>
     <div className="energy-grid">
@@ -497,7 +565,7 @@ function JourneyScreen(p) {
       <div>⚡ <b>{p.crowd.zoomies}</b><span>High Energy / Zoomies</span></div>
     </div>
     {p.alert && <div className={`crowd-warning ${p.alert.level}`}><b>{p.alert.level === 'red' ? 'High alert' : 'Heads up'}</b><p>{p.alert.message}</p><button onClick={() => p.setScreen(9)}>📇 Need to safely exchange info? Tap here.</button></div>}
-    <div className="feed-card"><h3>💬 Community Hazard Feed</h3>{p.allHazards.length ? p.allHazards.slice(0, 5).map((h, i) => <div className="feed-row" key={h.id || i}><b>{THREATS.find((t) => t[0] === h.threat_type)?.[1] || '⚠️'} {h.threat_type}</b><span>{localTime(h.seen_at)}</span><p>{h.details || h.location_name || 'Community alert'}</p></div>) : <p>No active reports in the current 24-hour local/live window.</p>}</div>
+    <div className="feed-card"><h3>💬 Community Hazard Feed</h3>{p.allHazards.length ? p.allHazards.slice(0, 5).map((h, i) => <div className="feed-row" key={h.id || i}><b>{THREATS.find((t) => t[0] === h.threat_type)?.[1] || '⚠️'} {h.threat_type} {h.verified && <span className="verified">✓ Verified Hazard · {h.verification_count} reports</span>}</b><span>{localTime(h.seen_at)}</span><p>{h.details || h.location_name || 'Community alert'}</p></div>) : <p>No active reports in the current 24-hour local/live window.</p>}</div>
     <div className="primary-actions">
       {!p.checkedIn ? <button className="primary" onClick={p.checkIn}>Check in</button> : <button className="primary" onClick={p.startSupervision}>Supervision</button>}
       <button className={`off-game ${p.offGame ? 'on' : ''}`} onClick={() => p.setOffGame(!p.offGame)}>⚠️ {p.offGame ? 'Off Their Game — ON' : 'Off Their Game'}</button>
@@ -507,7 +575,10 @@ function JourneyScreen(p) {
 }
 
 function DogScreen({ dogs, activeDogId, setActiveDogId, saveDog, removeDog }) {
-  const blank = { id: '', name: '', breed: '', size: 'medium', energy: 'playful', inTraining: false, prefersSpace: false };
+  const blank = {
+    id: '', name: '', breed: '', size: 'medium', energy: 'playful', inTraining: false, prefersSpace: false,
+    insuranceProvider: '', insurancePolicy: '', vaccinationSummary: ''
+  };
   const [draft, setDraft] = useState(blank);
   useEffect(() => { const d = dogs.find((x) => x.id === activeDogId); if (d) setDraft({ ...blank, ...d }); }, [activeDogId, dogs.length]);
   const info = breedInfo(draft.breed);
@@ -524,6 +595,13 @@ function DogScreen({ dogs, activeDogId, setActiveDogId, saveDog, removeDog }) {
       <Field label="Size category"><div className="segmented">{[['small','Small (<10kg)'],['medium','Medium (10–25kg)'],['large','Large (>25kg)']].map(([v,l]) => <button key={v} className={draft.size === v ? 'active' : ''} onClick={() => setDraft({ ...draft, size: v })}>{l}</button>)}</div></Field>
       <Field label="Energy baseline"><div className="segmented">{[['calm','🟢 Calm & Chill'],['playful','🔵 Playful & Social'],['zoomies','⚡ High Energy / Zoomies']].map(([v,l]) => <button key={v} className={draft.energy === v ? 'active' : ''} onClick={() => setDraft({ ...draft, energy: v })}>{l}</button>)}</div></Field>
       <div className="toggle-grid"><Toggle checked={draft.inTraining} onChange={(v) => setDraft({ ...draft, inTraining: v })}>🦮 In Training</Toggle><Toggle checked={draft.prefersSpace} onChange={(v) => setDraft({ ...draft, prefersSpace: v })}>🤫 Prefers Space</Toggle></div>
+      <h3>Voluntary incident exchange details</h3>
+      <p className="source-note">Optional. Encrypted on this device and included only if you deliberately generate the Digital Exchange QR card.</p>
+      <div className="two-col">
+        <Field label="Pet insurance provider"><input value={draft.insuranceProvider} onChange={(e) => setDraft({ ...draft, insuranceProvider: e.target.value })} placeholder="Optional" /></Field>
+        <Field label="Policy / reference"><input value={draft.insurancePolicy} onChange={(e) => setDraft({ ...draft, insurancePolicy: e.target.value })} placeholder="Optional" /></Field>
+      </div>
+      <Field label="Vaccination summary"><textarea value={draft.vaccinationSummary} maxLength="500" onChange={(e) => setDraft({ ...draft, vaccinationSummary: e.target.value })} placeholder="Optional vaccination details you are comfortable sharing by QR after an incident." /></Field>
       <div className="primary-actions"><button className="primary" disabled={!draft.name.trim()} onClick={() => saveDog(draft)}>Save Profile</button>{draft.id && <button className="quiet-danger" onClick={() => removeDog(draft.id)}>Remove</button>}</div>
     </div>
     <p className="privacy-seal">🔒 Profile data is AES-GCM encrypted at rest using a device-held key. Public community events use random tokens rather than your identity.</p>
@@ -547,7 +625,8 @@ function HandlerScreen(p) {
       <h3>Anti-stalking shields</h3>
       <div className="segmented three">{[['ghost','🔒 Ghost Mode'],['pack','👥 Pack Only'],['public','🌐 Public Fuzzy Sync']].map(([v,l]) => <button className={p.profile.visibility === v ? 'active' : ''} key={v} onClick={() => update('visibility', v)}>{l}</button>)}</div>
       <div className="toggle-stack"><Toggle checked={p.profile.delayCheckin} onChange={(v) => update('delayCheckin', v)}>Activate 10-Minute Check-In Delay</Toggle><Toggle checked={p.profile.nightGhosting} onChange={(v) => update('nightGhosting', v)}>Auto-Activate Night Safety Ghosting</Toggle></div>
-      <div className="membership"><b>💰 Membership Status</b><span>1-Month Free Trial — product billing workflow not yet connected to a payment processor</span></div>
+      <small className="source-note">Ghost Mode and Pack Only keep attendance local on this build. Public Fuzzy Sync sends only anonymous attendance tokens. Night ghosting and the 10-minute delay are enforced before cloud transmission.</small>
+      <div className="membership"><b>💰 Membership Status</b><span>Stripe connected · 30-day free trial available through the secure membership controls below.</span></div>
       <label className="terms"><input type="checkbox" checked={p.profile.termsAccepted} onChange={(e) => update('termsAccepted', e.target.checked)} /> I agree to the Genevieve Privacy Collection Notice and APP Terms.</label>
       <button className="primary" onClick={p.saveProfile}>Save Profile & Shields</button>
     </div>
@@ -565,7 +644,7 @@ function HandlerScreen(p) {
       </form>}
       {p.authMessage && <p className="auth-message">{p.authMessage}</p>}
     </div>
-    <p className="privacy-seal">🔒 Genevieve App does not need to publish your real identity or location telemetry to display fuzzy community counts.</p>
+    <p className="privacy-seal">🔒 Genevieve App does not need to publish your real identity or precise location telemetry to display fuzzy community counts.</p>
   </section>;
 }
 
@@ -577,6 +656,7 @@ function EmergencyScreen(p) {
       <div className="emergency-panel"><h2>For the Mate</h2><button onClick={() => tel('1300869738')}>🧪 Call Animal Poisons Helpline<br/><b>1300 869 738</b></button><button onClick={() => openMap('emergency veterinarian near me')}>🏥 Route to Closest Emergency Vet</button><button onClick={() => openMap('local council animal ranger near me')}>🐾 Find Local Council Ranger / Pound</button></div>
       <div className="emergency-panel human"><h2>For the Handler</h2><button className="call000" onClick={() => tel('000')}>🚨 Call 000 Emergency Services</button><button disabled={!p.profile.icePhone} onClick={() => p.profile.icePhone && tel(p.profile.icePhone)}>📞 Call Personal ICE: {p.profile.iceName || 'not set'}</button><button onClick={() => openMap('medical GP clinic near me')}>🩺 Find Closest Medical GP Clinic</button><button onClick={() => openMap('hospital emergency department near me')}>🏥 Route to Human Hospital ER</button></div>
     </div>
+    <small className="source-note">000, the Animal Poisons number, your saved ICE details and medical vault remain locally available. Map searches for vets, rangers, GPs and hospitals require an available mapping service.</small>
     <div className="medical-vault"><small>CRITICAL BYSTANDER MEDICAL VAULT · DEVICE ONLY</small><p>{p.profile.medicalNotes || 'No medical notes have been saved.'}</p></div>
     <button className="secondary wide" onClick={() => p.setScreen(1)}>❌ Cancel and Return to App</button>
   </section>;
@@ -591,32 +671,47 @@ function HazardScreen(p) {
   useEffect(() => { p.getCoords().then(setCoords).catch(() => {}); }, []);
 
   const broadcast = async () => {
+    if (p.reportRestricted) {
+      setMessage('Reporting is temporarily restricted on this device after more than three rejected duplicate reports. Re-read and agree to the Community Code to restore reporting.');
+      return;
+    }
     const seenAt = new Date(Date.now() - (when === '15' ? 15 * 60 * 1000 : 0)).toISOString();
     const candidate = {
       id: crypto.randomUUID(), report_token: p.reportToken, threat_type: threat, location_key: p.location.key, location_name: p.location.name,
       latitude: coords?.latitude ?? null, longitude: coords?.longitude ?? null, seen_at: seenAt, details: details.trim(),
       verification_count: 1, verified: false, created_at: new Date().toISOString(), expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
     };
-    const duplicate = coords && isDuplicateHazard(candidate, [...p.localHazards, ...p.remoteHazards]);
-    if (duplicate) {
-      setMessage('A similar report already exists within roughly 30 metres and 60 minutes. This device recorded a verification instead of broadcasting a duplicate.');
-      navigator.vibrate?.([70, 40, 70]); return;
+    const duplicate = coords ? findDuplicateHazard(candidate, [...p.localHazards, ...p.remoteHazards]) : null;
+    if (duplicate?.report_token && duplicate.report_token === p.reportToken) {
+      p.recordRejectedReport();
+      setMessage('This device already reported the same hazard inside the 30-metre / 60-minute window. The duplicate was rejected instead of inflating the community verification count.');
+      navigator.vibrate?.([70, 40, 70]);
+      return;
     }
+
+    if (duplicate) candidate.details = details.trim() || 'Independent verification vote';
     p.setLocalHazards((prev) => [...prev, candidate]);
-    setMessage('Alert saved locally first. Broadcasting anonymous hazard to the community feed…');
-    try { const { id, ...cloud } = candidate; await postHazard(cloud); setMessage('Anonymous community hazard broadcast complete.'); p.refreshCloud(); }
-    catch { setMessage('Saved locally. Cloud broadcast will be retried when connectivity returns.'); }
+    setMessage(duplicate ? 'Independent verification saved locally first. Broadcasting the verification vote…' : 'Alert saved locally first. Broadcasting anonymous hazard to the community feed…');
+    try {
+      const { id, ...cloud } = candidate;
+      await postHazard(cloud);
+      setMessage(duplicate ? 'Verification vote broadcast complete. Similar reports are consolidated into a Verified Hazard.' : 'Anonymous community hazard broadcast complete.');
+      p.refreshCloud();
+    } catch {
+      setMessage('Saved locally. Cloud broadcast will be retried when connectivity returns.');
+    }
     navigator.vibrate?.(100);
   };
   return <section className="screen">
     <ScreenTitle eyebrow="SCREEN 6 · THREAT REGISTRY" title="Report a Local Hazard or Wildlife Sighting">Fast, anonymous, local-first reporting with a 30-metre / 60-minute duplicate shield.</ScreenTitle>
+    {p.reportRestricted && <div className="restriction-banner">Reporting restricted on this device after repeated rejected duplicate reports. Open Code and agree again to restore reporting.</div>}
     <div className="threat-grid">{THREATS.map(([v,icon,label]) => <button className={threat === v ? 'active' : ''} key={v} onClick={() => { setThreat(v); navigator.vibrate?.(35); }}><i>{icon}</i><span>{label}</span></button>)}</div>
     <div className="gps-card"><b>📍 Incident Location</b><p>{coords ? `${coords.latitude.toFixed(5)}, ${coords.longitude.toFixed(5)} · ±${Math.round(coords.accuracy)}m` : 'Waiting for GPS permission / signal. The selected location name will still be saved.'}</p><button onClick={() => p.getCoords().then(setCoords).catch((e) => setMessage(e.message))}>Refresh GPS</button></div>
     <Field label="When was it spotted?"><div className="segmented"><button className={when === 'now' ? 'active' : ''} onClick={() => setWhen('now')}>⏰ Just Seen Now</button><button className={when === '15' ? 'active' : ''} onClick={() => setWhen('15')}>⏳ Seen 15 Mins Ago</button></div></Field>
     <Field label="Optional short detail"><textarea value={details} maxLength="240" onChange={(e) => setDetails(e.target.value)} placeholder="Only include what helps others stay safe. Do not name or identify people." /></Field>
-    <button className="danger big wide" onClick={broadcast}>Broadcast Hazard Alert</button>
+    <button className="danger big wide" disabled={p.reportRestricted} onClick={broadcast}>{p.reportRestricted ? 'Reporting Restricted — Review Code' : 'Broadcast Hazard Alert'}</button>
     {message && <div className="result-message">{message}</div>}
-    <p className="privacy-seal">🔒 User identity is not included in public hazard records. Reports use a random device token locally and public hazard content contains no account ID.</p>
+    <p className="privacy-seal">🔒 User identity is not included in public hazard records. Independent reports inside the same 30m / 60-minute window become verification votes and are displayed as one Verified Hazard.</p>
   </section>;
 }
 
@@ -646,18 +741,29 @@ function GuardScreen(p) {
     <div className={`guard-orb ${p.supervision.active ? 'active' : ''}`}><strong>{p.supervision.distance == null ? '—' : `${Math.round(p.supervision.distance)}m`}</strong><span>{p.supervision.status}</span></div>
     <div className="guard-grid"><div><small>Current balance</small><b>{p.crowd.calm} Calm · {p.crowd.playful} Playful · {p.crowd.zoomies} Zoomies</b></div><div><small>Deadman safeguard</small><b>Auto-checkout after 50m away for 5+ mins</b></div></div>
     {!p.supervision.active ? <button className="primary big wide" onClick={p.startSupervision}>Start Supervision</button> : <div className="primary-actions"><button className="primary" onClick={p.stopSupervision}>Stop Supervision</button><button className="danger-outline" onClick={() => p.setScreen(6)}>🚨 Log Incident</button></div>}
+    <div className="technical-note"><b>Boundary accuracy</b><p>This build uses a 50m departure guard centred on the check-in point and haptically warns inside the last 5m. It does not claim to know a park gate or fence unless verified boundary geometry is available.</p></div>
     <div className="technical-note"><b>Battery protection</b><p>High-frequency GPS watch only runs while this supervision screen is active. Stop or deadman checkout clears the watch so the device can return to lower-power location behaviour.</p></div>
   </section>;
 }
 
 function ConductScreen(p) {
+  const [showMisconduct, setShowMisconduct] = useState(false);
+  const [misconduct, setMisconduct] = useState('');
+  const [misconductMessage, setMisconductMessage] = useState('');
+  const submitMisconduct = async () => {
+    const saved = await p.saveMisconduct(misconduct);
+    if (!saved) return setMisconductMessage('Add a short factual note before saving.');
+    setMisconduct('');
+    setMisconductMessage('Saved privately on this device. Nothing was posted publicly.');
+  };
   return <section className="screen">
     <ScreenTitle eyebrow="SCREEN 9 · GOVERNANCE LAYER" title="Community Code of Conduct & Etiquette">Kind safety rules, de-escalation and voluntary digital exchange.</ScreenTitle>
-    {!p.conductAccepted && <div className="restriction-banner">Account / device reporting privileges can be restricted when abuse is detected. Read and agree to the code before continuing.</div>}
+    {p.reportRestricted ? <div className="restriction-banner">Account / device reporting restricted after more than three rejected duplicate reports. Re-read the code and agree below to restore reporting privileges.</div> : !p.conductAccepted && <div className="restriction-banner">Please read the Community Code before using reporting and exchange tools.</div>}
     <div className="golden-rules"><h3>The Golden Rules</h3><ol><li>Check the Safety Score and current warnings before entry.</li><li>Respect amber “Off Their Game” mates and give them training space.</li><li>Pick up after your mate and double-check every gate latch.</li><li>Report hazards factually. Never use reports to target, bully or identify another handler.</li></ol></div>
-    <div className="resolution-grid"><button onClick={() => p.setScreen(6)}>⚠️<b>Report Community Misconduct</b><span>Use the incident flow without naming people in the public feed.</span></button><button onClick={p.generateExchange}>📇<b>Open Digital Exchange Card</b><span>Generate a voluntary QR card on this device.</span></button></div>
-    {p.qrUrl && <div className="qr-card"><img src={p.qrUrl} alt="Digital exchange QR code" /><p>Scan only when both handlers agree. The QR is generated on-device and is not placed in the community feed.</p></div>}
-    <button className={`primary big wide ${p.conductAccepted ? 'accepted' : ''}`} onClick={() => p.setConductAccepted(true)}>{p.conductAccepted ? '✓ Community Code Agreed' : 'Agree to App Code of Conduct'}</button>
+    <div className="resolution-grid"><button onClick={() => setShowMisconduct((value) => !value)}>⚠️<b>Report Community Misconduct</b><span>Save a private, encrypted device note instead of naming people in the public hazard feed.</span></button><button onClick={p.generateExchange}>📇<b>Open Digital Exchange Card</b><span>Generate a voluntary contact, pet insurance and vaccination QR card on this device.</span></button></div>
+    {showMisconduct && <div className="form-card"><Field label="Private misconduct note" hint="Keep it factual. This note stays encrypted on this device and is not sent to the public community feed."><textarea value={misconduct} maxLength="1200" onChange={(e) => setMisconduct(e.target.value)} placeholder="What happened?" /></Field><button className="primary" onClick={submitMisconduct}>Save Private Misconduct Note</button>{misconductMessage && <p className="auth-message">{misconductMessage}</p>}</div>}
+    {p.qrUrl && <div className="qr-card"><img src={p.qrUrl} alt="Digital exchange QR code" /><p>Scan only when both handlers agree. The QR is generated on-device and can include the saved contact, pet insurance and vaccination details you chose to enter.</p></div>}
+    <button className={`primary big wide ${p.conductAccepted && !p.reportRestricted ? 'accepted' : ''}`} onClick={p.acceptConduct}>{p.conductAccepted && !p.reportRestricted ? '✓ Community Code Agreed' : 'Agree to App Code of Conduct'}</button>
     <p className="privacy-seal">🔒 Zero tolerance for breed bullying, harassment or malicious false reporting.</p>
   </section>;
 }
