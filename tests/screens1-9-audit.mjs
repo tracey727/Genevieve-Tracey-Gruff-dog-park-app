@@ -27,6 +27,12 @@ if (!js.includes("history.replaceState(null, '', `#${targetName}`)")) failures.p
 if (!js.includes("button.addEventListener('click', () => showScreen(button.dataset.screenTarget))")) failures.push('Navigation click linkage missing');
 if (!js.includes("button.addEventListener('click', () => showScreen(button.dataset.openScreen))")) failures.push('Internal screen-link click linkage missing');
 
+if (!js.includes("const brandHeader = document.querySelector('.brand-header');")) failures.push('Brand header lookup missing');
+if (!js.includes("today.insertBefore(brandHeader, heading)")) failures.push('Brand header is not moved into Screen 1');
+if (!js.includes("brandHeader.dataset.screenOneOnly = 'true'")) failures.push('Screen 1-only brand-header marker missing');
+if (!js.includes('.brand-header{margin:0 -18px 18px;')) failures.push('Screen 1 brand-header styling missing');
+if (!js.includes('position:static;top:auto;z-index:auto')) failures.push('Brand header still behaves as a sticky global header');
+
 const emergencyCount = (html.match(/class="emergency-wrap"/g) || []).length;
 if (emergencyCount !== 1) failures.push(`Expected one emergency control shell, found ${emergencyCount}`);
 if (!js.includes("const today = document.querySelector('[data-screen=\"today\"]');")) failures.push('Screen 1 emergency ownership lookup missing');
@@ -50,4 +56,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`Screens 1–9 audit PASS: 9 unique screens, 9 linked navigation toggles, ${internalTargets.length} valid internal links, Screen 1-only emergency control, 3-second hold + slide gate, and accessibility/Deaf section preserved.`);
+console.log(`Screens 1–9 audit PASS: 9 unique screens, 9 linked navigation toggles, ${internalTargets.length} valid internal links, Screen 1-only non-sticky brand header, Screen 1-only emergency control, 3-second hold + slide gate, and accessibility/Deaf section preserved.`);
