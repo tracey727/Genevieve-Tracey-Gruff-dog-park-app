@@ -7,4 +7,6 @@ Canonical domain: `genevieve-tracey-gruff-dog-park-app-opal.vercel.app`
 
 Final production refresh: load the newly added `STRIPE_WEBHOOK_SECRET` environment variable into the live serverless functions.
 
+Second production refresh: load the updated `STRIPE_SECRET_KEY` using the full live secret key (`sk_live_...`) rather than the restricted key.
+
 No application logic is changed by this file.
