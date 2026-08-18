@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="GENEVIEVE tree and infinity roots placeholder emblem">
+  <rect width="512" height="512" rx="112" fill="#eef6f1"/>
+  <circle cx="256" cy="196" r="116" fill="#6BA86E" opacity=".22"/>
+  <path d="M256 95c-64 37-95 92-91 155 39-18 70-46 91-83 21 37 52 65 91 83 4-63-27-118-91-155Z" fill="#1B4D2B"/>
+  <path d="M256 165v147" stroke="#1B4D2B" stroke-width="24" stroke-linecap="round"/>
+  <path d="M256 307c-50 0-69 62-117 62-31 0-52-20-52-48s21-48 52-48c46 0 72 96 117 96s71-96 117-96c31 0 52 20 52 48s-21 48-52 48c-48 0-67-62-117-62Z" fill="none" stroke="#C9A227" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

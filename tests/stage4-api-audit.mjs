@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+const files=['api/suitability.js','api/compatibility.js','api/heat.js','server/stage4.js','lib/stage4-policy.js'];for(const f of files)if(!fs.existsSync(f)||!fs.statSync(f).size)throw new Error(`missing ${f}`);
+const s=fs.readFileSync('api/suitability.js','utf8'),c=fs.readFileSync('api/compatibility.js','utf8'),h=fs.readFileSync('api/heat.js','utf8'),server=fs.readFileSync('server/stage4.js','utf8'),policy=fs.readFileSync('lib/stage4-policy.js','utf8');
+for(const x of [s,c])for(const t of ['requireStage4Mutation','requireStage4Ready','stage4SendError'])if(!x.includes(t))throw new Error(`Stage4 write API missing ${t}`);
+if(!h.includes("req.method!=='GET'")||!h.includes('DISABLED_PENDING_VALIDATION'))throw new Error('heat gate API is not read-only/gated');
+if(server.includes('dog_private_details'))throw new Error('Stage4 server queries restricted dog table');
+for(const forbidden of ['microchip_number','council_registration','vaccination_notes','medical_conditions','allergies','medications','veterinarian_name','veterinarian_phone','emergency_notes'])if((s+c+h+server+policy).toLowerCase().includes(forbidden))throw new Error(`restricted dog field entered Stage4 API: ${forbidden}`);
+if(/latitude|longitude|navigator\.geolocation/i.test(s+c+h+server+policy))throw new Error('precise GPS introduced into Stage4 assessment API');
+if(!policy.includes('score:null')||!policy.includes("band:'UNKNOWN'"))throw new Error('gated no-score response missing');
+if(!policy.includes("const fields=['ageYears','sizeGroup'"))throw new Error('life-stage/size compatibility context missing');
+if(/d\?\.breed|d\.breed|breed_mix|breedMix/.test(policy)||/breed_mix/.test(server))throw new Error('breed data loaded into Stage4 compatibility policy/server query');
+console.log('Stage 4 API audit PASS: authenticated marked writes, read-only heat gate, data minimisation, no restricted fields/GPS/breed verdict and no unapproved score.');

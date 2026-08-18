@@ -1,0 +1,1 @@
+import {execFileSync} from 'node:child_process';for(const f of ['tests/stage3-data-audit.mjs','tests/stage3-api-audit.mjs','tests/stage3-ui-audit.mjs','tests/stage3-package-audit.mjs'])execFileSync(process.execPath,[f],{stdio:'inherit'});console.log('Stage 3 integrated audit PASS: data, API, UI and blueprint layers are linked in chronological order.');

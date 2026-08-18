@@ -1,0 +1,1 @@
+All JavaScript/MJS syntax checks PASS.

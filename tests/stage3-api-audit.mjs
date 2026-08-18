@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+const read=f=>fs.readFileSync(f,'utf8');
+const h=read('server/stage3.js'),s=read('api/session.js'),p=read('api/profile.js'),d=read('api/dogs.js'),k=read('api/parks.js'),all=h+s+p+d+k;
+for(const f of ['server/stage3.js','api/session.js','api/profile.js','api/dogs.js','api/parks.js'])if(!fs.existsSync(f))throw new Error(`missing ${f}`);
+for(const x of ["createHash('sha256')",'HttpOnly; Secure; SameSite=Lax','MAX_BODY_BYTES=32*1024','x-genevieve-stage3'])if(!h.includes(x))throw new Error(`session/security missing ${x}`);
+if(!s.includes('createAutomaticSession')||!p.includes('requireSession')||!d.includes('requireSession'))throw new Error('session scoping incomplete');
+if(!d.includes('stage3.dog_private_details')||!d.includes('archived_at=now()'))throw new Error('dog restricted/archive path incomplete');
+for(const x of ['stage3.park_sources','verificationStatus','sourceUpdatedAt','stage3.selected_parks'])if(!k.includes(x))throw new Error(`park source path missing ${x}`);
+if(/DATABASE_URL\s*=\s*['"][^'"]+/.test(all))throw new Error('embedded DATABASE_URL secret');
+console.log('Stage 3 API audit PASS: automatic session, owner/dog privacy, park provenance/freshness/search and selected-park persistence are linked.');

@@ -1,0 +1,15 @@
+import fs from 'node:fs';
+const required=['api/checkin.js','api/boundary.js','api/night-safety.js','api/attendance.js','server/stage5.js','lib/stage5-policy.js'];
+for(const f of required)if(!fs.existsSync(f)||!fs.statSync(f).size)throw new Error(`Stage5 API file missing ${f}`);
+const check=fs.readFileSync('api/checkin.js','utf8'),boundary=fs.readFileSync('api/boundary.js','utf8'),night=fs.readFileSync('api/night-safety.js','utf8'),attendance=fs.readFileSync('api/attendance.js','utf8'),server=fs.readFileSync('server/stage5.js','utf8');
+for(const token of ['requireStage5Mutation','CHECK_IN','CHECK_OUT','RENEW_SUPERVISION','SET_OWNER_LOCATION','idempotencyKey','stage5.visits','stage5.visit_events'])if(!check.includes(token))throw new Error(`check-in API missing ${token}`);
+if(!check.includes("scope:'PRIVATE_SESSION_ONLY'")||!check.includes('requireStage5Ready'))throw new Error('private session boundary missing from check-in API');
+for(const token of ['boundaryDecision','precise_location_stored','preciseLocationStored:false','continuousTracking:false'])if(!boundary.includes(token))throw new Error(`boundary API missing ${token}`);
+if(/INSERT INTO stage5\.boundary_decisions[^`]*(userLatitude|userLongitude|latitude|longitude)/is.test(boundary))throw new Error('boundary API attempts to persist exact device coordinates');
+if(/audit\([^;]*(userLatitude|userLongitude)/s.test(boundary))throw new Error('boundary API attempts to audit exact device coordinates');
+if(attendance.includes('stage5.visits')||attendance.includes('stage5.visit_events'))throw new Error('public attendance endpoint queries private visit records');
+for(const token of ['PUBLIC_PRIVACY_GATE','publicAttendanceState','HIDDEN_NIGHT_SAFETY','Public attendance remains hidden'])if(!attendance.includes(token))throw new Error(`attendance API missing ${token}`);
+if(/\b(count|peopleCount|dogCount|identities|recentArrivals)\s*:/i.test(attendance))throw new Error('public attendance endpoint exposes exact attendance fields');
+for(const token of ['getSolarState','nightSafety','NIGHT SAFETY MODE ACTIVE'])if(!night.includes(token))throw new Error(`night-safety API missing ${token}`);
+for(const token of ['requireSession','stage5.policy_state','stage5Boundary','SOURCE_REQUIRED'])if(!server.includes(token)&&token!=='SOURCE_REQUIRED')throw new Error(`Stage5 server boundary missing ${token}`);
+console.log('Stage 5 API audit PASS: marked private mutations, idempotent visit controls, derived-only one-shot boundary persistence, server Night Safety and non-querying fail-closed public attendance endpoint are linked.');

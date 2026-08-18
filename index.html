@@ -1,18 +1,238 @@
 <!doctype html>
 <html lang="en-AU">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#123d2c" />
-    <meta name="description" content="GENEVIEVE App — Safety from roots to every journey." />
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="icon" href="/assets/genevieve-roots-512.png" type="image/png" />
-    <title>GENEVIEVE App™</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-    <script type="module" src="/src/payment-layer.js"></script>
-    <script type="module" src="/src/prestige-nav-enhancement.js"></script>
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#1B4D2B" />
+  <meta name="description" content="GENEVIEVE App™ Dog Park Stages 1–5 linked: source-of-truth, gated decision support, private check-in, owner duty, one-shot boundary decisions and Night Safety." />
+  <!-- Preserved Stage 3 audit marker: STAGE 3 · SOURCE OF TRUTH -->
+  <!-- Preserved Stage 4 audit marker: STAGE 4 · DECISION SUPPORT -->
+  <!-- Preserved Stage 2 regression identity: Dog Park Stage 2 | STAGE 2 · UX/UI -->
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/styles.css" />
+  <title>GENEVIEVE App™ — Dog Park Stage 5</title>
+</head>
+<body>
+  <a class="skip-link" href="#screen-content">Skip to content</a>
+
+  <div class="app-shell">
+    <header class="brand-header">
+      <img src="/icon.svg" width="58" height="58" alt="GENEVIEVE tree and infinity roots emblem" />
+      <div>
+        <p class="eyebrow">GENEVIEVE App™</p>
+        <h1>Safety from roots to every journey.</h1>
+      </div>
+      <div class="stage-pill" aria-label="Current build stage">STAGE 5 · PRIVATE PRESENCE & NIGHT SAFETY</div>
+    </header>
+
+    <section class="status-row" aria-label="System status">
+      <div><strong id="greeting">G’day</strong><span>Private visit controls · safety by design</span></div>
+      <div><strong id="safety-state">UNKNOWN</strong><span>No safety guarantee · unknown stays unknown</span></div>
+      <div><strong id="freshness">Local structure</strong><span id="backend-status" aria-live="polite">Checking Stages 1–5…</span></div>
+    </section>
+
+    <div class="emergency-wrap">
+      <button id="emergency-hold" class="emergency-hold" type="button" aria-describedby="emergency-help">
+        <span>EMERGENCY</span>
+        <small>Hold 3 seconds to open</small>
+        <span class="hold-progress" aria-hidden="true"></span>
+      </button>
+      <p id="emergency-help" class="microcopy">Opening this control does not dispatch help or transmit your location.</p>
+    </div>
+
+    <main id="screen-content" tabindex="-1">
+      <section class="screen is-active" data-screen="today" aria-labelledby="today-title">
+        <div class="screen-heading"><span>01</span><div><p>Core entry</p><h2 id="today-title">Today</h2></div></div>
+        <form id="park-search-form" class="search-form" role="search"><label class="search-shell" for="park-search-input">Search Parks, Beaches, or Regions<input id="park-search-input" name="parkSearch" type="search" minlength="2" autocomplete="off" placeholder="Search source-backed park records" /></label><button type="submit" class="compact-action">Search</button></form>
+        <p id="park-search-status" class="microcopy" aria-live="polite">Results show source, verification and freshness. Missing information remains unknown.</p>
+        <div id="park-search-results" class="park-results" aria-live="polite"></div>
+        <article class="panel selected-park-panel" id="today-selected-park"><div class="panel-title">Selected park</div><p>No park selected yet. Search above and choose a source-backed park record.</p></article>
+        <article class="panel stage4-panel" id="stage4-suitability-panel">
+          <div class="panel-title">Stage 4 · Suitability / risk review</div>
+          <p>Decision support only. It does not guarantee safety, diagnose a dog, replace veterinary advice, or override official closures, signs or emergency directions.</p>
+          <div id="stage4-risk-scale" class="stage4-risk-scale" aria-label="Controlled 1 to 10 risk vocabulary"></div>
+          <form id="stage4-suitability-form" class="stage4-form">
+            <div class="form-shell form-grid">
+              <label>Mate<select id="stage4-suitability-dog" name="dogId" required><option value="">Choose a saved mate</option></select></label>
+              <label>How are they today?<select name="dogState"><option value="UNKNOWN">Unknown / not checked</option><option value="BASELINE">At usual baseline</option><option value="OFF_GAME">Off their game</option><option value="REACTIVE">More reactive / overwhelmed</option><option value="PLAYFUL">Playful / social</option></select></label>
+              <label>Handler ready?<select name="ownerReady"><option value="UNKNOWN">Unknown</option><option value="YES">Yes</option><option value="NO">No</option></select></label>
+              <label>Lead / equipment ready?<select name="equipmentReady"><option value="UNKNOWN">Unknown</option><option value="YES">Yes</option><option value="NO">No</option></select></label>
+              <label>Carrying water?<select name="waterCarried"><option value="UNKNOWN">Unknown</option><option value="YES">Yes</option><option value="NO">No</option></select></label>
+              <label>Gate physically checked now?<select name="gateChecked"><option value="UNKNOWN">Not checked yet</option><option value="YES">Yes</option><option value="NO">No / concern found</option></select></label>
+              <label>Enough space observed now?<select name="spaceObserved"><option value="UNKNOWN">Unknown / not there yet</option><option value="YES">Yes</option><option value="NO">No</option></select></label>
+            </div>
+            <button id="stage4-suitability-submit" type="submit" disabled>Review suitability <span>Explain reasons + unknowns</span></button>
+          </form>
+          <p id="stage4-suitability-status" class="microcopy" aria-live="polite">Stage 4 secure decision-support is being checked.</p>
+          <div id="stage4-suitability-result" class="stage4-result" aria-live="polite"></div>
+          <div class="stage4-result-grid"><div id="stage4-suitability-reasons"></div><div id="stage4-suitability-unknowns"></div><div id="stage4-suitability-controls"></div></div>
+          <div id="stage4-heat-result" class="stage4-heat" aria-live="polite"></div>
+        </article>
+        <article class="panel alert-panel"><div class="panel-title">Dynamic location alerts</div><p>Stage 4 continues to review stored park facts and current owner observations. Stage 5 adds private visit state and Night Safety without claiming live hazards, live weather or exact public attendance.</p></article>
+        <!-- Preserved regression marker from the sealed Stage 1–4 baseline: Phase 5 · not active yet -->
+        <article class="panel stage5-panel" id="stage5-presence-panel">
+          <div class="stage5-kicker"><span>STAGE 5</span><strong>Private presence & owner duty</strong></div>
+          <p>Check-in is voluntary. One active visit per mate is enforced. Your exact device location is never stored by Stage 5; a boundary check, when available, is a one-time foreground decision only.</p>
+          <div class="stage5-context"><span>Selected park</span><strong id="stage5-selected-park">Checking source-of-truth park…</strong></div>
+          <form id="stage5-checkin-form" class="stage5-form">
+            <div class="form-shell form-grid">
+              <label>Mate<select id="stage5-dog" name="dogId" required><option value="">Choose a saved mate</option></select></label>
+              <label>How are they now?<select name="dogStatus"><option value="UNKNOWN">Unknown / not declared</option><option value="PLAYFUL">Playful</option><option value="OFF_GAME">Off game</option><option value="NEEDS_SPACE">Needs space</option><option value="REACTIVE">Reactive today</option><option value="ON_LEAD">On lead</option><option value="IN_TRAINING">In training</option><option value="UNWELL">Unwell</option><option value="ANXIOUS">Anxious / unsure</option></select></label>
+              <label>Privacy<select name="privacyMode"><option value="PRIVATE">Private visit</option><option value="INCOGNITO">Incognito</option></select></label>
+              <label>Owner position<select name="ownerLocationState"><option value="UNKNOWN">Unknown / not declared</option><option value="INSIDE">Inside park</option><option value="AT_GATE">At gate</option><option value="OUTSIDE">Outside park</option></select></label>
+              <label>Supervision reminder<select name="dutyIntervalMinutes"><option value="5">5 minutes</option><option value="10" selected>10 minutes</option><option value="15">15 minutes</option><option value="20">20 minutes</option></select></label>
+            </div>
+            <button id="stage5-checkin-submit" type="submit" disabled>Check in privately <span>One active visit per mate</span></button>
+          </form>
+          <p id="stage5-status" class="microcopy" aria-live="polite">Stage 5 secure presence controls are being checked.</p>
+          <div id="stage5-active-visits" class="stage5-visits" aria-live="polite"></div>
+          <p id="stage5-boundary-result" class="stage5-boundary-result" aria-live="polite">Boundary status: not requested. No background tracking is active.</p>
+          <button id="stage5-refresh" class="secondary compact-action" type="button">Refresh private visit status</button>
+        </article>
+        <article class="panel stage5-night-panel" id="stage5-attendance-panel">
+          <div class="panel-title">Night Safety & safer occupancy</div>
+          <div id="stage5-night-banner" class="night-safety-banner" hidden>NIGHT SAFETY MODE ACTIVE — Live park attendance is hidden from sunset until sunrise to protect park-user privacy and safety.</div>
+          <p id="stage5-solar-phase" class="microcopy">Calculating park-local solar phase from verified park data where available.</p>
+          <p id="stage5-attendance-state" class="stage5-attendance-state">Public attendance remains hidden while the reviewed anti-inference policy is pending.</p>
+          <p class="microcopy">No exact low-attendance counts, identities, “last person” signals or arrival/departure inference are exposed by this build.</p>
+        </article>
+        <div class="action-grid"><button type="button" class="secondary" data-open-screen="supervision">Supervision & boundary <span>Stage 5 private controls</span></button><button type="button" class="secondary" data-open-screen="hazards">Report Hazard <span>Phase 6 structure only</span></button></div>
+        <p class="privacy-line">🔒 Stages 1–5 keep profile, selected-park, decision-support and visit records private to the automatic session. Precise device GPS is transient for an explicit boundary request only; public occupancy remains privacy-gated.</p>
+      </section>
+
+      <section class="screen" data-screen="journey" aria-labelledby="journey-title" hidden>
+        <div class="screen-heading"><span>02</span><div><p>Crowd / marine intelligence</p><h2 id="journey-title">Journey & Status</h2></div></div>
+        <article class="panel selected-park-panel" id="journey-selected-park"><div class="panel-title">Selected location</div><p>No park selected yet. Stage 3 carries the same selected park from Today into Journey, and Stage 4 uses that same record for decision support.</p></article>
+        <article class="panel"><div class="panel-title">Conditions & heat gate</div><div class="chips"><span>🌊 Tides: unknown</span><span>💧 Live water condition: unknown</span><span>☀️ Heat model: gated</span></div><p class="microcopy">Stage 4 exposes static shade/water facts and uncertainty. Live weather, tide, marine and validated surface-heat data remain provider/expert-gated later-phase inputs.</p></article>
+        <article class="panel"><div class="panel-title">Safer occupancy</div><div class="unknown-state">PUBLIC ATTENDANCE HIDDEN</div><p class="microcopy">Stage 5 does not expose exact counts or identities. From sunset until sunrise, Night Safety shuts ordinary public attendance information down. During daylight, attendance also remains hidden until the reviewed delay, batching and anti-inference policy is approved.</p></article>
+        <article class="panel"><div class="panel-title">Community hazard feed</div><p>No live reports are being broadcast from this build.</p></article>
+        <div class="action-grid"><button type="button" data-open-screen="today">Private check-in <span>Stage 5 · Today</span></button><button type="button" class="amber" data-open-screen="today">Update visit state <span>Stage 5 · private</span></button></div>
+        <button class="text-link" type="button" data-open-screen="travel">Find Nearest Safe Rest Stop / Vet →</button>
+      </section>
+
+      <section class="screen" data-screen="dog" aria-labelledby="dog-title" hidden>
+        <div class="screen-heading"><span>03</span><div><p>Identity & behavioural baseline</p><h2 id="dog-title">Create Your Mate’s Profile</h2></div></div>
+        <form id="dog-profile-form" class="stage3-form"><fieldset id="stage3-dog-fieldset" disabled><input type="hidden" name="dogId" />
+          <div class="form-shell form-grid">
+            <label>Dog name<input name="name" required maxlength="100" /></label><label>Breed or mix<input name="breedMix" maxlength="160" /></label>
+            <label>Birth date<input name="birthDate" type="date" /></label><label>Age (years)<input name="ageYears" type="number" min="0" max="40" step="0.1" /></label>
+            <label>Size category<select name="sizeGroup"><option value="">Unknown / not entered</option><option>SMALL</option><option>MEDIUM</option><option>LARGE</option><option>GIANT</option></select></label>
+            <label>Weight kg<input name="weightKg" type="number" min="0.1" max="150" step="0.1" /></label>
+            <label>Sex<select name="sex"><option value="">Not entered</option><option>FEMALE</option><option>MALE</option><option>UNKNOWN</option></select></label>
+            <label>Desexed<select name="desexedStatus"><option value="">Not entered</option><option>YES</option><option>NO</option><option>UNKNOWN</option></select></label>
+            <label>Profile visibility<select name="visibilityMode"><option>GHOST</option><option>PACK_ONLY</option><option>PUBLIC_FUZZY</option></select></label>
+          </div>
+          <details class="profile-section"><summary>Behaviour, preferences & care needs</summary><div class="form-shell form-grid">
+            <label>Energy baseline<input name="energyLevel" maxlength="120" /></label><label>Play style<textarea name="playStyle" maxlength="500"></textarea></label><label>Social comfort<textarea name="socialComfort" maxlength="500"></textarea></label><label>Approach preferences<textarea name="approachPreferences" maxlength="500"></textarea></label><label>Likes<textarea name="likes" maxlength="1000"></textarea></label><label>Dislikes<textarea name="dislikes" maxlength="1000"></textarea></label><label>Known triggers<textarea name="knownTriggers" maxlength="1500"></textarea></label><label>Sociability notes<textarea name="sociabilityNotes" maxlength="1000"></textarea></label><label>Reactivity notes<textarea name="reactivityNotes" maxlength="1000"></textarea></label><label>Tolerance notes<textarea name="toleranceNotes" maxlength="1000"></textarea></label><label>Play intensity<input name="playIntensity" maxlength="200" /></label><label>Resource sharing<textarea name="resourceSharingNotes" maxlength="1000"></textarea></label><label>Guarding considerations<textarea name="guardingNotes" maxlength="1000"></textarea></label><label>Extra-care needs<textarea name="extraCareNeeds" maxlength="1500"></textarea></label><label>Swimming ability<textarea name="swimmingAbility" maxlength="500"></textarea></label><label>Mobility limitations<textarea name="mobilityLimitations" maxlength="1000"></textarea></label><label>Favourite toys<textarea name="favouriteToys" maxlength="500"></textarea></label><label>Exercise level<input name="exerciseLevel" maxlength="200" /></label><label>Confidence level<input name="confidenceLevel" maxlength="200" /></label>
+          </div></details>
+          <details class="profile-section restricted-section"><summary>Restricted emergency & document information</summary><p class="microcopy">Stored separately from public-safe profile fields and returned only to the owning session.</p><div class="form-shell form-grid">
+            <label>Microchip number<input name="microchipNumber" maxlength="100" /></label><label>Council registration<input name="councilRegistration" maxlength="160" /></label><label>Vaccination notes<textarea name="vaccinationNotes" maxlength="1000"></textarea></label><label>Vaccination due date<input name="vaccinationDueDate" type="date" /></label><label>Other document notes<textarea name="otherDocumentNotes" maxlength="1000"></textarea></label><label>Other document due date<input name="otherDocumentDueDate" type="date" /></label><label>Medical conditions<textarea name="medicalConditions" maxlength="1500"></textarea></label><label>Allergies<textarea name="allergies" maxlength="1500"></textarea></label><label>Medications<textarea name="medications" maxlength="1500"></textarea></label><label>Veterinarian name<input name="veterinarianName" maxlength="160" /></label><label>Veterinarian phone<input name="veterinarianPhone" maxlength="80" /></label><label>Emergency notes<textarea name="emergencyNotes" maxlength="1500"></textarea></label>
+          </div></details><div class="form-actions"><button type="submit">Save Mate Profile</button><button id="dog-form-reset" class="secondary" type="button">Clear / New</button></div>
+        </fieldset></form>
+        <p id="dog-form-status" class="microcopy" aria-live="polite">Secure Stage 3 persistence is being checked.</p>
+        <section class="saved-records" aria-labelledby="saved-dogs-title"><h3 id="saved-dogs-title">My saved mates</h3><div id="dog-list" class="record-list"></div></section>
+        <article class="panel stage4-panel" id="stage4-compatibility-panel">
+          <div class="panel-title">Stage 4 · Compatibility review</div>
+          <p>Compare owner-entered behaviour, tolerance, play and care context. Breed alone is never used as a verdict, and a favourable review never guarantees a safe interaction.</p>
+          <form id="stage4-compatibility-form" class="stage4-form">
+            <label>Review type<select id="stage4-compatibility-mode" name="mode"><option value="PAIR">Pair · exactly 2 mates</option><option value="GROUP">Group · 3 to 5 mates</option></select></label>
+            <fieldset><legend>Choose saved mates</legend><div id="stage4-compatibility-dogs" class="compatibility-dog-grid"></div></fieldset>
+            <button id="stage4-compatibility-submit" type="submit" disabled>Review compatibility <span>No binary safe / unsafe verdict</span></button>
+          </form>
+          <p id="stage4-compatibility-status" class="microcopy" aria-live="polite">Stage 4 secure decision-support is being checked.</p>
+          <div id="stage4-compatibility-result" class="stage4-result" aria-live="polite"></div>
+          <div class="stage4-result-grid"><div id="stage4-compatibility-factors"></div><div id="stage4-compatibility-unknowns"></div><div id="stage4-compatibility-controls"></div></div>
+        </article>
+        <p class="privacy-line">Stable profile information remains separate from temporary “how my dog feels today” observations. Stage 4 uses only stable behaviour/context fields for comparison; restricted emergency/document details stay outside the assessment record.</p>
+      </section>
+
+      <section class="screen" data-screen="handler" aria-labelledby="handler-title" hidden>
+        <div class="screen-heading"><span>04</span><div><p>Human command deck</p><h2 id="handler-title">Handler Profile & Security</h2></div></div>
+        <form id="owner-profile-form" class="stage3-form"><fieldset id="stage3-owner-fieldset" disabled><div class="form-shell form-grid">
+          <label>Name<input name="publicName" maxlength="100" autocomplete="name" /></label><label>Email<input name="email" type="email" maxlength="254" autocomplete="email" /></label><label>Phone<input name="phone" maxlength="60" autocomplete="tel" /></label><label>Emergency contact name<input name="emergencyContactName" maxlength="120" /></label><label>Emergency contact phone<input name="emergencyContactPhone" maxlength="60" /></label><label>Accessibility notes<textarea name="accessibilityNotes" maxlength="2000"></textarea></label><label>Private medical notes<textarea name="privateMedicalNotes" maxlength="2000"></textarea></label><label>Visibility shield<select name="visibilityMode"><option>GHOST</option><option>PACK_ONLY</option><option>PUBLIC_FUZZY</option></select></label>
+        </div><button type="submit">Save Profile & Shields</button></fieldset></form>
+        <p id="owner-form-status" class="microcopy" aria-live="polite">Secure Stage 3 persistence is being checked.</p>
+        <article class="panel"><div class="panel-title">Visibility shields</div><div class="chips"><span>🔒 Ghost Mode</span><span>👥 Pack Only</span><span>🌐 Public Fuzzy Sync</span></div><p>Stage 3 records the privacy choice. It does not publish presence telemetry, exact user GPS or live attendance.</p></article>
+      </section>
+
+      <section class="screen" data-screen="emergency" aria-labelledby="emergency-title" hidden>
+        <div class="screen-heading"><span>05</span><div><p>Human & canine crisis portal</p><h2 id="emergency-title">Emergency Assistance Overlay</h2></div></div>
+        <article class="panel danger-panel">
+          <div class="panel-title">Emergency boundary</div>
+          <p>This app has <strong>not</strong> transmitted your location, dispatched responders, or confirmed that help is coming.</p>
+        </article>
+        <div class="emergency-sections">
+          <article class="panel">
+            <div class="panel-title">For the Mate</div>
+            <button disabled>Animal poisons contact <span>Verification required before activation</span></button>
+            <button disabled>Closest emergency vet <span>Verified routing not active yet</span></button>
+            <button disabled>Local ranger / pound <span>Verified contact routing not active yet</span></button>
+          </article>
+          <article class="panel">
+            <div class="panel-title">For the Handler</div>
+            <a class="button-link danger" href="tel:000">Call 000 Emergency Services</a>
+            <button disabled>Personal ICE contact <span>Secure contact storage not active yet</span></button>
+            <button disabled>Closest hospital / clinic <span>Verified routing not active yet</span></button>
+          </article>
+        </div>
+        <button class="secondary" type="button" data-open-screen="today">Cancel and Return to Today</button>
+      </section>
+
+      <section class="screen" data-screen="hazards" aria-labelledby="hazards-title" hidden>
+        <div class="screen-heading"><span>06</span><div><p>Threat registry form</p><h2 id="hazards-title">Report a Local Hazard or Wildlife Sighting</h2></div></div>
+        <div class="threat-grid" aria-label="Hazard categories"><button disabled>🐍 Snake / Wildlife</button><button disabled>🚧 Council / Infrastructure</button><button disabled>🧪 Baiting / Poison Threat</button><button disabled>⚠️ Altercation / Incident</button></div>
+        <article class="panel"><div class="panel-title">Incident location</div><p>Foreground location capture is not active in Stage 2. No coordinates are collected.</p></article>
+        <button disabled>Broadcast Hazard Alert <span>Moderation and verification required first</span></button>
+        <p class="privacy-line">No report is published by this Stage 2 interface build.</p>
+      </section>
+
+      <section class="screen" data-screen="travel" aria-labelledby="travel-title" hidden>
+        <div class="screen-heading"><span>07</span><div><p>Long-distance navigation</p><h2 id="travel-title">Grey Nomad Highway & Veterinary Router</h2></div></div>
+        <div class="form-shell"><label>From<input disabled placeholder="Location integration not active yet" /></label><label>To<input disabled placeholder="Destination search not active yet" /></label></div>
+        <article class="panel"><div class="panel-title">Highway safe haven</div><p>Dog-friendly rest-stop routing is not connected yet.</p></article>
+        <article class="panel"><div class="panel-title">Emergency veterinarian</div><p>Verified veterinary routing is not connected yet.</p></article>
+        <article class="panel alert-panel"><div class="panel-title">Regional health alert</div><p>Live regional health data is unknown in Stage 2.</p></article>
+        <button disabled>Start Safe Travel Route <span>Verified routing not active yet</span></button>
+      </section>
+
+      <section class="screen" data-screen="supervision" aria-labelledby="supervision-title" hidden>
+        <div class="screen-heading"><span>08</span><div><p>On-site fenceline safety</p><h2 id="supervision-title">Active Supervision & Boundary Guard</h2></div></div>
+        <article class="panel stage5-panel"><div class="panel-title">Stage 5 boundary guard</div><div class="unknown-state">ONE-TIME CHECK ONLY — no continuous GPS monitoring.</div><p>A boundary decision can be requested from the private active-visit card on Today. The browser obtains one foreground reading only after your tap; the server persists the derived result, never the exact device coordinates.</p><button class="secondary compact-action" type="button" data-open-screen="today">Open private visit controls</button></article>
+        <article class="panel stage5-night-panel"><div class="panel-title">Public crowd privacy</div><div class="unknown-state">HIDDEN — exact counts and identities are not published.</div><p>Night Safety applies from park-local sunset until sunrise. Daylight public attendance remains gated while the approved anti-inference timing policy is unresolved.</p></article>
+        <article class="panel"><div class="panel-title">Owner Duty supervision</div><p>Private reminders use owner-selected 5, 10, 15 or 20 minute intervals. “I’m still supervising” renews the timer. Declaring “left” recommends checkout; it does not automatically accuse or report anyone.</p></article>
+        <div class="action-grid"><button type="button" data-open-screen="today">Manage active visit <span>Private Stage 5 state</span></button><button class="secondary" type="button" data-open-screen="hazards">Log Incident <span>Phase 6 structure only</span></button></div>
+      </section>
+
+      <section class="screen" data-screen="community" aria-labelledby="community-title" hidden>
+        <div class="screen-heading"><span>09</span><div><p>Governance layer</p><h2 id="community-title">Community Code of Conduct & Etiquette</h2></div></div>
+        <article class="panel"><div class="panel-title">Golden Rules Charter</div><ol><li>Check current verified conditions before entering a park.</li><li>Respect dogs needing space and their handlers.</li><li>Supervise directly, clean up, and check gates latch.</li></ol></article>
+        <div class="action-grid"><button disabled>Report Community Misconduct <span>Moderation workflow not active yet</span></button><button disabled class="secondary">Open Digital Exchange Card <span>Secure exchange not active yet</span></button></div>
+        <button disabled>Agree to App Code of Conduct <span>Account persistence not active yet</span></button>
+        <p class="privacy-line">Breed bullying, harassment and malicious reporting are outside acceptable community conduct.</p>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary screens">
+      <button class="is-current" data-screen-target="today" aria-label="Today" aria-current="page"><span>⌂</span><small>Today</small></button>
+      <button data-screen-target="journey" aria-label="Journey"><span>◉</span><small>Journey</small></button>
+      <button data-screen-target="dog" aria-label="Dog profile"><span>🐾</span><small>Mate</small></button>
+      <button data-screen-target="handler" aria-label="Handler profile"><span>♙</span><small>Handler</small></button>
+      <button data-screen-target="community" aria-label="More"><span>•••</span><small>More</small></button>
+    </nav>
+  </div>
+
+  <dialog id="emergency-dialog" class="emergency-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-card">
+      <p class="eyebrow">Protected emergency shell</p>
+      <h2 id="dialog-title">Emergency assistance</h2>
+      <p>Opening this panel has not sent your location and has not dispatched help.</p>
+      <a class="button-link danger" href="tel:000">Call 000</a>
+      <button type="button" data-emergency-screen>Open Emergency Screen</button>
+      <button id="close-emergency" class="secondary" type="button">Cancel</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="/app.js"></script>
+</body>
 </html>

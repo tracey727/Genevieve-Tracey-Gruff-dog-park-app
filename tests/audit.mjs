@@ -1,0 +1,24 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const required = ['index.html','styles.css','app.js','manifest.webmanifest','sw.js','icon.svg','vercel.json','api/health.js','db/V001_stage1_foundation.sql','docs/STAGE1_STRUCTURE.md','.env.example','.gitignore'];
+const failures = [];
+for (const file of required) if (!fs.existsSync(path.join(root,file))) failures.push(`Missing ${file}`);
+const html = fs.readFileSync(path.join(root,'index.html'),'utf8');
+const js = fs.readFileSync(path.join(root,'app.js'),'utf8');
+const health = fs.readFileSync(path.join(root,'api/health.js'),'utf8');
+const all = [html,js,health,fs.readFileSync(path.join(root,'vercel.json'),'utf8')].join('\n');
+const screens = ['today','journey','dog','handler','emergency','hazards','travel','supervision','community'];
+for (const screen of screens) if (!html.includes(`data-screen="${screen}"`)) failures.push(`Missing screen ${screen}`);
+if (!html.includes('Hold 3 seconds')) failures.push('Emergency hold label missing');
+if (!js.includes('3000')) failures.push('Three-second emergency hold logic missing');
+if (!html.includes('not</strong> transmitted your location')) failures.push('Emergency non-dispatch boundary missing');
+if (!html.includes('UNKNOWN')) failures.push('Unknown live-data state missing');
+if (/postgres(?:ql)?:\/\/[^\s"']+:[^\s"']+@/i.test(all)) failures.push('Possible database credential committed');
+if (/sk_(live|test)_[A-Za-z0-9]/.test(all)) failures.push('Possible Stripe key committed');
+if (/BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY/.test(all)) failures.push('Private key committed');
+if (health.includes('NEXT_PUBLIC_DATABASE_URL')) failures.push('Database URL would be client-exposed');
+if (!health.includes('process.env.DATABASE_URL')) failures.push('Server-only DATABASE_URL binding missing');
+if (failures.length) { console.error(`Stage 1 audit FAILED (${failures.length})`); failures.forEach(item => console.error(`- ${item}`)); process.exit(1); }
+console.log(`Stage 1 audit PASS: ${required.length} required files, ${screens.length} screens, emergency boundary, unknown-state handling, and secret scan.`);
