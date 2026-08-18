@@ -11,6 +11,8 @@ const baseCss = read('src/styles.css');
 const brandCss = read('src/brand-colour-override.css');
 const indexHtml = read('index.html');
 const checkout = read('api/create-checkout-session.js');
+const stripeCore = read('server/stripe.js');
+const privacy = read('src/privacy.mjs');
 
 test('all nine production screens remain wired', () => {
   for (let i = 1; i <= 9; i += 1) {
@@ -29,7 +31,7 @@ test('emergency hold-and-slide safety contract is unchanged', () => {
   assert.match(app, /ARMED — SLIDE TO OPEN/);
 });
 
-test('hazard reporting retains all four required threat categories', () => {
+test('hazard reporting retains all four required threat categories and verification controls', () => {
   for (const id of ['snake', 'infrastructure', 'poison', 'incident']) {
     assert.match(app, new RegExp(`['\"]${id}['\"]`), `${id} hazard category missing`);
   }
@@ -41,6 +43,9 @@ test('hazard reporting retains all four required threat categories', () => {
   ]) {
     assert.equal(fs.existsSync(path.join(root, asset)), true, `${asset} missing`);
   }
+  assert.match(app, /findDuplicateHazard/);
+  assert.match(app, /Verified Hazard/);
+  assert.match(app, /reportStrikes > 3/);
 });
 
 test('approved Genevieve tree and green-off gold-on toggle contract are locked', () => {
@@ -61,8 +66,25 @@ test('colour-alert selectors remain intact', () => {
 
 test('payment layer and server-only Stripe secret contract remain present', () => {
   assert.match(indexHtml, /src\/payment-layer\.js/);
-  assert.match(checkout, /process\.env\.STRIPE_SECRET_KEY/);
+  assert.match(checkout, /stripePost/);
+  assert.match(stripeCore, /process\.env\.STRIPE_SECRET_KEY/);
   assert.doesNotMatch(indexHtml, /sk_(?:test|live)_/);
+});
+
+test('handler privacy shields are enforced before attendance cloud sync', () => {
+  assert.match(privacy, /ghost-mode/);
+  assert.match(privacy, /pack-private/);
+  assert.match(privacy, /ten-minute-delay/);
+  assert.match(privacy, /night-ghosting/);
+  assert.match(app, /Privacy shield · attendance local only/);
+});
+
+test('voluntary incident exchange includes insurance and vaccination fields without public publication', () => {
+  assert.match(app, /insuranceProvider/);
+  assert.match(app, /insurancePolicy/);
+  assert.match(app, /vaccinationSummary/);
+  assert.match(app, /misconduct-log/);
+  assert.match(app, /Nothing was posted publicly/);
 });
 
 test('large crowd calculations remain bounded and correct for 5,000 concurrent sessions', () => {
