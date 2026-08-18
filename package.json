@@ -14,6 +14,7 @@
     "@neondatabase/serverless": "^1.0.0"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
     "vite": "^6.4.1"
   },
   "genevieveLinkedStage": "Stage 5",
