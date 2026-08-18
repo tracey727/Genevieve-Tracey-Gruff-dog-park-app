@@ -1,7 +1,8 @@
 import '../config.js';
 import './payment-layer.css';
 
-const LOGO='/assets/genevieve-official-logo.jpeg';
+const LOGO='/assets/genevieve-roots-512.png';
+const MEMBERSHIP_SESSION_KEY='genevieve:stripe:checkout_session';
 const PLAN_COPY={
   standardMonthly:{label:'Standard Monthly',price:'$14.99 AUD',period:'per month'},
   concessionMonthly:{label:'Concession Monthly',price:'$10.49 AUD',period:'per month'},
@@ -12,6 +13,15 @@ const PLAN_COPY={
 function paymentLinkFor(planKey){
   const value=window.GENEVIEVE_CONFIG?.paymentLinks?.[planKey];
   return typeof value==='string'&&/^https:\/\//i.test(value)?value.trim():'';
+}
+function savedMembershipSession(){return localStorage.getItem(MEMBERSHIP_SESSION_KEY)||''}
+function saveMembershipSession(value){
+  const id=String(value||'').trim();
+  if(/^cs_[A-Za-z0-9_]+$/.test(id)) localStorage.setItem(MEMBERSHIP_SESSION_KEY,id);
+}
+function formatStripeDate(seconds){
+  if(!Number.isFinite(Number(seconds))) return '';
+  return new Date(Number(seconds)*1000).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
 }
 
 function showMessage(message){
@@ -29,14 +39,9 @@ async function startCheckout(planKey){
   buttons.forEach((b)=>{b.disabled=true});
   try{
     const direct=paymentLinkFor(planKey);
-    if(direct){
-      window.location.assign(direct);
-      return;
-    }
+    if(direct){window.location.assign(direct);return}
     const response=await fetch('/api/create-checkout-session',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({planKey})
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({planKey})
     });
     const data=await response.json().catch(()=>({}));
     if(!response.ok||!data.url) throw new Error(data.error||'Payments are not connected yet.');
@@ -47,6 +52,53 @@ async function startCheckout(planKey){
       error.classList.add('show');
     }
     buttons.forEach((b)=>{b.disabled=false});
+  }
+}
+
+async function openCustomerPortal(){
+  const sessionId=savedMembershipSession();
+  if(!sessionId) return openModal();
+  try{
+    const response=await fetch('/api/create-portal-session',{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId})
+    });
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok||!data.url) throw new Error(data.error||'Membership management is temporarily unavailable.');
+    window.location.assign(data.url);
+  }catch(error){showMessage(error?.message||'Membership management is temporarily unavailable.')}
+}
+
+function membershipStatusCopy(membership){
+  const status=String(membership?.status||'unknown');
+  let text='Stripe verified: Membership status unavailable';
+  if(status==='trialing') text=`Stripe verified: Trial active${membership.trialEnd?` until ${formatStripeDate(membership.trialEnd)}`:''}`;
+  else if(status==='active') text='Stripe verified: Membership active';
+  else if(status==='past_due') text='Stripe verified: Payment past due — update your payment method';
+  else if(status==='unpaid') text='Stripe verified: Payment unpaid — membership needs attention';
+  else if(status==='canceled') text='Stripe verified: Membership cancelled';
+  else if(status==='incomplete'||status==='incomplete_expired') text='Stripe verified: Membership setup incomplete';
+  else if(status==='paused') text='Stripe verified: Membership paused';
+  else if(status==='pending') text='Stripe verified: Membership is still being created';
+  if(membership?.cancelAtPeriodEnd) text+=` · cancellation scheduled${membership.currentPeriodEnd?` for ${formatStripeDate(membership.currentPeriodEnd)}`:''}`;
+  if(membership?.refund?.status==='refunded') text+=` · refund recorded${membership.refund.amountAud?` $${membership.refund.amountAud.toFixed(2)} AUD`:''}`;
+  return text;
+}
+
+async function refreshMembershipStatus(){
+  const sessionId=savedMembershipSession();
+  if(!sessionId) return;
+  const membership=document.querySelector('.membership');
+  const statusEl=membership?.querySelector('span');
+  if(statusEl) statusEl.textContent='Verifying membership directly with Stripe…';
+  try{
+    const response=await fetch('/api/membership-status',{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId})
+    });
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok||!data.membership) throw new Error(data.error||'Unable to verify membership.');
+    if(statusEl) statusEl.textContent=membershipStatusCopy(data.membership);
+  }catch(error){
+    if(statusEl) statusEl.textContent='Membership saved on this device; live Stripe verification is temporarily unavailable.';
   }
 }
 
@@ -71,7 +123,7 @@ function ensureModal(){
   modal.innerHTML=`<div class="genevieve-pay-backdrop" role="presentation">
     <section class="genevieve-pay-sheet" role="dialog" aria-modal="true" aria-labelledby="genevievePayTitle">
       <div class="genevieve-pay-head">
-        <img src="${LOGO}" alt="GENEVIEVE App logo">
+        <img src="${LOGO}" alt="GENEVIEVE App tree, roots and infinity logo">
         <div><small>GENEVIEVE APP™ MEMBERSHIP</small><h2 id="genevievePayTitle">Choose your secure membership</h2></div>
         <button class="genevieve-pay-close" type="button" aria-label="Close payments">×</button>
       </div>
@@ -99,41 +151,44 @@ function ensureModal(){
 
 function injectMembershipControl(){
   const membership=document.querySelector('.membership');
-  if(!membership||membership.querySelector('.genevieve-pay-open')) return;
-  const button=document.createElement('button');
-  button.type='button';
-  button.className='genevieve-pay-open';
-  button.innerHTML='Pay securely / choose membership<span>Stripe · Apple Pay · Google Pay</span>';
-  button.addEventListener('click',openModal);
-  membership.appendChild(button);
-  const status=membership.querySelector('span');
-  if(status&&/not yet connected to a payment processor/i.test(status.textContent||'')){
-    status.textContent='Secure membership checkout available below.';
+  if(!membership) return;
+  if(!membership.querySelector('.genevieve-pay-open')){
+    const button=document.createElement('button');
+    button.type='button';button.className='genevieve-pay-open';
+    button.innerHTML='Pay securely / choose membership<span>Stripe · Apple Pay · Google Pay</span>';
+    button.addEventListener('click',openModal);membership.appendChild(button);
   }
+  if(savedMembershipSession()&&!membership.querySelector('.genevieve-manage-membership')){
+    const manage=document.createElement('button');
+    manage.type='button';manage.className='genevieve-manage-membership';manage.textContent='Manage membership with Stripe';
+    manage.addEventListener('click',openCustomerPortal);membership.appendChild(manage);
+  }
+  const status=membership.querySelector('span');
+  if(status&&/not yet connected to a payment processor/i.test(status.textContent||'')) status.textContent='Secure membership checkout available below.';
 }
 
 function handleReturnState(){
   const params=new URLSearchParams(window.location.search);
   const state=params.get('payment');
-  if(state==='success') showMessage('✓ Payment completed. Thank you — Genevieve is confirming your membership.');
-  if(state==='cancelled'){
-    const el=document.createElement('div');
-    el.className='genevieve-payment-return cancel';
-    el.textContent='Payment cancelled. Nothing was charged.';
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(),5000);
+  const sessionId=params.get('session_id');
+  const membershipReturn=params.get('membership');
+  if(state==='success'){
+    if(sessionId) saveMembershipSession(sessionId);
+    showMessage('✓ Stripe checkout completed. Genevieve is verifying your membership status.');
   }
-  if(state){
-    params.delete('payment');params.delete('session_id');
-    const q=params.toString();
-    history.replaceState({},'',`${location.pathname}${q?`?${q}`:''}${location.hash}`);
+  if(state==='cancelled'){
+    const el=document.createElement('div');el.className='genevieve-payment-return cancel';
+    el.textContent='Payment cancelled. Nothing was charged.';document.body.appendChild(el);setTimeout(()=>el.remove(),5000);
+  }
+  if(membershipReturn==='return') showMessage('Membership settings closed. Genevieve is refreshing your Stripe status.');
+  if(state||membershipReturn){
+    params.delete('payment');params.delete('session_id');params.delete('membership');
+    const q=params.toString();history.replaceState({},'',`${location.pathname}${q?`?${q}`:''}${location.hash}`);
   }
 }
 
 window.addEventListener('DOMContentLoaded',()=>{
-  ensureModal();
-  handleReturnState();
-  injectMembershipControl();
+  ensureModal();handleReturnState();injectMembershipControl();refreshMembershipStatus();
   const observer=new MutationObserver(()=>injectMembershipControl());
   observer.observe(document.getElementById('root')||document.body,{childList:true,subtree:true});
 });

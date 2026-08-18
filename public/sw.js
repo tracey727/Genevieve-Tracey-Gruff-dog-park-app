@@ -1,5 +1,5 @@
-const CACHE = 'genevieve-master-v53-shell';
-const SHELL = ['/', '/manifest.webmanifest', '/assets/genevieve-official-logo.jpeg'];
+const CACHE = 'genevieve-master-v53-premium-20260818';
+const SHELL = ['/', '/manifest.webmanifest', '/assets/genevieve-roots-512.png'];
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting()));
 });

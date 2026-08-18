@@ -29,6 +29,7 @@ export default async function handler(req,res){
   form.set('mode','subscription');
   form.set('success_url',`${origin}/?payment=success&session_id={CHECKOUT_SESSION_ID}`);
   form.set('cancel_url',`${origin}/?payment=cancelled`);
+  form.set('payment_method_collection','always');
   form.set('line_items[0][price_data][currency]','aud');
   form.set('line_items[0][price_data][product_data][name]',plan.name);
   form.set('line_items[0][price_data][product_data][description]','GENEVIEVE App™ Dog Park Membership');
