@@ -1,3 +1,5 @@
+import crypto from 'node:crypto';
+
 const STRIPE_API = 'https://api.stripe.com/v1';
 
 export function stripeSecret() {
@@ -17,6 +19,31 @@ export function originFromRequest(req) {
   const host = String(req.headers?.['x-forwarded-host'] || req.headers?.host || '').split(',')[0].trim();
   if (!host) return 'https://genevieve-tracey-gruff-dog-park-app-opal.vercel.app';
   return `${proto}://${host}`;
+}
+
+export function verifyStripeSignature(rawBody, signatureHeader, secret, nowSeconds = Math.floor(Date.now() / 1000), toleranceSeconds = 300) {
+  const header = String(signatureHeader || '');
+  const signingSecret = String(secret || '');
+  if (!header || !signingSecret) return false;
+
+  let timestamp = null;
+  const signatures = [];
+  for (const part of header.split(',')) {
+    const [key, ...rest] = part.trim().split('=');
+    const value = rest.join('=');
+    if (key === 't') timestamp = Number(value);
+    if (key === 'v1' && value) signatures.push(value);
+  }
+  if (!Number.isFinite(timestamp) || !signatures.length) return false;
+  if (Math.abs(nowSeconds - timestamp) > toleranceSeconds) return false;
+
+  const body = Buffer.isBuffer(rawBody) ? rawBody : Buffer.from(String(rawBody || ''), 'utf8');
+  const expected = crypto.createHmac('sha256', signingSecret).update(`${timestamp}.`).update(body).digest('hex');
+  const expectedBuffer = Buffer.from(expected, 'utf8');
+  return signatures.some((candidate) => {
+    const candidateBuffer = Buffer.from(String(candidate), 'utf8');
+    return candidateBuffer.length === expectedBuffer.length && crypto.timingSafeEqual(candidateBuffer, expectedBuffer);
+  });
 }
 
 async function stripeFetch(path, options = {}) {
