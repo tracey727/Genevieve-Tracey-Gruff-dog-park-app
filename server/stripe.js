@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 
 const STRIPE_API = 'https://api.stripe.com/v1';
+const STRIPE_VERSION = '2026-06-24.dahlia';
 
 export function stripeSecret() {
   const value = String(process.env.STRIPE_SECRET_KEY || '').trim();
@@ -51,6 +52,7 @@ async function stripeFetch(path, options = {}) {
     ...options,
     headers: {
       Authorization: `Bearer ${stripeSecret()}`,
+      'Stripe-Version': STRIPE_VERSION,
       ...(options.headers || {})
     }
   });
