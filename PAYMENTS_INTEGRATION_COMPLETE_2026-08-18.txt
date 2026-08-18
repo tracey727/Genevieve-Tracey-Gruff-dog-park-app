@@ -1,0 +1,7 @@
+GENEVIEVE App™ payment integration completion marker.
+
+Merged build includes the isolated Stripe checkout layer with Apple Pay / Google Pay eligibility through Stripe-hosted checkout, four existing membership options, 30-day trial wording, safe payment failure behaviour, and unchanged nine-screen safety application code.
+
+CI status at merge: tests passed; Vite production build passed.
+
+This file intentionally triggers a clean main-branch production deployment after the payment merge.
