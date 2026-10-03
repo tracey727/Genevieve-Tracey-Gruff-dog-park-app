@@ -36,3 +36,5 @@ npm run cf:deploy
 ```
 
 The Worker runs first only for `/api/*` and `/health`. Vite output in `dist/` is served as Cloudflare static assets with SPA fallback.
+
+Repository rule: pull requests to `main` must pass the V53 application tests, Vite build and Cloudflare Wrangler dry-run before merge.
