@@ -3,8 +3,8 @@ name: GENEVIEVE V53 CI
 on:
   push:
     branches:
-      - agent/master-blueprint-live-v53
       - main
+      - "cleanup/**"
   pull_request:
     branches:
       - main
@@ -23,3 +23,5 @@ jobs:
       - run: npm install
       - run: npm test
       - run: npm run build
+      - name: Cloudflare Worker dry-run
+        run: npx wrangler deploy --dry-run
