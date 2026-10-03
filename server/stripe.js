@@ -18,7 +18,7 @@ export function safeStripeId(value, prefix) {
 export function originFromRequest(req) {
   const proto = String(req.headers?.['x-forwarded-proto'] || 'https').split(',')[0].trim();
   const host = String(req.headers?.['x-forwarded-host'] || req.headers?.host || '').split(',')[0].trim();
-  if (!host) return 'https://genevieve-tracey-gruff-dog-park-app-opal.vercel.app';
+  if (!host) return 'https://genevieve-gruff-dog-park.workers.dev';
   return `${proto}://${host}`;
 }
 
