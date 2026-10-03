@@ -1,3 +1,5 @@
+> **Historical release record:** this document describes the 3 August 2026 launch state and its then-current Vercel/Supabase assumptions. It is retained as historical evidence only. The canonical deployment is now GitHub + Cloudflare + Neon; see `README_FIRST.txt` and `docs/CLOUDFLARE_DEPLOYMENT.md`.
+
 # GENEVIEVE Dog Parks launch readiness
 
 Build: `2026.08.03.46`  
