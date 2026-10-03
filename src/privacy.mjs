@@ -9,9 +9,16 @@ function normaliseHours(value) {
 }
 
 function dayOfYear(date) {
-  const start = Date.UTC(date.getFullYear(), 0, 0);
-  const current = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+  const start = Date.UTC(date.getUTCFullYear(), 0, 0);
+  const current = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
   return Math.floor((current - start) / 86400000);
+}
+
+function solarOffsetHours(longitude) {
+  // Offline solar-time approximation. This deliberately does not depend on
+  // the device/server timezone, so privacy behaviour is stable in CI and on
+  // devices configured to a different timezone.
+  return Math.max(-12, Math.min(14, Math.round(Number(longitude) / 15)));
 }
 
 function solarUtcHour(date, latitude, longitude, sunrise) {
@@ -55,7 +62,7 @@ export function localSolarWindow(date = new Date(), coords = null) {
   if (rise.polarNight || set.polarNight) return { sunrise: 12, sunset: 12, source: 'polar-night' };
   if (rise.polarDay || set.polarDay) return { sunrise: 0, sunset: 24, source: 'polar-day' };
 
-  const offsetHours = -date.getTimezoneOffset() / 60;
+  const offsetHours = solarOffsetHours(longitude);
   return {
     sunrise: normaliseHours(rise.utcHour + offsetHours),
     sunset: normaliseHours(set.utcHour + offsetHours),
@@ -67,7 +74,14 @@ export function isNightForPrivacy(date = new Date(), coords = null) {
   const window = localSolarWindow(date, coords);
   if (window.source === 'polar-night') return true;
   if (window.source === 'polar-day') return false;
-  const hour = date.getHours() + (date.getMinutes() / 60) + (date.getSeconds() / 3600);
+  const longitude = Number(coords?.longitude);
+  const offsetHours = Number.isFinite(longitude) ? solarOffsetHours(longitude) : 0;
+  const hour = normaliseHours(
+    date.getUTCHours() +
+    (date.getUTCMinutes() / 60) +
+    (date.getUTCSeconds() / 3600) +
+    offsetHours
+  );
   return hour < window.sunrise || hour >= window.sunset;
 }
 
