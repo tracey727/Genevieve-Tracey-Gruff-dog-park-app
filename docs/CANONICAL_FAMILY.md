@@ -12,6 +12,12 @@ Continue Dog Park product work here. Do not copy whole older Dog Park repositori
 
 Older V3/V4/V6/V7/V8/V11/V12 snapshot repositories are historical references only.
 
-## Platform note
+## Platform
 
-The current ON TRACK platform standard is GitHub + Cloudflare + Neon. This repository still contains historical Vercel-oriented deployment material and must be migrated/verified separately before that legacy deployment configuration is removed. That platform migration is intentionally outside this consolidation-only cleanup.
+Canonical platform: **GitHub + Cloudflare + Neon**.
+
+- GitHub holds source and CI.
+- Cloudflare Workers serves the Vite SPA and all `/api/*` server routes.
+- Neon remains the authentication/data platform with its existing RLS boundary.
+- Vercel configuration and the V33–V40 repair/deployment layers have been removed from the active tree.
+- Historical commits retain the old deployment evidence if it is ever needed for audit.
