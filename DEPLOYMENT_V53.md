@@ -1,5 +1,23 @@
-# GENEVIEVE App™ V53
+# GENEVIEVE App™ V53 — canonical deployment
 
-Deployment candidate generated from the uploaded master blueprint. The nine-screen safety framework, local-first protections, official GENEVIEVE logo asset, Neon-backed community data layer, and PWA shell are contained in this branch.
+The nine-screen safety framework, local-first protections, official GENEVIEVE assets, Neon-backed community data layer, Australia-wide route planner and PWA shell are maintained in this repository.
 
-Production refresh requested after the verified V53 merge. No application logic changed by this marker.
+## Canonical stack
+
+**GitHub + Cloudflare + Neon**
+
+- Vite builds the browser application into `dist/`.
+- Cloudflare Workers serves the SPA assets and executes `/api/*` plus `/health`.
+- Neon provides authentication and the data API.
+- Stripe and OpenRouteService credentials are Cloudflare Worker secrets.
+
+## Verification
+
+```bash
+npm install
+npm test
+npm run build
+npm run cf:check
+```
+
+See `docs/CLOUDFLARE_DEPLOYMENT.md` for the deployment procedure.
